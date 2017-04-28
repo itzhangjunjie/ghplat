@@ -24,6 +24,7 @@
 	<context:component-scan base-package="com.gh.controller" />
 	
 	<!-- 静态资源配置 location 是 -->
+	<mvc:resources location="/front/" mapping="/front/**"/>
 	<mvc:resources location="/admin/" mapping="/admin/**"/>
 	<mvc:resources location="/attachment/" mapping="/attachment/**"/>
 <!-- 	<mvc:resources location="/admin/" mapping="/staticResource/**"/> -->

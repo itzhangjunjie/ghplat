@@ -1,0 +1,8 @@
+﻿*{margin:0;padding:0;list-style-type:none;}
+a,img{border:0;text-decoration:none;}
+/* header */
+.header{position:relative;height:80px;width:503px;margin:0 auto;z-index:100;float:left;margin-left:20px;}
+.menu{height:45px;background:url(../images/menu_bg_1.png) no-repeat -100px bottom;z-index:100;background-position:10px 100%;position:absolute;top:35px;right:0;padding-right:1px;}
+.menu li{float:left;font-size:14px;text-align:center;line-height:18px;padding:0;width:100px;height:43px;cursor:pointer;}
+.menu li a{font-size:16px;color:#333333;}
+.first a{font-weight: bold;color:#fc6769 !important;}
