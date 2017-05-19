@@ -6,3 +6,80 @@ a,img{border:0;text-decoration:none;}
 .menu li{float:left;font-size:14px;text-align:center;line-height:18px;padding:0;width:100px;height:43px;cursor:pointer;}
 .menu li a{font-size:16px;color:#333333;}
 .first a{font-weight: bold;color:#fc6769 !important;}
+
+
+
+
+#wrap2{ float: left; width:658px;height:96px;position: relative;}
+#puzzle_card2{position:relative;width:600px;height:96px;overflow:hidden;margin-left:27px; background-color:#f1f1f1;}
+.live_card_arrow_left_physical{ width:16px; height:23px; float:left; cursor:pointer; background:url(../images/dt-03.png);}
+.live_card_arrow_left_physical:hover{ width:16px; height:23px; float:left; cursor:pointer; background:url(../images/dt-05.png);}
+.live_card_arrow_right_physical{ width:16px; height:23px; float:left; cursor:pointer; background:url(../images/dt-04.png);}
+.live_card_arrow_right_physical:hover{ width:16px; height:23px; float:left; cursor:pointer; background:url(../images/dt-06.png);}
+#showbox2{width:auto;height:auto;}
+#article_pic_slider{ margin: 0px 0px;padding:0px;}
+.article_pic_left_btn{top:38px;left:4px;position: absolute;}
+.article_pic_right_btn{top:38px;right:8px;position: absolute;}
+.article_pic_list{ float: left; width: 124px; height: 152px;margin-right:8px; margin-left:8px !important;;}
+
+
+
+
+/* 微信分享弹层样式 */
+.towdimcodelayer{position:absolute;left:5px;top:-215px;z-index:10000;margin-top:0;opacity:0;filter:alpha(opacity=0);}
+.js-transition{transition:margin-top .15s ease,opacity .12s linear;-webkit-transition:margin-top .15s ease,opacity .12s linear;-moz-transition:margin-top .18s ease,opacity .15s linear;-ms-transition:margin-top .15s ease,opacity .12s linear;-o-transition:margin-top .15s ease,opacity .12s linear;}
+.towdimcodelayer .arrow{position:absolute;width:0;height:0;border-width:8px;border-style:solid;_display:none;}
+.towdimcodelayer .js-arrow-up{left:72px;top:-15px;border-color:transparent transparent #191919 transparent;}
+.towdimcodelayer .js-arrow-down{left:72px;bottom:-15px;border-color:#191919 transparent transparent transparent;}
+.towdimcodelayer .layerbd{width:100px;height:150px;padding:30px 30px 0 30px;background:#191919;box-shadow:0 1px 3px #000;-webkit-box-shadow:0 1px 3px #000;-moz-box-shadow:0 1px 3px #000;-o-box-shadow:0 1px 3px #000;}
+.towdimcodelayer .codebg{width:75px;height:75px;padding:13px 12px 12px 13px;background:#fff;}
+.towdimcodelayer .codebg img{width:75px;height:75px;}
+.towdimcodelayer .codettl{height:22px;line-height:22px;margin-top:5px;color:#888;font-size:12px;}
+.js-show-up{margin-top:15px;opacity:1;filter:alpha(opacity=100);}
+.js-show-down{margin-top:-15px;opacity:1;filter:alpha(opacity=100);}
+
+.wb1 {
+    background: rgba(0, 0, 0, 0) url("../images/weibo.png") no-repeat scroll 999px 999px;
+    background-position: 0 -149px;
+    width: 38px;
+    display: block;
+    height: 35px;
+    overflow: hidden;
+    text-indent: -999px;
+}
+.wb11 {
+    background: rgba(0, 0, 0, 0) url("../images/weibo.png") no-repeat scroll 999px 999px;
+    background-position: -280px -479px;
+    width: 52px;
+    display: block;
+    height: 35px;
+    overflow: hidden;
+    text-indent: -999px;
+}
+.wb5 {
+    background: rgba(0, 0, 0, 0) url("../images/weibo.png") no-repeat scroll 999px 999px;
+    background-position: -205px -149px;
+    width: 34px;
+    display: block;
+    height: 35px;
+    overflow: hidden;
+    text-indent: -999px;
+} 
+.wb4 {
+    background: rgba(0, 0, 0, 0) url("../images/weibo.png") no-repeat scroll 999px 999px;
+    background-position: -154px -149px;
+    width: 31px;
+    display: block;
+    height: 35px;
+    overflow: hidden;
+    text-indent: -999px;
+}
+
+.w-wb1 li{
+    float: left;
+    margin: 0 12px 0 0;
+}
+.wb1:hover{background-position:0 -216px;}
+.wb11:hover{background-position:-225px -479px;}
+.wb5:hover{background-position:-205px -216px;}
+.wb4:hover{background-position:-154px -216px;}

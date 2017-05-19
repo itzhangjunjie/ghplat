@@ -2,6 +2,8 @@ package com.gh.service.impl;
 
 import java.util.Date;
 
+import javax.annotation.Resource;
+
 import org.springframework.stereotype.Service;
 
 import com.gh.dao.IBaseDao;
@@ -12,7 +14,9 @@ import com.gh.util.StringUtil;
 @Service
 public class UserServiceImpl implements IUserService{
 
+	@Resource
 	private IBaseDao<Advertiser> advertiserDao;
+	@Resource
 	private IBaseDao<Media> mediaDao;
 	
 	
@@ -50,6 +54,29 @@ public class UserServiceImpl implements IUserService{
 				return advertiser;
 			}
 		}
+	}
+
+
+	@Override
+	public int isExistsMobile(String mobile, String type) throws Exception {
+		if("自媒体".equals(type)){
+			String hql ="from Media m where m.mobile = ?";
+			Media media = mediaDao.findObject(hql, mobile);
+			if(media!=null){
+				return 1;
+			}else{
+				return -1;
+			}
+		}else if("广告主".equals(type)){
+			String hql ="from Advertiser a where a.mobile = ?";
+			Advertiser advertiser = advertiserDao.findObject(hql, mobile);
+			if(advertiser!=null){
+				return 1;
+			}else{
+				return -1;
+			}
+		}
+		return 1;
 	}
 	
 	

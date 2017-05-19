@@ -12,7 +12,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name="GH_ADMINUSER")
-@SequenceGenerator(name="adminuser_seq",sequenceName="adminuser_seq")  
+@SequenceGenerator(name="adminuser_seq",sequenceName="ADMINUSER_SEQ")  
 public class AdminUser {
 
 	@Id

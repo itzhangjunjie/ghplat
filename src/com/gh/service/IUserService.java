@@ -16,7 +16,10 @@ public interface IUserService {
 	 */
 	public Advertiser userAdvertiserLogin(String account,String password) throws Exception;
 	
-	
+	/**
+	 * 是否存在手机号    type为自媒体，广告主
+	 */
+	public int isExistsMobile(String mobile,String type) throws Exception;
 	
 	
 }

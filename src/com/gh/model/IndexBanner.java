@@ -11,7 +11,7 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 @Entity
 @Table(name = "GH_INDEXBANNER")
-@SequenceGenerator(name="indexBanner_seq",sequenceName="")  
+@SequenceGenerator(name="indexBanner_seq",sequenceName="SEQ_INDEXBANNER_ID")  
 public class IndexBanner {
     @Id
     @Column(name = "INDEXBANNER_ID")

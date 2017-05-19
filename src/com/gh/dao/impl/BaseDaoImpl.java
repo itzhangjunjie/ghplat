@@ -161,6 +161,12 @@ public class BaseDaoImpl<T>  implements IBaseDao<T> {
         return query.list();
     }
  
+    @Override
+    public List<Map> findMapBySql(String sql) {
+        Query query = getSession().createSQLQuery(sql);
+        query.setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP).list();
+        return query.list();
+    }
     /*
      * (non-Javadoc)
      * 
@@ -286,7 +292,7 @@ public class BaseDaoImpl<T>  implements IBaseDao<T> {
         sr.last();
         int count = sr.getRowNumber() == -1 ? 0 : sr.getRowNumber() + 1;
         query.setFirstResult((page - 1) * rows);
-        query.setMaxResults(page * rows);
+        query.setMaxResults(rows);
         return new PageList<T>(page, rows, count, query.list());
     }
  

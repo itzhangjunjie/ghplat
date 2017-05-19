@@ -84,6 +84,7 @@ public interface IBaseDao<T> {
      */
     <T> List<T> findListBySql(String sql);
      
+    
     /**
      * 
      * @param sql
@@ -92,6 +93,8 @@ public interface IBaseDao<T> {
      */
     <T> List<T> findListBySql(String sql, Object...objects);
      
+    
+    List<Map> findMapBySql(String sql);
     /**
      * 
      * @param obj

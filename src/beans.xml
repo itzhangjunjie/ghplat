@@ -47,7 +47,7 @@
 		<property name="dataSource" ref="dataSource" />
 		<!-- 设置Spring取那个包中查找相应的实体类 -->
 		<property name="packagesToScan">
-			<value>com.gh.entity</value>
+			<value>com.gh.model</value>
 		</property>
 		<property name="hibernateProperties">
 			<props>
@@ -67,7 +67,7 @@
 
 	<!-- 配置Spring的事务处理 -->
 	<!-- 创建事务管理器-->
-	<bean id="txManager"
+	<bean id="transactionManager"
 		class="org.springframework.orm.hibernate3.HibernateTransactionManager">
 		<property name="sessionFactory" ref="sessionFactory" />
 	</bean>
@@ -82,7 +82,7 @@
 		<aop:advisor advice-ref="txAdvice" pointcut-ref="allMethods" />
 	</aop:config>
 	<!-- 配置哪些方法要加入事务控制 -->
-	<tx:advice id="txAdvice" transaction-manager="txManager">
+	<tx:advice id="txAdvice" transaction-manager="transactionManager">
 		<tx:attributes>
 		<!-- 让所有的方法都加入事务管理，为了提高效率，可以把一些查询之类的方法设置为只读的事务 -->
 			<tx:method name="*" propagation="REQUIRED" read-only="true"/>
@@ -96,6 +96,6 @@
 	
 	<!-- 上传文件拦截，设置最大上传文件大小   10M=10*1024*1024(B)=10485760 bytes -->
 	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">  
-	    <property name="maxUploadSize" value="10485760" />  
+	    <property name="maxUploadSize" value="1048576" />  
 	</bean>
 </beans>

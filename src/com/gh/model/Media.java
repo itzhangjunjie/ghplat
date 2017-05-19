@@ -14,13 +14,15 @@ import javax.persistence.TemporalType;
 
 @Entity
 @Table(name="GH_MEDIA")
-@SequenceGenerator(name="media_seq",sequenceName="")  
+@SequenceGenerator(name="media_seq",sequenceName="SEQ_MEDIA_ID")  
 public class Media {
-	
+	//自媒体对象
  	@Id
     @Column(name = "MEDIA_ID")
     @GeneratedValue(strategy=GenerationType.SEQUENCE,generator="media_seq")
     private Long mediaId;//供应商标识
+ 	@Column(name="GHID")
+	private String ghid;//标识符
     @Basic(optional = false)
     @Column(name = "USERNAME")
     private String username;//用户名
@@ -66,6 +68,12 @@ public class Media {
     private Date column4;
     
     
+	public String getGhid() {
+		return ghid;
+	}
+	public void setGhid(String ghid) {
+		this.ghid = ghid;
+	}
 	public Long getMediaId() {
 		return mediaId;
 	}

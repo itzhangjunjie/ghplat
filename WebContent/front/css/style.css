@@ -15,3 +15,6 @@ a,img{border:0;}
 .flex-control-nav li{margin:0 5px;display:inline-block;zoom:1;*display:inline;}
 .flex-control-paging li a{background:url(../images/dot.png) no-repeat 0 -16px;display:block;height:16px;overflow:hidden;text-indent:-99em;width:16px;cursor:pointer;}
 .flex-control-paging li a.flex-active{background-position:0 0;}
+
+
+

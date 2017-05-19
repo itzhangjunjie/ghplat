@@ -29,7 +29,8 @@ public class LoginFilter implements Filter {
 		HttpServletResponse res = (HttpServletResponse) response;
 		String requestURI = req.getRequestURI().substring(req.getRequestURI().indexOf("/", 1),
 				req.getRequestURI().length());
-		if (((requestURI.startsWith("/admin") && !canNoLogin(requestURI)) )&&(!requestURI.contains(".")|| requestURI.contains("/admin/index.html"))) {
+		if (((requestURI.startsWith("/admin") && !canNoLogin(requestURI)) )
+				&&(!requestURI.contains(".")|| requestURI.contains("/admin/index.html"))) {
 			HttpSession session = req.getSession();
 			AdminUser adminuser = (AdminUser) session.getAttribute("adminUser");
 			if (adminuser != null) {
@@ -66,7 +67,7 @@ public class LoginFilter implements Filter {
 	}
 
 	public boolean canNoLogin(String url) {
-		if (url.contains("adminLogin")) {
+		if (url.contains("adminLogin")||url.contains("uploadImage")) {
 			return true;
 		}
 		return false;

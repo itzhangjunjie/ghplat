@@ -13,13 +13,15 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 @Entity
 @Table(name = "GH_ADVERTISER")
-@SequenceGenerator(name="advertiser_seq",sequenceName="")  
+@SequenceGenerator(name="advertiser_seq",sequenceName="SEQ_ADVERTISER_ID")  
 public class Advertiser {
-	
+	//广告主对象
     @Id
     @Column(name = "ADVERTISER_ID")
     @GeneratedValue(strategy=GenerationType.SEQUENCE,generator="advertiser_seq")
     private Long advertiserId;
+    @Column(name="GHID")
+	private String ghid;//标识符
     @Column(name = "INDUSTRY")
     private String industry;
     @Basic(optional = false)
@@ -67,6 +69,12 @@ public class Advertiser {
     private Date column4;
     
     
+	public String getGhid() {
+		return ghid;
+	}
+	public void setGhid(String ghid) {
+		this.ghid = ghid;
+	}
 	public Long getAdvertiserId() {
 		return advertiserId;
 	}

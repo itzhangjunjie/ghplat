@@ -19,6 +19,11 @@ import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.gh.model.Publish;
+
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
+
 
 /**
  * 字串工具类
@@ -866,6 +871,50 @@ public class StringUtil {
 		final PrintWriter printWriter = new PrintWriter(result); 
 		aThrowable.printStackTrace(printWriter); return result.toString(); 
 	
+	}
+	
+	public static void setPublishInfo(Publish publish,String infoArray){
+		if(infoArray==null||"".equals(infoArray)){
+			return;
+		}
+        JSONArray infoarray = JSONArray.fromObject(infoArray);
+        for (Object obj : infoarray) {
+            JSONObject jsonObject = (JSONObject) obj;
+            String key = jsonObject.getString("columnName");
+            if("1".equals(key)){
+            	publish.setInfo01(jsonObject.getString("columnValue"));
+            }else if("2".equals(key)){
+            	publish.setInfo02(jsonObject.getString("columnValue"));
+            }else if("3".equals(key)){
+            	publish.setInfo03(jsonObject.getString("columnValue"));
+            }else if("4".equals(key)){
+            	publish.setInfo04(jsonObject.getString("columnValue"));
+            }else if("5".equals(key)){
+            	publish.setInfo05(jsonObject.getString("columnValue"));
+            }
+        }	
+	}
+	
+	public static void setPublishPrice(Publish publish,String priceArray){
+		if(priceArray==null||"".equals(priceArray)){
+			return;
+		}
+        JSONArray pricearray = JSONArray.fromObject(priceArray);
+        for (Object obj : pricearray) {
+            JSONObject jsonObject = (JSONObject) obj;
+            String key = jsonObject.getString("columnName");
+            if("1".equals(key)){
+            	publish.setPrice01(jsonObject.getString("columnValue"));
+            }else if("2".equals(key)){
+            	publish.setPrice02(jsonObject.getString("columnValue"));
+            }else if("3".equals(key)){
+            	publish.setPrice03(jsonObject.getString("columnValue"));
+            }else if("4".equals(key)){
+            	publish.setPrice04(jsonObject.getString("columnValue"));
+            }else if("5".equals(key)){
+            	publish.setPrice05(jsonObject.getString("columnValue"));
+            }
+        }	
 	}
 	
 }

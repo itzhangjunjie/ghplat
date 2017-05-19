@@ -1,7 +1,12 @@
 package com.gh.controller;
 
 import java.util.Date;
+import java.util.List;
+
 import net.sf.json.JSONObject;
+import net.sf.json.JsonConfig;
+import net.sf.json.util.PropertyFilter;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.web.multipart.MultipartFile;
@@ -17,9 +22,17 @@ public class BaseControllerSupport{
 	protected JSONObject jsonObject = new JSONObject();
 	protected static Log logger=LogFactory.getLog(BaseControllerSupport.class);
 
+	protected static JsonConfig jsonConfig = new JsonConfig();
 	static{
 		page.setPage(1);
 		page.setRows(20);
+		//设置过滤json格式
+        PropertyFilter filter = new PropertyFilter() {
+                public boolean apply(Object object, String fieldName, Object fieldValue) {
+                	return null == fieldValue || "".equals(fieldValue);
+                }
+        };
+        jsonConfig.setJsonPropertyFilter(filter);
 	}
 	
 	/**
