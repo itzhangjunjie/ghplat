@@ -9,6 +9,7 @@
 <script src="js/jquery-1.8.2.min.js" type="text/javascript"></script>
 <script type="text/javascript">
 function ajaxFileUploadImage(index) {
+	$('#cimageMsg').hide();
     $.ajaxFileUpload
     (
         {
@@ -268,7 +269,6 @@ function sumbitAddPublish(){
 			return;
 		}
 		var imageArray = new Array();
-		console.log($('.anliImageDis').length);
 		for(var i=0;i<$('.anliImageDis').length;i++){
 			var imageObj = {};
 			imageObj.url = $($('.anliImageDis')[i]).find(".imageShowDiv").attr('src');
@@ -276,12 +276,20 @@ function sumbitAddPublish(){
 			imageObj.details = $($('.anliImageDis')[i]).find(".cimageDetails").val();
 			imageArray.push(imageObj);
 		}
+		if(imageArray.length==0){
+			alert('至少一张图片');
+			return;
+		}
 		var publishArray = new Array();
 		for(var i=0;i<$('.wrap').find('.addZiMeiTiSu').length;i++){
 			var publishObj = {};
 			publishObj.publishId = $($('.wrap').find('.addZiMeiTiSu')[i]).attr("attrPid");
 			publishObj.publishType = $($('.wrap').find('.addZiMeiTiSu')[i]).attr("attrPtype");
 			publishArray.push(publishObj);
+		}
+		if(publishArray.length==0){
+			alert('自媒体至少一个');
+			return;
 		}
 		$.ajax({
 			type: "post",
@@ -300,6 +308,26 @@ function sumbitAddPublish(){
 			},
 			success: function(data, status, xhr) {
 				if(data.result=="yes"){
+					var templDiv = $('.anliDiv2').clone();
+					$(templDiv).find('.ttile').val(ctitle);
+					$(templDiv).find('.tbrand').val(cbrand);
+					$(templDiv).find('.thangye').val(cindustry);
+					$(templDiv).find('.tproduct').val(cproduct);
+					$(templDiv).find('.tdesc').val(cdesc);
+					var divhtml = $('.wrap').find('#article_pic_slider').html();
+					$(templDiv).find('.article_pic_slider').html(divhtml);
+					var anldiv = '';
+					for(var i=0;i<imageArray.length;i++){
+						var antem = $('.anliImageTempl').clone();
+						antem.find('.tanliImage').attr('src',imageArray[i].url);
+						antem.find('.tanliTitle').attr('placeholder',imageArray[i].title);
+						antem.find('.tanliDetails').attr('placeholder',imageArray[i].details);
+						anldiv = anldiv +$(antem).html();
+					}
+					$(templDiv).find('.canliImageDis').append(anldiv);
+					$(templDiv).find('.uploadImageImg2').attr('src',cimage);
+					$(templDiv).show();
+					$('.anliDiv').append(templDiv);
 				}
 			}
 		});
@@ -308,7 +336,7 @@ function sumbitAddPublish(){
 function searchPublish(){
 		var pbtype = $('.addPublishDivType').val();
 		var pbsearch = $('.searchStrClass').val();
-		var pbmediaid = 2300;
+		var pbmediaid = $('#mediaId').val();
 		var datajson = {};
 		datajson.pageCount = 30;
 		datajson.pageSize = 1;
@@ -339,94 +367,168 @@ function searchPublish(){
 			}
 		});
 }
+function getPublishList(gpagesize){
+	var datajson = {};
+	datajson.pageSize = gpagesize;
+	datajson.mediaId = $('#mediaId').val();
+	$.ajax({
+		type: "post",
+		url: "../getPublishStr",
+		async: false, //_config.async,
+		dataType: 'json',
+		data:datajson,
+		success: function(data, status, xhr) {
+			if(data.result=="yes"){
+				var plist = data.datas;
+				$('.basemsglisttemDiv').html("");
+				var htmla =  doT.template($("#publishTmpDiv").text());
+				$('.basemsglisttemDiv').html(htmla(plist));
+				var pagecount = data.pageCount;
+				var pagesize = data.pageSize;
+				 $('.M-box').pagination(pagecount,{
+					 'items_per_page'      : 15,  
+			         'num_display_entries' : 5, 
+			         'ellipse_text'        : "...",
+			         'num_edge_entries'    : 2,  
+			         'prev_text'           : "上一页",  
+			         'next_text'           : "下一页",  
+			         'current_page'        : pagesize-1,
+			         'callback'            : function(page_id,jq){
+			        	 getPublishList(page_id+1);
+			        	 $("body").scrollTop(0);
+						 return false;
+			         }
+			     });
+			}
+		}
+	});
+}
+function addBaseMsgDiv(){
+	$('.addbasemsgDiv').show();
+	$('.saveanliDiv').show();
+	$('.basemsglistDiv').hide();
+}
 </script>
 </head>
 <body style="padding:0px;margin:0px;">
+<input type="hidden" value="${sessionScope.user.mediaId}" id="mediaId" />
 	<%@include file="header.jsp" %>
 	<div style="width:100%;background:rgb(242,242,242);height:auto;overflow: hidden;">
 			<div style="width:1198px;background: white;margin:0 auto;margin-top:20px;margin-bottom:20px;border:1px #eeeeee solid;overflow: hidden;">
-				<div style="width:1140px;margin-left:30px;margin-top:30px;">
+				<div style="width:1140px;margin-left:30px;margin-top:30px;padding-bottom: 20px;">
 					<div style="width:100%;height:36px;border-bottom: 1px #707070 solid;">
 						<div onclick="changeDiv('basemsgDiv',this)" class="currentCas alldaodiv" style="cursor:pointer;height:36px;font-size: 18px;color:#333333;float:left;width:100px;text-align: center;">发布管理</div>
 						<div onclick="changeDiv('anliDiv',this)" class="alldaodiv" style="cursor:pointer;height:36px;font-size: 18px;color:#333333;float:left;width:100px;text-align: center;margin-left:25px;">案例管理</div>
 					</div>
 					<div style="width:100%;">
-						<table class="alldiv basemsgDiv" style="width:100%;font-size: 14px;color:#333333;font-family: 微软雅黑;border-collapse:separate; border-spacing:0px 30px;" class="addpublishTable">
-							<tr><td width="130px" style="vertical-align:top;">上传头像&nbsp;:</td>
-								<td width="450px"><div style="width:180px;height:200px;border: 1px #707070 dotted;">
-										<div class="uploadClickClass" style="width:180px;height:155px;cursor: pointer;">
-											<div style="width:100%;height:100%;"><img id="uploadImageImg1" style="width:180px;height:155px;" src="images/addImage.png" /></div>
+						<div class="alldiv basemsgDiv">
+							<div class="basemsglistDiv" style="width:100%;padding-bottom: 20px;overflow: hidden;">
+								<div style="width:100%;margin:0 auto;height:48px;cursor:pointer;">
+									<div onclick="addBaseMsgDiv()" class="hoverFont" style="border-raduis:2px;margin-top:20px;width:100px;height:25px;border:1px #333333 solid;text-align: center;line-height: 25px;float:right;">+新增发布</div>
+								</div>
+								<div class="basemsglisttemDiv">
+								</div>
+								<script id="publishTmpDiv" type="text/x-dot-template">
+									{{for(var i=0;i<it.length;i++){ }} 
+										<div style="width:560px;height:150px;float:left;{{? (i+2)%2==0}}margin-right:20px;{{?}}margin-top:20px;color:#333333;font-size:14px;background: #e7e7e7;">
+											<div style="width:150px;height:150px;float:left;"><img width="150px" height="150px" src="http://61.129.51.62:8080/GhWemediaWar/{{=it[i].image}}"/></div>
+											<div style="width:360px;float:left;margin-left:20px;">
+												<div style="width:100%;margin-top:10px;">直播平台：<span >{{=it[i].publishTypeObj.publishFieldName}}</span></div>
+												<div style="width:100%;margin-top:10px;">直播平台：<span >微信工作好</span></div>
+												<div style="width:100%;margin-top:10px;">直播平台：<span >微信工作好</span></div>
+												<div style="width:100%;margin-top:10px;">直播平台：<span >微信工作好</span></div>
+											</div>
 										</div>
-										<input id="uploadImageInput1" onchange="ajaxFileUploadImage(1)" name="files" class="uploadClass" accept="image/*" type="file" style="display:none;"/>
-										<div style="width:180px;height:45px;background: #ededed;">
-											<div style="width:100%;height:21px;text-align: center;padding-top:4px;">头像上传（只能上传一张）</div>
-											<div style="font-size:12px;text-align: center;">大小不能超过1024kb</div>
-										</div>
+									{{ } }} 
+								</script>
+								<script> 
+									getPublishList(1);//获取第一页数据
+								</script> 
+								<div style="width:100%;">
+									<div id="pageDiv" style="margin:0 auto;margin-top:20px;margin-bottom:20px;min-width: 385px;max-width: 470px;height:32px;">
+										<div class="M-box" ></div>
 									</div>
-								</td><td><div id="imageMsg" class="wrongClass" style="display:none;font-size:14px;color:#fc6769;height:20px;">没有上传主题图片</div></td>
-							</tr>
-							<tr><td>类型&nbsp;:
-							</td><td>
-								<select id="pbtype" onchange="changeType(this)" style="width:350px;color:#333333;height:48px;font-size:14px;padding-left:6px;">
-									<c:forEach var="publish" items="${ptdto }"  varStatus="st" >
-										<option value="${publish.publishType }" style="padding:6px;font-size:14px;color:#333333;">${publish.publishName }</option>
-									</c:forEach>
-								</select>
-							</td><td></td></tr>
-							<tr><td>标题&nbsp;:
-							</td><td>
-								<input id="pbname" style="width:350px;height:48px;padding:6px;color:#333333;text-align: left;" type="text" placeholder="请填写案例标题" />
-							</td><td><div id="nameMsg" class="wrongClass" style="display:none;font-size:14px;color:#fc6769;height:20px;">填写主题标题不对</div></td></tr>
-							<tr><td>粉丝数&nbsp;:
-							</td><td>
-								<input id="pbfancount" style="width:350px;height:48px;padding:6px;color:#333333;text-align: left;" type="text" placeholder="请填写粉丝数" />
-							</td><td><div id="fancountMsg" class="wrongClass" style="display:none;font-size:14px;color:#fc6769;height:20px;">填写粉丝数不对</div></td></tr>
-							<c:forEach var="publisha" items="${ptdto }" varStatus="stt">
-								<c:if test="${publisha.publishFieldList.size()>1 }">
-									<tr class="pfieldtr pfieldtr${publisha.publishType }" style="<c:if test='${stt.index!=0 }'>display:none;</c:if>"><td>所属领域&nbsp;:</td><td>
-										<select id="pbfield${publisha.publishType }" style="width:350px;color:#333333;height:48px;font-size:14px;padding-left:6px;">
-											<c:forEach var="publishField" items="${publisha.publishFieldList }" >
-												<option style="padding:6px;font-size:14px;color:#333333;" value="${publishField.publishFieldName }">${publishField.publishFieldName }</option>
+								</div>
+							</div>
+							<div class="addbasemsgDiv" style="display:none;">
+								<table style="width:100%;font-size: 14px;color:#333333;font-family: 微软雅黑;border-collapse:separate; border-spacing:0px 30px;" class="addpublishTable">
+									<tr><td width="130px" style="vertical-align:top;">上传头像&nbsp;:</td>
+										<td width="450px"><div style="width:180px;height:200px;border: 1px #707070 dotted;">
+												<div class="uploadClickClass" style="width:180px;height:155px;cursor: pointer;">
+													<div style="width:100%;height:100%;"><img id="uploadImageImg1" style="width:180px;height:155px;" src="images/addImage.png" /></div>
+												</div>
+												<input id="uploadImageInput1" onchange="ajaxFileUploadImage(1)" name="files" class="uploadClass" accept="image/*" type="file" style="display:none;"/>
+												<div style="width:180px;height:45px;background: #ededed;">
+													<div style="width:100%;height:21px;text-align: center;padding-top:4px;">头像上传（只能上传一张）</div>
+													<div style="font-size:12px;text-align: center;">大小不能超过1024kb</div>
+												</div>
+											</div>
+										</td><td><div id="imageMsg" class="wrongClass" style="display:none;font-size:14px;color:#fc6769;height:20px;">没有上传主题图片</div></td>
+									</tr>
+									<tr><td>类型&nbsp;:
+									</td><td>
+										<select id="pbtype" onchange="changeType(this)" style="width:350px;color:#333333;height:48px;font-size:14px;padding-left:6px;">
+											<c:forEach var="publish" items="${ptdto }"  varStatus="st" >
+												<option value="${publish.publishType }" style="padding:6px;font-size:14px;color:#333333;">${publish.publishName }</option>
 											</c:forEach>
 										</select>
 									</td><td></td></tr>
-								</c:if>
-								<c:if test="${publisha.publishPlatform.size()>1 }">
-									<tr class="pplatformtr pplatformtr${publisha.publishType }" style="<c:if test='${stt.index!=0 }'>display:none;</c:if>"><td>平台类型&nbsp;:</td><td>
-										<select id="pbplatform${publisha.publishType }" style="width:350px;color:#333333;height:48px;font-size:14px;padding-left:6px;">
-											<c:forEach var="publishplatform" items="${publisha.publishPlatform }" >
-												<option style="padding:6px;font-size:14px;color:#333333;" value="${publishplatform.platformName }">${publishplatform.platformName }</option>
-											</c:forEach>
-										</select>
-									</td><td></td></tr>
-								</c:if>
-								<c:forEach var="publishinfo" items="${publisha.publishInfo }" >
-									<c:if test="${publishinfo.columnName!=null }">
-										<tr class="allattr select${publisha.publishType }" style="<c:if test='${stt.index!=0 }'>display:none;</c:if>"><td>${publishinfo.columnName }&nbsp;:</td><td>
-											<c:if test="${publishinfo.columnType=='TEXT' }"><input class="pbinfoInput${publisha.publishType }" columnName="${publishinfo.columnPosition }" fieldName="${publishinfo.columnName }" style="width:350px;height:48px;padding:6px;color:#333333;text-align:left;" type="text" placeholder="请填写${publishinfo.columnName }" /></c:if>
-											<c:if test="${publishinfo.columnType=='CHECKBOX'&&publishinfo.columnName=='性别' }">
-												<select style="width:350px;color:#333333;height:48px;font-size:14px;padding-left:6px;">
-													<option style="padding:6px;font-size:14px;color:#333333;" value="女">女</option>
-													<option style="padding:6px;font-size:14px;color:#333333;" value="男">男</option>
+									<tr><td>标题&nbsp;:
+									</td><td>
+										<input id="pbname" style="width:350px;height:48px;padding:6px;color:#333333;text-align: left;" type="text" placeholder="请填写案例标题" />
+									</td><td><div id="nameMsg" class="wrongClass" style="display:none;font-size:14px;color:#fc6769;height:20px;">填写主题标题不对</div></td></tr>
+									<tr><td>粉丝数&nbsp;:
+									</td><td>
+										<input id="pbfancount" style="width:350px;height:48px;padding:6px;color:#333333;text-align: left;" type="text" placeholder="请填写粉丝数" />
+									</td><td><div id="fancountMsg" class="wrongClass" style="display:none;font-size:14px;color:#fc6769;height:20px;">填写粉丝数不对</div></td></tr>
+									<c:forEach var="publisha" items="${ptdto }" varStatus="stt">
+										<c:if test="${publisha.publishFieldList.size()>1 }">
+											<tr class="pfieldtr pfieldtr${publisha.publishType }" style="<c:if test='${stt.index!=0 }'>display:none;</c:if>"><td>所属领域&nbsp;:</td><td>
+												<select id="pbfield${publisha.publishType }" style="width:350px;color:#333333;height:48px;font-size:14px;padding-left:6px;">
+													<c:forEach var="publishField" items="${publisha.publishFieldList }" >
+														<option style="padding:6px;font-size:14px;color:#333333;" value="${publishField.publishFieldName }">${publishField.publishFieldName }</option>
+													</c:forEach>
 												</select>
+											</td><td></td></tr>
+										</c:if>
+										<c:if test="${publisha.publishPlatform.size()>1 }">
+											<tr class="pplatformtr pplatformtr${publisha.publishType }" style="<c:if test='${stt.index!=0 }'>display:none;</c:if>"><td>平台类型&nbsp;:</td><td>
+												<select id="pbplatform${publisha.publishType }" style="width:350px;color:#333333;height:48px;font-size:14px;padding-left:6px;">
+													<c:forEach var="publishplatform" items="${publisha.publishPlatform }" >
+														<option style="padding:6px;font-size:14px;color:#333333;" value="${publishplatform.platformName }">${publishplatform.platformName }</option>
+													</c:forEach>
+												</select>
+											</td><td></td></tr>
+										</c:if>
+										<c:forEach var="publishinfo" items="${publisha.publishInfo }" >
+											<c:if test="${publishinfo.columnName!=null }">
+												<tr class="allattr select${publisha.publishType }" style="<c:if test='${stt.index!=0 }'>display:none;</c:if>"><td>${publishinfo.columnName }&nbsp;:</td><td>
+													<c:if test="${publishinfo.columnType=='TEXT' }"><input class="pbinfoInput${publisha.publishType }" columnName="${publishinfo.columnPosition }" fieldName="${publishinfo.columnName }" style="width:350px;height:48px;padding:6px;color:#333333;text-align:left;" type="text" placeholder="请填写${publishinfo.columnName }" /></c:if>
+													<c:if test="${publishinfo.columnType=='CHECKBOX'&&publishinfo.columnName=='性别' }">
+														<select style="width:350px;color:#333333;height:48px;font-size:14px;padding-left:6px;">
+															<option style="padding:6px;font-size:14px;color:#333333;" value="女">女</option>
+															<option style="padding:6px;font-size:14px;color:#333333;" value="男">男</option>
+														</select>
+													</c:if>
+												</td><td><div class="wrongClass" style="display:none;font-size:14px;color:#fc6769;height:20px;">填写主题标题不对</div></td></tr>
 											</c:if>
-										</td><td><div class="wrongClass" style="display:none;font-size:14px;color:#fc6769;height:20px;">填写主题标题不对</div></td></tr>
-									</c:if>
-								</c:forEach>
-								<c:if test="${publisha.publishPrice.size()>1 }">
-									<tr class="ppricetr ppricetr${publisha.publishType }" style="<c:if test='${stt.index!=0 }'>display:none;</c:if>"><td>价格定义&nbsp;:</td><td colspan="2">
-										<div style="float:left;width:140px;">
-											<select onchange="selectPrice(this)" style="width:140px;color:#999999;height:48px;font-size:14px;padding-left:6px;">
-												<option style="display:none;" value="0">请选择价格类型</option>
-												<c:forEach var="publishprice" items="${publisha.publishPrice }" >
-													<option style="padding:6px;font-size:14px;color:#333333;" value="${publishprice.columnPosition }">${publishprice.columnName }</option>
-												</c:forEach>
-											</select>
-										</div>
-									</td></tr>
-								</c:if>
-							</c:forEach>
-						</table>
+										</c:forEach>
+										<c:if test="${publisha.publishPrice.size()>1 }">
+											<tr class="ppricetr ppricetr${publisha.publishType }" style="<c:if test='${stt.index!=0 }'>display:none;</c:if>"><td>价格定义&nbsp;:</td><td colspan="2">
+												<div style="float:left;width:140px;">
+													<select onchange="selectPrice(this)" style="width:140px;color:#999999;height:48px;font-size:14px;padding-left:6px;">
+														<option style="display:none;" value="0">请选择价格类型</option>
+														<c:forEach var="publishprice" items="${publisha.publishPrice }" >
+															<option style="padding:6px;font-size:14px;color:#333333;" value="${publishprice.columnPosition }">${publishprice.columnName }</option>
+														</c:forEach>
+													</select>
+												</div>
+											</td></tr>
+										</c:if>
+									</c:forEach>
+								</table>
+							</div>
+						</div>
 						<div class="alldiv anliDiv" style="display:none;width:100%;border:1px #999999 solid;height:auto;background: #fbfbfb;margin-top:30px;margin-bottom: 30px;overflow: hidden;">
 							<div style="padding:30px;font-size:14px;color:#333333;">
 								<div style="width:100%;height:48px;">
@@ -497,8 +599,8 @@ function searchPublish(){
 										</a>
 									</div>
 								</div>
-								<div style="width:100%;margin-top:30px;height:98px;">
-									<div style="width:100px;height:96px;line-height: 18px;float:left;"><div style="width:100%;margin-top:25px;">案例照片&nbsp;:</div><div style="font-size:12px;">(可上传多张)</div></div>
+								<div class="anliImagesDiv" style="width:100%;margin-top:30px;">
+									<div style="width:100px;min-height:110px;line-height: 18px;float:left;"><div style="width:100%;margin-top:25px;">案例照片&nbsp;:</div><div style="font-size:12px;">(可上传多张)</div></div>
 									<div class="addImageDiv" style="float:left;width:96px;height:96px;border:1px #dfdfdf solid;">
 										<div class="uploadClickClass" style="width:100%;height:100%;cursor: pointer;">
 											<div style="width:100%;height:100%;"><img id="uploadImageImg3" style="width:96px;height:96px;" src="images/addImage.png" />
@@ -511,7 +613,7 @@ function searchPublish(){
 							</div>
 						</div>
 					</div>
-					<div style="width:100%;height:75px;">
+					<div class="saveanliDiv" style="width:100%;height:45px;display:none;">
 						<div style="width:320px;margin:0 auto;margin-top:5px;">
 							<div id="submitAdd" attrId="1" onclick="sumbitAddPublish()" style="width:140px;height:48px;background: #fc6769;color:white;font-size:18px;line-height: 48px;float:left;border-radius:5px;text-align: center;cursor: pointer;">保&nbsp;存</div>
 							<div style="width:140px;height:48px;background: #fc6769;color:white;font-size:18px;line-height: 48px;float:left;margin-left:30px;border-radius:5px;text-align: center;cursor: pointer;">取&nbsp;消</div>
@@ -558,17 +660,17 @@ function searchPublish(){
 			</script>
 	</div>
 </div>
-<div style="float:left;width:230px;height:96px;border:1px #dfdfdf solid;margin-right:20px;position: relative;display:none;" class="anliImageDiv">
+<div style="float:left;width:215px;height:96px;border:1px #dfdfdf solid;margin-right:20px;position: relative;display:none;" class="anliImageDiv">
 	<div class="uploadClickClass" style="width:96px;height:96px;cursor: pointer;float:left;">
 		<div style="width:100%;height:100%;"><img class="imageShowDiv" style="width:96px;height:96px;" src="images/addImage.png" /></div>
 	</div>
 	<div style="width:114px;height:96px;float:left;">
 		<div style="margin-top:6px;height:24px;"><input class="cimageTitle" placeholder="填写图片的标题" style="padding:2px;color:#333333;text-align: left;width:110px;height:24px;" /></div>
 		<div style="margin-top:8px;margin-left:5px;">
-			<textarea placeholder="填写图片的描述" class="cimageDetails" style="padding:2px;color:#333333;text-align: left;width:110px;height:50px;" rows="20" cols="3"></textarea>
+			<textarea placeholder="填写图片的描述" class="cimageDetails" style="font-size:14px;padding:2px;color:#333333;text-align: left;width:110px;height:50px;" rows="20" cols="3"></textarea>
 		</div>
 	</div>
-	<div onclick="colseDiv(this)" style="float:left;cursor:pointer;width:22px;position: absolute;top:-5px;right:-5px;"><img src="images/colse.jpg" style="height:22px;"/></div>
+	<div class="colseImageDiv" onclick="colseDiv(this)" style="float:left;cursor:pointer;width:22px;position: absolute;top:-15px;right:-10px;"><img src="images/colse.jpg" style="height:22px;"/></div>
 </div>
 <div class="addpriceDiv" style="width:140px;height:48px;float:left;position: relative;margin-left:20px;display:none;">
 	<div style="float:left;width:140px;">
@@ -577,32 +679,31 @@ function searchPublish(){
 	<div onclick="colseDiv(this)" style="float:left;cursor:pointer;width:22px;position: absolute;top:-5px;right:-5px;"><img src="images/colse.jpg" style="height:22px;"/></div>
 </div>
 
-<div class="alldiv anliDiv" style="display:none;width:100%;border:1px #999999 solid;height:auto;background: #fbfbfb;margin-top:30px;margin-bottom: 30px;overflow: hidden;">
+<div class="alldiv2 anliDiv2" style="display:none;width:100%;border:1px #999999 solid;height:auto;background: #fbfbfb;margin-top:30px;margin-bottom: 30px;overflow: hidden;">
 	<div style="padding:30px;font-size:14px;color:#333333;">
 		<div style="width:100%;height:48px;">
 			<div style="width:100px;height:48px;line-height: 48px;float:left;">案例主题&nbsp;:</div>
-			<div style="width:400px;height:48px;line-height: 48px;float:left;"><input style="width:400px;height:48px;padding:6px;color:#333333;text-align: left;" disabled="disabled" placeholder="请填写案例主题" type="text" /> </div>
+			<div style="width:400px;height:48px;line-height: 48px;float:left;"><input class="ttile" style="cursor:not-allowed;width:400px;height:48px;padding:6px;color:#333333;text-align: left;" disabled="disabled" placeholder="请填写案例主题" type="text" /> </div>
 			<div style="width:100px;height:48px;line-height: 48px;float:left;"></div>
 		</div>
 		<div style="width:100%;margin-top:30px;height:48px;">
 			<div style="width:100px;height:48px;line-height: 48px;float:left;">品牌&nbsp;:</div>
-			<div style="width:200px;height:48px;line-height: 48px;float:left;"><input style="width:200px;height:48px;padding:6px;color:#333333;text-align: left;" disabled="disabled" placeholder="请填写品牌" type="text" /> </div>
+			<div style="width:200px;height:48px;line-height: 48px;float:left;"><input class="tbrand" style="cursor:not-allowed;width:200px;height:48px;padding:6px;color:#333333;text-align: left;" disabled="disabled" placeholder="请填写品牌" type="text" /> </div>
 			<div style="width:60px;height:48px;line-height: 48px;float:left;margin-left:30px;">行业&nbsp;:</div>
-			<div style="width:200px;height:48px;line-height: 48px;float:left;"><input style="width:200px;height:48px;padding:6px;color:#333333;text-align: left;" disabled="disabled" placeholder="请填写品牌" type="text" /> </div>
+			<div style="width:200px;height:48px;line-height: 48px;float:left;"><input class="thangye" style="cursor:not-allowed;width:200px;height:48px;padding:6px;color:#333333;text-align: left;" disabled="disabled" placeholder="请填写品牌" type="text" /> </div>
 			<div style="width:60px;height:48px;line-height: 48px;float:left;margin-left:30px;">产品&nbsp;:</div>
-			<div style="width:200px;height:48px;line-height: 48px;float:left;"><input style="width:200px;height:48px;padding:6px;color:#333333;text-align: left;" disabled="disabled" placeholder="请填写品牌" type="text" /> </div>
+			<div style="width:200px;height:48px;line-height: 48px;float:left;"><input class="tproduct" style="cursor:not-allowed;width:200px;height:48px;padding:6px;color:#333333;text-align: left;" disabled="disabled" placeholder="请填写品牌" type="text" /> </div>
 		</div>
 		<div style="width:100%;margin-top:30px;height:75px;">
 			<div style="width:100px;height:60px;line-height: 18px;float:left;">案例描述&nbsp;:</div>
-			<div style="width:980px;float:left;"><input style="width:980px;height:75px;color:#333333;padding: 0 10px 43px;text-align: left;" disabled="disabled" placeholder="请填写案例描述" type="text" /> </div>
+			<div style="width:980px;float:left;"><input class="tdesc" style="width:980px;height:75px;color:#333333;padding: 0 10px 43px;text-align: left;" disabled="disabled" placeholder="请填写案例描述" type="text" /> </div>
 		</div>
 		<div style="width:100%;margin-top:30px;height:98px;">
 			<div style="width:100px;height:96px;line-height: 18px;float:left;line-height: 96px;">案例置顶图&nbsp;:</div>
 			<div style="float:left;width:96px;height:96px;border:1px #dfdfdf solid;">
 				<div class="uploadClickClass" style="width:100%;height:100%;cursor: pointer;">
-					<div style="width:100%;height:100%;"><img id="uploadImageImg2" style="width:96px;height:96px;" src="images/addImage.png" /></div>
+					<div style="width:100%;height:100%;"><img class="uploadImageImg2" style="width:96px;height:96px;" src="images/addImage.png" /></div>
 				</div>
-				<input id="uploadImageInput2" onchange="ajaxFileUploadImage(2)" accept="image/*" name="files" class="uploadClass" type="file" style="display:none;"/>
 			</div>
 			<div style="width:100px;height:96px;line-height: 18px;float:left;line-height: 96px;margin-left:25px;">自媒体弹窗&nbsp;:</div>
 			<div id="wrap2" class="wrap2" attrCount="3">
@@ -611,17 +712,7 @@ function searchPublish(){
 				 </div>
 				<div class="puzzle_card" id="puzzle_card2">
 					<div class="showbox" id="showbox2">
-					  <ul id="article_pic_slider">
-					  	<li>
-					  		<div style="width: 200px; float: left; height: 96px; position: relative; display: block;" class="addZiMeiTiSub" attrid="2794432">
-								<div style="width:96px;height:96px;float:left;"><img src="http://61.129.51.62:8080/GhWemediaWar//images/2300/201612021234profilePhoto652508343044804040.jpg" style="width:96px;height:96px;" id="mtImage"></div>
-								<div style="float:left;width:100px;height:96px;">
-									<div style="margin-top:12px;margin-left:15px;width:90px;height:16px;overflow: hidden;line-height:16px;color:black;font-weight: bold;font-size:14px;" id="mtName">冷姿君</div>
-									<div style="margin-top:6px;margin-left:15px;width:70px;height:18px;overflow: hidden;color:#333333;font-size:12px;" id="mtPlatform">秒拍</div>
-									<div style="margin-top:6px;margin-left:15px;width:70px;height:33px;overflow: hidden;color:#333333;font-size:12px;">粉丝数：<br><span id="mtFancount">2612000</span></div>
-								</div>
-							</div>
-					  	</li>
+					  <ul id="article_pic_slider" class="article_pic_slider">
 					  </ul>
 					</div>
 				</div>
@@ -630,21 +721,23 @@ function searchPublish(){
 		        </div>
 			</div>
 		</div>
-		<div style="width:100%;margin-top:30px;height:98px;">
+		<div class="canliImageDis" style="width:100%;margin-top:30px;height:98px;">
 			<div style="width:100px;height:96px;line-height: 18px;float:left;"><div style="width:100%;margin-top:25px;">案例照片&nbsp;:</div><div style="font-size:12px;">(可上传多张)</div></div>
-			<div class="canliImageDis" style="float: left; width: 96px; height: 96px; border: 1px solid rgb(223, 223, 223); margin-right: 20px; position: relative; display: block;">
-				<div style="width:100%;height:100%;cursor: pointer;" class="uploadClickClass">
-					<div style="width:100%;height:100%;"><img src="/ghplat/attachment/temp/201705181258329762.jpg" style="width:96px;height:96px;" class="imageShowDiv"></div>
-				</div>
-			</div>
-			<div class="canliImageDis" style="float: left; width: 96px; height: 96px; border: 1px solid rgb(223, 223, 223); margin-right: 20px; position: relative; display: block;">
-				<div style="width:100%;height:100%;cursor: pointer;" class="uploadClickClass">
-					<div style="width:100%;height:100%;"><img src="/ghplat/attachment/temp/201705181258329762.jpg" style="width:96px;height:96px;" class="imageShowDiv"></div>
-				</div>
+		</div>
+	</div>
+</div>
+<div  class="anliImageTempl" style="display:none;">
+	<div style="float: left; width: 215px; height: 96px; border: 1px solid rgb(223, 223, 223); margin-right: 20px; position: relative; display: block;">
+		<div style="width:96px;height:96px;cursor: pointer;float:left;" class="uploadClickClass">
+			<div style="width:100%;height:100%;"><img class="tanliImage" src="/ghplat/attachment/temp/201705211144044915.jpg" style="width:96px;height:96px;" class="imageShowDiv"></div>
+		</div>
+		<div style="width:114px;height:96px;float:left;">
+			<div style="margin-top:6px;height:24px;"><input class="tanliTitle" disabled="disabled" style="cursor:not-allowed;padding:2px;color:#333333;text-align: left;width:110px;height:24px;" placeholder="填写图片的标题" class="cimageTitle"></div>
+			<div style="margin-top:8px;margin-left:5px;">
+				<textarea class="tanliDetails" cols="3" disabled="disabled" rows="20" style="font-size:14px;padding:2px;color:#333333;text-align: left;width:110px;height:50px;cursor:not-allowed;" class="cimageDetails" placeholder="填写图片的描述"></textarea>
 			</div>
 		</div>
 	</div>
 </div>
-
 </body>
 </html>

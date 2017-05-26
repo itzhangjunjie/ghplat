@@ -293,7 +293,7 @@ a:link {color: #707070}
 		</div>
 		<div class="header">
 			<ul class="menu">
-				<li class="current first"><a href="../index">首页</a></li>
+				<li><a href="../index">首页</a></li>
 				<li><a href="../getPublish">案例</a></li>
 				<li><a href="http://www.17sucai.com/">媒介合作</a></li>
 				<li><a class="noclick" href="http://www.17sucai.com/">关于我们</a></li>
@@ -311,7 +311,7 @@ a:link {color: #707070}
 				<div style="float:left;"><img src="images/login.png" style="width:25px;" /></div>
 				<div class="hoverFont" style="float:left;margin-left:10px;color:#333333;font-size:14px;line-height: 25px;">${sessionScope.user.username}</div>
 				<c:if test="${sessionScope.type=='自媒体' }">
-					<a href="../caselist"><div class="hoverFont" style="float:left;margin-left:15px;color:#333333;font-size:16px;line-height: 23px;">管理发布</div></a>
+					<a href="../addCase"><div class="hoverFont" style="float:left;margin-left:15px;color:#333333;font-size:16px;line-height: 23px;">管理发布</div></a>
 				</c:if>
 				<div onclick="exit()" class="hoverFont" style="float:left;margin-left:15px;color:#333333;font-size:14px;line-height: 25px;">退出</div>
 			</div>

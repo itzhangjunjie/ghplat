@@ -7,6 +7,7 @@ import com.gh.dto.CaseDTO;
 import com.gh.dto.PublishForm;
 import com.gh.dto.PublishTypeDTO;
 import com.gh.model.Case;
+import com.gh.model.CaseDetails;
 import com.gh.model.Media;
 import com.gh.model.Publish;
 import com.gh.util.PageList;
@@ -34,7 +35,7 @@ public interface IPublishService {
 	/**
 	 * 获取自媒体的案例列表
 	 */
-	List<CaseDTO> getCaseList(PublishForm publishForm)throws Exception;
+	PageList<CaseDetails> getCaseList(PublishForm publishForm)throws Exception;
 
 	void saveCase(Case caseObj, String imageArray, String publishArray,String beforeUrl) throws Exception;
 

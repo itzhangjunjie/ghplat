@@ -111,7 +111,7 @@ public class PublishServiceImpl implements IPublishService{
 		String hql = "from Publish gp where 1=1 ";
 		if(publishForm!=null){
 			if(publishForm.getPublishType()!=0){
-				hql = hql +" and gp.publishType = "+publishForm.getPublishType();
+				hql = hql +" and gp.publishTypeObj.publishFieldId = "+publishForm.getPublishType();
 			}
 			if(publishForm.getPublishField()!=null){
 				hql = hql +" and gp.publishField = '"+ publishForm.getPublishField()+"'";
@@ -252,44 +252,64 @@ public class PublishServiceImpl implements IPublishService{
 	}
 	@Resource
 	private IBaseDao<Case> baseCaseDao;
+	@Resource
+	private IBaseDao<CaseDetails> baseCaseDetailsDao;
 	@Override
-	public List<CaseDTO> getCaseList(PublishForm publishForm) throws Exception {
-		String hql ="from Case case where 1=1 ";
+	public PageList<CaseDetails> getCaseList(PublishForm publishForm) throws Exception {
+		String hql ="from CaseDetails caseDetails where 1=1 ";
 		if(publishForm!=null){
 			if(publishForm.getPublishStatus()!=null){
-				hql = hql +" and case.case_status= '"+publishForm.getPublishStatus()+"' ";
+				hql = hql +" and caseDetails.caseObj.case_status= '"+publishForm.getPublishStatus()+"' ";
 			}
 			if(publishForm.getMediaId()!=0){
-				hql = hql +" and case.media_id= "+publishForm.getMediaId();
+				hql = hql +" and caseDetails.caseObj.media_id= "+publishForm.getMediaId();
+			}
+			if(publishForm.getPublishId()!=0){
+				hql = hql +" and caseDetails.publish.id = "+publishForm.getPublishId();
 			}
 		}
-		hql = hql +" order by case.case_publish_time desc";
-		PageList<Case> resultPage = this.baseCaseDao.findPageList(hql, publishForm.getPageSize(), publishForm.getPageCount());
-		List<Long> caseIds = new ArrayList<Long>();
-		List<CaseDTO> caseDTOs = new ArrayList<CaseDTO>();
-		for(Case caseObj:resultPage.getList()){
-			CaseDTO cdto = new CaseDTO();
-			cdto.setCaseObj(caseObj);
-			caseIds.add(caseObj.getCase_id());
-			caseDTOs.add(cdto);
+		hql = hql +" order by caseDetails.caseObj.case_publish_time desc";
+		PageList<CaseDetails> resultPage = this.baseCaseDetailsDao.findPageList(hql, publishForm.getPageSize(), publishForm.getPageCount());
+		System.out.println(resultPage.getList().get(0).getCaseObj().getCaseImageList().size());
+		//PageList<Case> resultPage = this.baseCaseDao.findPageList(hql, publishForm.getPageSize(), publishForm.getPageCount());
+		String caseIdStr = "";
+		for(CaseDetails caseDetailsObj:resultPage.getList()){
+			caseIdStr = caseIdStr+caseDetailsObj.getCaseObj().getCase_id()+",";
 		}
-		
-		String phql ="from CaseDetails cd where cd.caseId in (?) ";
-		List<Publish> plist = this.baseDao.findList(phql, caseIds);
-		
-		String cimaghql = "from CaseImage ci where ci.caseId in (?)";
-		List<CaseImage> pImagelist = this.baseDao.findList(cimaghql, caseIds);
-		
-		
-		for(CaseDTO caseDto:caseDTOs){
-			for(Publish pb:plist){
-				if(pb.getId()==caseDto.getCaseObj().getCase_id()){
-					
+		if(!caseIdStr.equals("")){
+			caseIdStr = caseIdStr.substring(0,caseIdStr.length()-1);
+		}
+		String phql ="from CaseDetails cd where cd.caseObj.case_id in ("+caseIdStr+") ";
+		List<CaseDetails> resultPage2 = this.baseCaseDetailsDao.findList(phql);
+		if(resultPage.getList().size()>0){
+			for(CaseDetails caseDetailsObj:resultPage.getList()){
+				if(resultPage2.size()>0){
+					List<Publish> childPublish = new ArrayList<Publish>();
+					for(CaseDetails ccaseDetailsObj:resultPage2){
+						if(ccaseDetailsObj.getCaseObj().getCase_id()==caseDetailsObj.getCaseObj().getCase_id()){
+							childPublish.add(ccaseDetailsObj.getPublish());
+						}
+					}
+					caseDetailsObj.getCaseObj().setChildPublish(childPublish);
 				}
 			}
 		}
-		System.out.println(plist.size());
-		return null;
+//		String phql ="from CaseDetails cd where cd.caseId in (?) ";
+//		List<Publish> plist = this.baseDao.findList(phql, caseIds);
+//		
+//		String cimaghql = "from CaseImage ci where ci.caseId in (?)";
+//		List<CaseImage> pImagelist = this.baseDao.findList(cimaghql, caseIds);
+//		
+//		
+//		for(CaseDTO caseDto:caseDTOs){
+//			for(Publish pb:plist){
+//				if(pb.getId()==caseDto.getCaseObj().getCase_id()){
+//					
+//				}
+//			}
+//		}
+//		System.out.println(plist.size());
+		return resultPage;
 	}
 	@Resource
 	private IBaseDao<CaseImage> baseCaseImage;
@@ -320,9 +340,15 @@ public class PublishServiceImpl implements IPublishService{
 			for (Object obj : publishja) {
 				JSONObject jsonObject = (JSONObject) obj;
 				CaseDetails cd = new CaseDetails();
-				cd.setPublishId(jsonObject.getLong("publishId"));
+				Publish publish = new Publish();
+				publish.setId(jsonObject.getLong("publishId"));
+				cd.setPublish(publish);
+//				cd.setPublishId(jsonObject.getLong("publishId"));
 				cd.setPublishType(jsonObject.getString("publishType"));
-				cd.setCaseId(caseId);
+				Case caseObjj = new Case();
+				caseObjj.setCase_id(caseId);
+				cd.setCaseObj(caseObjj);
+//				cd.setCaseId(caseId);
 				cd.setGhid(UUID.randomUUID().toString().replace("-", ""));
 				baseCaseDetails.save(cd);
 			}

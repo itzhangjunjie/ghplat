@@ -2,11 +2,15 @@ package com.gh.model;
 
 import java.util.Date;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
@@ -14,6 +18,12 @@ import javax.persistence.Table;
 @Table(name="GH_publish")
 @SequenceGenerator(name="publish_seq",sequenceName="SEQ_PUBLISH_ID")  
 public class Publish {
+	
+	@JoinColumn(name="PUBLISH_TYPE")
+	@ManyToOne(targetEntity=PublishType.class,cascade=CascadeType.ALL)
+	private PublishType publishTypeObj;
+	
+	
 	@Id
     @Column(name = "PUBLISH_ID")
     @GeneratedValue(strategy=GenerationType.SEQUENCE,generator="publish_seq")
@@ -22,8 +32,8 @@ public class Publish {
 	private String ghid;//标识符
 	@Column(name="MEDIA_ID")
 	private long mediaId;//供应商标识
-	@Column(name="PUBLISH_TYPE")
-	private String publishType;//类型
+//	@Column(name="PUBLISH_TYPE")
+//	private String publishType;//类型
 	@Column(name="PUBLISH_NAME")
 	private String publishName;//名称
 	@Column(name="PUBLISH_FIELD")
@@ -129,6 +139,12 @@ public class Publish {
 	@Column(name="PRICE_20")
 	private String price20;
 	
+	public PublishType getPublishTypeObj() {
+		return publishTypeObj;
+	}
+	public void setPublishTypeObj(PublishType publishTypeObj) {
+		this.publishTypeObj = publishTypeObj;
+	}
 	public long getId() {
 		return id;
 	}
@@ -279,12 +295,12 @@ public class Publish {
 	public void setPrice05(String price05) {
 		this.price05 = price05;
 	}
-	public String getPublishType() {
-		return publishType;
-	}
-	public void setPublishType(String publishType) {
-		this.publishType = publishType;
-	}
+//	public String getPublishType() {
+//		return publishType;
+//	}
+//	public void setPublishType(String publishType) {
+//		this.publishType = publishType;
+//	}
 	
 	public String getInfo06() {
 		return info06;
@@ -466,12 +482,12 @@ public class Publish {
 	public void setPrice20(String price20) {
 		this.price20 = price20;
 	}
-	@Override
-	public String toString() {
-		return "Publish [publishType=" + publishType + ", publishName=" + publishName + ", publishField=" + publishField
-				+ ", publishRegion=" + publishRegion + ", followCount=" + followCount + ", image=" + image
-				+ ", platformName=" + platformName + ", platformFans=" + platformFans + "]";
-	}
+//	@Override
+//	public String toString() {
+//		return "Publish [publishType=" + publishType + ", publishName=" + publishName + ", publishField=" + publishField
+//				+ ", publishRegion=" + publishRegion + ", followCount=" + followCount + ", image=" + image
+//				+ ", platformName=" + platformName + ", platformFans=" + platformFans + "]";
+//	}
 	
 
 }

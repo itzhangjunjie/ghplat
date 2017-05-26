@@ -127,6 +127,7 @@ function getPublishList(gpagesize){
 </script>
 </head>
 <body style="padding:0px;margin:0px;">
+<input type="hidden" value="1" id="headType" />
 	<%@include file="header.jsp" %>
 		<div style="width:100%;background:rgb(242,242,242);height:auto; ">
 			<div style="width:1200px;margin:0 auto;">
@@ -260,8 +261,8 @@ function getPublishList(gpagesize){
 				<script id="publishTmp" type="text/x-dot-template">
 					{{for(var i=0;i<it.length;i++){ }} 
 						<div style="float:left;{{? (i+6)%5!=0}} margin-right:37px;{{?}}width:210px;height:330px;position: relative;background: white;margin-top:4px;{{? i>4}} margin-top:25px; {{?}}">
-							<div style="margin:0 auto;padding-top:30px;padding-left:25px;padding-right:25px;width:160px;height:180px;">
-								<img src="http://61.129.51.62:8080/GhWemediaWar/{{=it[i].image}}" width="160px" height="180px" />
+							<div style="margin:0 auto;padding-top:30px;padding-left:25px;padding-right:25px;width:160px;height:180px;cursor:pointer;">
+								<a href="../caselist?publishId={{=it[i].id}}"><img src="http://61.129.51.62:8080/GhWemediaWar/{{=it[i].image}}" width="160px" height="180px" /></a>
 							</div>
 							<div style="width:160px;margin:0 auto;font-size:14px;color:#333333;margin-top:10px;">{{=it[i].publishName}}</div>
 							<div style="width:160px;margin:0 auto;margin-top:10px;color:#333333;height:20px;">

@@ -14,6 +14,7 @@ public class PublishForm {
 	private String price;//价格的筛选  1是5000一下   2是5000-8000 3是8000以上
 	private long mediaId;//媒体id
 	private String publishName;//媒体的
+	private long publishId;//媒体id
 	
 	
 	public int getPageCount() {
@@ -87,6 +88,12 @@ public class PublishForm {
 	}
 	public void setPrice(String price) {
 		this.price = price;
+	}
+	public long getPublishId() {
+		return publishId;
+	}
+	public void setPublishId(long publishId) {
+		this.publishId = publishId;
 	}
 	
 }

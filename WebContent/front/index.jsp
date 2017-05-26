@@ -11,6 +11,7 @@
 
 </head>
 <body style="padding:0px;margin:0px;">
+<input type="hidden" value="0" id="headType" />
 	<%@include file="header.jsp" %>
 		<div style="width:100%;margin:0 auto;">
 			<div id="demo01" class="flexslider">

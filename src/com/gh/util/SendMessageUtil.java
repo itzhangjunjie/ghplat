@@ -20,7 +20,7 @@ public class SendMessageUtil {
 	}
 	
 	public static void main(String[] args) {
-		sendMessage("【勾画科技】1230", "17602145918");
+		sendMessage("【勾画互动】1230", "17602145918");
 	}
 	
 }

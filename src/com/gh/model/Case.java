@@ -1,19 +1,44 @@
 package com.gh.model;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 @Entity
 @Table(name="GH_CASE")
 @SequenceGenerator(name="case_seq",sequenceName="SEQ_CASE_ID")
 public class Case {
+	
+	
+	 /*
+     * cascade：为级联操作，里面有级联保存，级联删除等，all为所有 
+     * fetch：加载类型，有lazy和eager二种，
+     *   eager为急加载，意为立即加载，在类加载时就加载，lazy为慢加载，第一次调用的时候再加载，由于数据量太大，onetomany一般为lazy
+     * mappedBy：这个为manytoone中的对象名，这个不要变哦
+     * Set<role>：这个类型有两种，一种为list另一种为set
+     * 
+     *
+     */
+    @OneToMany(cascade=CascadeType.ALL,fetch=FetchType.LAZY)
+    @JoinColumn(name="CASE_ID")
+	private List<CaseImage> caseImageList;
+    
+    @Transient
+    private List<Publish> childPublish=new ArrayList<Publish>();
+	
 	@Id
     @Column(name = "CASE_ID")
     @GeneratedValue(strategy=GenerationType.SEQUENCE,generator="case_seq")
@@ -47,6 +72,12 @@ public class Case {
 	@Column(name="image")
 	private String image;//案例主题
 	
+	public List<Publish> getChildPublish() {
+		return childPublish;
+	}
+	public void setChildPublish(List<Publish> childPublish) {
+		this.childPublish = childPublish;
+	}
 	public long getCase_id() {
 		return case_id;
 	}
@@ -136,6 +167,12 @@ public class Case {
 	}
 	public void setImage(String image) {
 		this.image = image;
+	}
+	public List<CaseImage> getCaseImageList() {
+		return caseImageList;
+	}
+	public void setCaseImageList(List<CaseImage> caseImageList) {
+		this.caseImageList = caseImageList;
 	}
 
 	

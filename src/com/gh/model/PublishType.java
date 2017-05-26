@@ -6,14 +6,15 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name="GH_publish_type")
+@Table(name="DIC_PUBLISH_TYPE")
 public class PublishType {
 
 	@Id
-	@Column(name="PUBLISH_FIELD_ID")
+	@Column(name="PUBLISH_TYPE_ID")
 	private String publishFieldId;//发布领域标识
-	@Column(name="PUBLISH_FIELD_NAME")
+	@Column(name="PUBLISH_TYPE_NAME")
 	private String publishFieldName;//发布领域
+	
 	
 	public String getPublishFieldId() {
 		return publishFieldId;

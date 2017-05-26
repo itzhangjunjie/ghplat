@@ -129,14 +129,14 @@ public class PublishController extends BaseControllerSupport{
 	@RequestMapping(value = "/caselist", method = {RequestMethod.GET})
 	public String caselist(PublishForm publishForm,HttpServletRequest request){
 		try {
-			Media media = (Media)request.getSession().getAttribute("user");
-			if(media==null){
-				return "redirect:index";
-			}else{
+			long publishId = Long.parseLong(request.getParameter("publishId"));
+			publishForm.setPublishId(publishId);
+			if(request.getSession().getAttribute("user")!=null){
+				Media media = (Media)request.getSession().getAttribute("user");
 				publishForm.setMediaId(media.getMediaId());
-				List<CaseDTO> caseList = publishService.getCaseList(publishForm);
-				request.setAttribute("caseList", caseList);
 			}
+			PageList<CaseDetails> caseList = publishService.getCaseList(publishForm);
+			request.setAttribute("caseList", caseList);
 		}catch(Exception e){
 			e.printStackTrace();
 		}
