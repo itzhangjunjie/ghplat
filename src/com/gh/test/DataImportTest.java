@@ -21,10 +21,14 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.gh.controller.BaseControllerSupport;
 import com.gh.dto.PublishForm;
 import com.gh.dto.PublishTypeDTO;
+import com.gh.model.Case;
 import com.gh.service.IPublishService;
+import com.gh.util.PageList;
 
+import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 @RunWith(SpringJUnit4ClassRunner.class)  //使用junit4进行测试  
@@ -46,8 +50,12 @@ public class DataImportTest {
 //				System.out.println(pt.getPublishFieldList().size()+"||"+pt.getPublishName());
 //			}
 			PublishForm pf = new PublishForm();
-			pf.setMediaId(1);
-			publishService.getCaseList(pf);
+			pf.setMediaId(2207);
+//			publishService.getCaseList(pf);
+			
+			pf.setPublishStatus("1");
+			PageList<Case> resultPage = publishService.getCaseStr(pf);
+			System.out.println(resultPage.getList().size());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

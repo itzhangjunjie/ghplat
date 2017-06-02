@@ -271,7 +271,6 @@ public class PublishServiceImpl implements IPublishService{
 		hql = hql +" order by caseDetails.caseObj.case_publish_time desc";
 		PageList<CaseDetails> resultPage = this.baseCaseDetailsDao.findPageList(hql, publishForm.getPageSize(), publishForm.getPageCount());
 		System.out.println(resultPage.getList().get(0).getCaseObj().getCaseImageList().size());
-		//PageList<Case> resultPage = this.baseCaseDao.findPageList(hql, publishForm.getPageSize(), publishForm.getPageCount());
 		String caseIdStr = "";
 		for(CaseDetails caseDetailsObj:resultPage.getList()){
 			caseIdStr = caseIdStr+caseDetailsObj.getCaseObj().getCase_id()+",";
@@ -294,23 +293,51 @@ public class PublishServiceImpl implements IPublishService{
 				}
 			}
 		}
-//		String phql ="from CaseDetails cd where cd.caseId in (?) ";
-//		List<Publish> plist = this.baseDao.findList(phql, caseIds);
-//		
-//		String cimaghql = "from CaseImage ci where ci.caseId in (?)";
-//		List<CaseImage> pImagelist = this.baseDao.findList(cimaghql, caseIds);
-//		
-//		
-//		for(CaseDTO caseDto:caseDTOs){
-//			for(Publish pb:plist){
-//				if(pb.getId()==caseDto.getCaseObj().getCase_id()){
-//					
-//				}
-//			}
-//		}
-//		System.out.println(plist.size());
 		return resultPage;
 	}
+	
+	
+	@Override
+	public PageList<Case> getCaseStr(PublishForm publishForm) throws Exception {
+		String hql ="from Case acase where 1=1 ";
+		if(publishForm!=null){
+			if(publishForm.getPublishStatus()!=null){
+				hql = hql +" and acase.case_status= '"+publishForm.getPublishStatus()+"' ";
+			}
+			if(publishForm.getMediaId()!=0){
+				hql = hql +" and acase.media_id= "+publishForm.getMediaId();
+			}
+		}
+		hql = hql +" order by acase.case_publish_time desc";
+		PageList<Case> resultPage = this.baseCaseDetailsDao.findPageList(hql, publishForm.getPageSize(), publishForm.getPageCount());
+		System.out.println(resultPage.getList().size());
+		String caseIdStr = "";
+		for(Case acase:resultPage.getList()){
+			caseIdStr = caseIdStr+acase.getCase_id()+",";
+		}
+		if(!caseIdStr.equals("")){
+			caseIdStr = caseIdStr.substring(0,caseIdStr.length()-1);
+		}
+		String phql ="from CaseDetails cd where cd.caseObj.case_id in ("+caseIdStr+") ";
+		List<CaseDetails> resultPage2 = this.baseCaseDetailsDao.findList(phql);
+		if(resultPage.getList().size()>0){
+			for(Case caseObj:resultPage.getList()){
+				if(resultPage2.size()>0){
+					List<Publish> childPublish = new ArrayList<Publish>();
+					for(CaseDetails ccaseDetailsObj:resultPage2){
+						if(ccaseDetailsObj.getCaseObj().getCase_id()==caseObj.getCase_id()){
+							childPublish.add(ccaseDetailsObj.getPublish());
+						}
+					}
+					caseObj.setChildPublish(childPublish);
+				}
+			}
+		}
+		return resultPage;
+	}
+	
+	
+	
 	@Resource
 	private IBaseDao<CaseImage> baseCaseImage;
 	@Resource
@@ -319,6 +346,7 @@ public class PublishServiceImpl implements IPublishService{
 	@Override
 	public void saveCase(Case caseObj, String imageArray, String publishArray,String beforeUrl) throws Exception {
 		long caseId = this.baseCaseDao.save(caseObj);
+		caseObj.setCase_id(caseId);
 		if(imageArray!=null){
 			JSONArray imageja = JSONArray.fromObject(imageArray);
 			for (Object obj : imageja) {
@@ -342,14 +370,14 @@ public class PublishServiceImpl implements IPublishService{
 				CaseDetails cd = new CaseDetails();
 				Publish publish = new Publish();
 				publish.setId(jsonObject.getLong("publishId"));
+//				PublishType publishTypeObj =  new PublishType();
+//				publishTypeObj.setPublishFieldId(publishFieldId);
+//				publish.setPublishTypeObj(publishTypeObj);
 				cd.setPublish(publish);
-//				cd.setPublishId(jsonObject.getLong("publishId"));
 				cd.setPublishType(jsonObject.getString("publishType"));
-				Case caseObjj = new Case();
-				caseObjj.setCase_id(caseId);
-				cd.setCaseObj(caseObjj);
-//				cd.setCaseId(caseId);
+				cd.setCaseObj(caseObj);
 				cd.setGhid(UUID.randomUUID().toString().replace("-", ""));
+				System.out.println(cd.toString());
 				baseCaseDetails.save(cd);
 			}
 		}

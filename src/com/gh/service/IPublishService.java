@@ -36,7 +36,15 @@ public interface IPublishService {
 	 * 获取自媒体的案例列表
 	 */
 	PageList<CaseDetails> getCaseList(PublishForm publishForm)throws Exception;
+	
+	/**
+	 * 获取自媒体的案例列表
+	 */
+	PageList<Case> getCaseStr(PublishForm publishForm)throws Exception;
 
+	/**
+	 * 保存案例
+	 */
 	void saveCase(Case caseObj, String imageArray, String publishArray,String beforeUrl) throws Exception;
 
 }

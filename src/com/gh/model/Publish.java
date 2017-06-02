@@ -5,6 +5,7 @@ import java.util.Date;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -19,15 +20,19 @@ import javax.persistence.Table;
 @SequenceGenerator(name="publish_seq",sequenceName="SEQ_PUBLISH_ID")  
 public class Publish {
 	
-	@JoinColumn(name="PUBLISH_TYPE")
-	@ManyToOne(targetEntity=PublishType.class,cascade=CascadeType.ALL)
-	private PublishType publishTypeObj;
 	
 	
 	@Id
     @Column(name = "PUBLISH_ID")
     @GeneratedValue(strategy=GenerationType.SEQUENCE,generator="publish_seq")
 	private long id;
+	
+	
+	@JoinColumn(name="PUBLISH_TYPE")
+	@ManyToOne(targetEntity=PublishType.class)
+	private PublishType publishTypeObj =  new PublishType();
+	
+	
 	@Column(name="GHID")
 	private String ghid;//标识符
 	@Column(name="MEDIA_ID")
@@ -482,12 +487,16 @@ public class Publish {
 	public void setPrice20(String price20) {
 		this.price20 = price20;
 	}
-//	@Override
-//	public String toString() {
-//		return "Publish [publishType=" + publishType + ", publishName=" + publishName + ", publishField=" + publishField
-//				+ ", publishRegion=" + publishRegion + ", followCount=" + followCount + ", image=" + image
-//				+ ", platformName=" + platformName + ", platformFans=" + platformFans + "]";
-//	}
+	@Override
+	public String toString() {
+		return "Publish [id=" + id + ", publishTypeObj=" + publishTypeObj + ", ghid=" + ghid + ", mediaId=" + mediaId
+				+ ", publishName=" + publishName + ", publishField=" + publishField + ", publishRegion=" + publishRegion
+				+ ", publishTime=" + publishTime + ", lastViewedTime=" + lastViewedTime + ", followCount=" + followCount
+				+ ", image=" + image + ", platformName=" + platformName + ", platformFans=" + platformFans
+				+ ", powerScore=" + powerScore + ", keyword=" + keyword + ", publishStatus=" + publishStatus
+				+ ", info01=" + info01 + ", info02=" + info02 + ", info03=" + info03 + ", info04=" + info04
+				+ ", info05=" + info05 + ", price01=" + price01 + ", price02=" + price02 + ", price03=" + price03
+				+ ", price04=" + price04 + ", price05=" + price05 + "]";
+	}
 	
-
 }

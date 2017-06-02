@@ -52,6 +52,7 @@ public class UploadController extends BaseControllerSupport {
 	                if (null != file) {
 	                	String saveName = uploadImage(file, file.getOriginalFilename(),
 	                			bepath+ "/" + "temp");
+	                	System.out.println(saveName);
 	                	imageList.add("/ghplat/attachment/temp/" + saveName);
 	                }
 	            }  

@@ -18,7 +18,7 @@
 <input type="hidden" value="1" id="headType" />
 <%@include file="header.jsp" %>
 	<div style="width:100%;background:rgb(242,242,242);height:auto;overflow: hidden;">
-			<div style="width:1200px;margin:0 auto;height:48px;cursor:pointer;">
+			<div style="width:1200px;margin:0 auto;height:48px;cursor:pointer;display:none;">
 				<a href="../addCase" style="text-decoration: none;color:#333333;"><div class="hoverFont" style="border-raduis:2px;margin-top:20px;width:100px;height:25px;border:1px #333333 solid;text-align: center;line-height: 25px;float:right;">+新增案例</div></a>
 			</div>
 			<c:forEach var="caseDetailsObj" items="${caseList.list }" >

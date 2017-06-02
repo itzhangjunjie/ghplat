@@ -53,8 +53,14 @@ public class PublishController extends BaseControllerSupport{
 	@RequestMapping(value = "/addCase", method = {RequestMethod.GET})
 	public String addPublish(HttpServletRequest request){
 		try {
-			List<PublishTypeDTO> ptdto = publishService.getPublishAdd();
-			request.setAttribute("ptdto", ptdto);
+			jsonObject.clear();
+			Media media = (Media)request.getSession().getAttribute("user");
+			if(media==null){
+				return "redirect:/index";
+			}else{
+				List<PublishTypeDTO> ptdto = publishService.getPublishAdd();
+				request.setAttribute("ptdto", ptdto);
+			}
 		}catch(Exception e){
 			e.printStackTrace();
 		}
@@ -64,6 +70,7 @@ public class PublishController extends BaseControllerSupport{
 	@RequestMapping(value = "/saveCase", method = {RequestMethod.POST})
 	public @ResponseBody String addCase(HttpServletRequest request,String imageArray,String publishArray,Case caseObj){
 		try {
+			jsonObject.clear();
 			Media media = (Media)request.getSession().getAttribute("user");
 			if(media==null){
 				jsonObject.put("result", "no");
@@ -93,9 +100,63 @@ public class PublishController extends BaseControllerSupport{
 		return jsonObject.toString();
 	}
 	
+	@RequestMapping(value = "/deletePublish", method = {RequestMethod.POST})
+	public @ResponseBody String deletePublish(HttpServletRequest request,Publish publish){
+		try {
+			jsonObject.clear();
+			Media media = (Media)request.getSession().getAttribute("user");
+			if(media==null){
+				jsonObject.put("result", "no");
+				jsonObject.put("reason", "nologin");
+			}else{
+				baseService.delete(Publish.class, publish.getId());
+				jsonObject.put("result", "yes");
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return jsonObject.toString();
+	}
+	
+	@RequestMapping(value = "/updatePublish", method = {RequestMethod.POST})
+	public @ResponseBody String updatePublish(HttpServletRequest request,Publish publish,String infoArray,String priceArray){
+		try {
+			jsonObject.clear();
+			Media media = (Media)request.getSession().getAttribute("user");
+			if(media==null){
+				jsonObject.put("result", "no");
+				jsonObject.put("reason", "nologin");
+			}else{
+				
+				publish.setMediaId(media.getMediaId());
+				//publish.setPublishTime(new Date());
+				publish.setGhid(UUID.randomUUID().toString().replace("-", ""));
+				if(publish.getImage()==null){
+					jsonObject.put("result", "no");
+					jsonObject.put("reason", "noImage");
+				}else{
+					String srcImage = publish.getImage().replace("/ghplat/attachment/temp", "");
+					String beforeUrl = request.getSession().getServletContext().getRealPath("/attachment");
+					FileUtil.copyFile(beforeUrl+"/temp"+srcImage, beforeUrl+"/publish"+srcImage);
+					FileUtil.delete(beforeUrl+"/temp"+srcImage);
+					publish.setImage("/publish"+srcImage);
+				}
+				publish.setPublishStatus("1");
+				StringUtil.setPublishInfo(publish, infoArray);
+				StringUtil.setPublishPrice(publish, priceArray);
+				baseService.update(publish);
+				jsonObject.put("result", "yes");
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return jsonObject.toString();
+	}
+	
 	@RequestMapping(value = "/savePublish", method = {RequestMethod.POST})
 	public @ResponseBody String savePublish(HttpServletRequest request,Publish publish,String infoArray,String priceArray){
 		try {
+			jsonObject.clear();
 			Media media = (Media)request.getSession().getAttribute("user");
 			if(media==null){
 				jsonObject.put("result", "no");
@@ -117,6 +178,7 @@ public class PublishController extends BaseControllerSupport{
 				publish.setPublishStatus("1");
 				StringUtil.setPublishInfo(publish, infoArray);
 				StringUtil.setPublishPrice(publish, priceArray);
+				System.out.println(publish.toString());
 				baseService.save(publish);
 				jsonObject.put("result", "yes");
 			}
@@ -146,6 +208,7 @@ public class PublishController extends BaseControllerSupport{
 	@RequestMapping(value = "/getPublishStr", method = {RequestMethod.POST})
 	public @ResponseBody String getPublishStr(PublishForm publishForm,HttpServletRequest request){
 		try {
+			jsonObject.clear();
 			publishForm.setPublishStatus("1");
 			PageList<Publish> resultPage = publishService.getPublishStr(publishForm);
 			jsonObject.put("result", "yes");
@@ -162,4 +225,24 @@ public class PublishController extends BaseControllerSupport{
 		return jsonObject.toString();
 	}
 
+	@RequestMapping(value = "/getCaseStr", method = {RequestMethod.POST})
+	public @ResponseBody String getCaseStr(PublishForm publishForm,HttpServletRequest request){
+		try {
+			jsonObject.clear();
+			publishForm.setPublishStatus("1");
+			PageList<Case> resultPage = publishService.getCaseStr(publishForm);
+			jsonObject.put("result", "yes");
+			JSONArray ja = new JSONArray();
+			for(Case cs:resultPage.getList()){
+				ja.add(JSONObject.fromObject(cs,jsonConfig));
+			}
+			jsonObject.put("datas", ja);
+			jsonObject.put("pageSize", publishForm.getPageSize());
+			jsonObject.put("pageCount", resultPage.getTotal());
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return jsonObject.toString();
+	}
+	
 }

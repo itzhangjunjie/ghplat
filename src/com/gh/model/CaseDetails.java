@@ -23,14 +23,14 @@ public class CaseDetails {
 	private long caseDetailsId;//案例明细标识
 //	@Column(name = "CASE_ID")
 //	private long caseId;//案例标识
-	@ManyToOne(cascade=CascadeType.ALL, fetch=FetchType.EAGER)
+	@ManyToOne(fetch=FetchType.EAGER)
     @JoinColumn(name="CASE_ID")
 	private Case caseObj;
 	@Column(name = "GHID")
 	private String ghid;//标识符
 //	@Column(name = "PUBLISH_ID")
 //	private long publishId;//发布标识
-	@ManyToOne(cascade=CascadeType.ALL, fetch=FetchType.EAGER)
+	@ManyToOne(fetch=FetchType.EAGER)
     @JoinColumn(name="PUBLISH_ID")
 	private Publish publish;
 	
@@ -79,6 +79,11 @@ public class CaseDetails {
 	}
 	public void setPublish(Publish publish) {
 		this.publish = publish;
+	}
+	@Override
+	public String toString() {
+		return "CaseDetails [caseDetailsId=" + caseDetailsId + ", caseObj=" + caseObj.getCase_id() + ", ghid=" + ghid + ", publish="
+				+ publish.getId() + ", publishType=" + publishType + "]";
 	}
 
 	
