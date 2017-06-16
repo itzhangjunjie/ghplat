@@ -19,7 +19,7 @@ public class Advertiser {
     @Id
     @Column(name = "ADVERTISER_ID")
     @GeneratedValue(strategy=GenerationType.SEQUENCE,generator="advertiser_seq")
-    private Long advertiserId;
+    private Long id;
     @Column(name="GHID")
 	private String ghid;//标识符
     @Column(name = "INDUSTRY")
@@ -75,11 +75,12 @@ public class Advertiser {
 	public void setGhid(String ghid) {
 		this.ghid = ghid;
 	}
-	public Long getAdvertiserId() {
-		return advertiserId;
+	
+	public Long getId() {
+		return id;
 	}
-	public void setAdvertiserId(Long advertiserId) {
-		this.advertiserId = advertiserId;
+	public void setId(Long id) {
+		this.id = id;
 	}
 	public String getIndustry() {
 		return industry;
