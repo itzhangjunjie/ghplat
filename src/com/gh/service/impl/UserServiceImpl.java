@@ -78,6 +78,15 @@ public class UserServiceImpl implements IUserService{
 		}
 		return 1;
 	}
+
+
+	@Override
+	public void updateUserPassword(String mobile, String password) throws Exception {
+		String asql ="update gh_advertiser ga set ga.passwd = ? where ga.mobile = ?";
+		this.advertiserDao.executeSql(asql,StringUtil.md5(password),mobile);
+		String msql ="update gh_media gm set gm.passwd = ? where gm.mobile = ?";
+		this.mediaDao.executeSql(msql, StringUtil.md5(password),mobile);
+	}
 	
 	
 }

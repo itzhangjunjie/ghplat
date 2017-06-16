@@ -7,8 +7,34 @@
 <title>案例</title>
 <base href="/ghplat/front/">
 <script src="js/jquery-1.8.2.min.js" type="text/javascript"></script>
+<script src="js/main.js" type="text/javascript"></script>
 <script type="text/javascript">
 $(function(){
+	var offset = $("#end").offset();
+	$(document).delegate('.addCart','click',function(event){
+		var addcardId = $(this).attr('attrId');
+		var img = $(this).parent().parent().parent().find('.mtimage').attr('src');
+		var flyer = $('<img class="u-flyer" src="'+img+'">');
+		flyer.fly({
+			start: {
+				left: event.pageX,
+				top: event.pageY
+			},
+			end: {
+				left: offset.left+10,
+				top: offset.top+10,
+				width: 0,
+				height: 0
+			},
+			onEnd: function(){
+				addCart(addcardId);
+				var alen = parseInt($('.headCartCount').html())+1;
+				$('.headCartCount').html(alen);
+				this.destory();
+			}
+		});
+	});
+	
 	$('.btmcolor').click(function(){
 		$('.selectClass').removeClass('selectClass');
 		$(".btmcolor").removeClass("currentbc");
@@ -65,6 +91,9 @@ $(document).ready(function(){
 		 getPublishList(1);
 	 })
 })
+function searchStr(){
+	getPublishList(1);
+}
 function getPublishList(gpagesize){
 	var typevalue = $('.typeAllDiv').find('.currentbc').attr('attrId');
 	var fieldvalue = $('.fieldAllDiv').find('.selectClass').attr('attrId');
@@ -72,6 +101,7 @@ function getPublishList(gpagesize){
 	var platfanvalue = $('.platfanAllDiv').find('.selectClass').attr('attrId');
 	var cpricevalue = $('.cpriceAllDiv').find('.selectClass').attr('attrId');
 	var pricevalue = $('.priceAllDiv').find('.selectClass').attr('attrId');
+	var publishnameInput = $('.publishnameInput').val();
 	var datajson = {};
 	datajson.pageSize = gpagesize;
 	if(fieldvalue!=0){
@@ -79,6 +109,9 @@ function getPublishList(gpagesize){
 	}
 	if(fieldvalue!=null){
 		datajson.publishField = fieldvalue;
+	}
+	if(publishnameInput!=null&&publishnameInput!=''){
+		datajson.publishName = publishnameInput;
 	}
 	if(platvalue!=null){
 		datajson.platform = platvalue;
@@ -124,6 +157,31 @@ function getPublishList(gpagesize){
 		}
 	});
 }
+function selectAddCart(tt){
+	if($(tt).find('.selectAddCart').css('display')=='none'){
+		$(tt).find('.selectAddCart').show();
+		$(tt).find('.selectAddCart').attr('addflag','1');
+	}else{
+		$(tt).find('.selectAddCart').hide();
+		$(tt).find('.selectAddCart').attr('addflag','-1');
+	}
+	var alen = $('.selectAddCart[addflag=1]').length;
+	$('.totalAddCart').html(alen);
+}
+function allSelectAddCart(tt){
+	if($(tt).find('div').css('display')=='none'){
+		$(tt).find('div').show();
+		$('.selectAddCart').attr('addflag','1');
+		$('.selectAddCart').show();
+	}else{
+		$(tt).find('div').hide();
+		$('.selectAddCart').hide();
+		$('.selectAddCart').attr('addflag','-1');
+	}
+	var alen = $('.selectAddCart[addflag=1]').length;
+	$('.totalAddCart').html(alen);
+}
+
 </script>
 </head>
 <body style="padding:0px;margin:0px;">
@@ -227,18 +285,20 @@ function getPublishList(gpagesize){
 						</select>
 					</div>
 					<div style="border-top:1px #fc6769 solid;border-bottom:1px #fc6769 solid;width:365px;height:40px;float:left;">
-						<input type="text" placeholder="突然想起某位达人" style="border:0px;text-align:left;margin:0px;padding: 10px 10px 10px 20px;width:365px;height:40px;color:#666666;font-size:14px;"/>
+						<input type="text" class="publishnameInput" placeholder="突然想起某位达人" style="border:0px;text-align:left;margin:0px;padding: 10px 10px 10px 20px;width:365px;height:40px;color:#666666;font-size:14px;"/>
 					</div>
-					<div style="background: #fc6769;width:95px;height:42px;float:left;text-align: center;">
+					<div onclick="searchStr()" style="background: #fc6769;width:95px;height:42px;float:left;text-align: center;cursor:pointer;">
 						<img src="images/search_white.png" style="height:24px;margin-top:9px;" />
 					</div>
 				</div>
 				<div style="width:235px;height:38px;float: right;">
 					<div style="width:100px;height:42px;background: white;float:left;line-height: 42px;">
-						<div style="cursor:pointer;width:16px;height:16px;border:1px #333333 solid;float:left;margin-top:12px;margin-left:25px;"></div>
+						<div onclick="allSelectAddCart(this)" style="cursor:pointer;width:16px;height:16px;border:1px #333333 solid;float:left;margin-top:12px;margin-left:25px;position: relative;">
+							<div style="position: absolute;top:0px;left:0px;display:none;"><img src="images/check_26.png" width="100%" /></div>	
+						</div>
 						<div style="cursor:pointer;float:left;margin-left:10px;color:#333333;font-size:12px;">全选</div>
 					</div>
-					<div style="width:135px;height:42px;background: #fc6769;float:left;line-height: 38px;text-align: center;font-size:14px;color:#ffffff;">
+					<div onclick="addCartMany()" style="width:135px;height:42px;background: #fc6769;float:left;line-height: 38px;text-align: center;font-size:14px;color:#ffffff;cursor:pointer;">
 						一键加入购物车
 					</div>
 				</div>
@@ -251,30 +311,37 @@ function getPublishList(gpagesize){
 				</div>
 				<div style="width:100%;height:80px;">
 					<div style="width:1002px;height:50px;background: white;float:left;line-height: 50px;border:1px #e0dbe0 solid;boder-right:0px;font-size:14px;color:#333333;">
-						<div style="margin-left:14px;">已选择了<span style="color:#fc6769;padding-left:2px;padding-right:2px;">9</span>个项目</div>
+						<div style="margin-left:14px;">已选择了<span class="totalAddCart" style="color:#fc6769;padding-left:2px;padding-right:2px;">0</span>个项目</div>
 					</div>
 					<div style="width:196px;height:52px;background: #fc6769;float:left;cursor:pointer;">
-						<div style="float:left;width:30px;padding-top:17px;margin-left:30px;"><img src="images/tel_small.png" style="width:20px;"/></div>
-						<div style="float:left;width:108px;color:#ffffff;font-size:18px;line-height: 52px;">去购物车结算</div>
+						<div style="float:left;width:30px;padding-top:17px;margin-left:30px;"><img src="images/shopping-cart.png" style="width:20px;"/></div>
+						<div style="float:left;width:108px;color:#ffffff;font-size:18px;line-height: 52px;position: relative;">去购物车结算</div>
 					</div>
 				</div>
+<!-- 				tencent://message/?uin={{=it[i].qq}}&Site=&Menu=yes -->
 				<script id="publishTmp" type="text/x-dot-template">
 					{{for(var i=0;i<it.length;i++){ }} 
 						<div style="float:left;{{? (i+6)%5!=0}} margin-right:37px;{{?}}width:210px;height:330px;position: relative;background: white;margin-top:4px;{{? i>4}} margin-top:25px; {{?}}">
 							<div style="margin:0 auto;padding-top:30px;padding-left:25px;padding-right:25px;width:160px;height:180px;cursor:pointer;">
-								<a href="../caselist?publishId={{=it[i].id}}"><img src="http://61.129.51.62:8080/GhWemediaWar/{{=it[i].image}}" width="160px" height="180px" /></a>
+								<a href="../getPublishDetails?pghid={{=it[i].ghid}}"><img class="mtimage" src="http://61.129.51.62:8080/GhWemediaWar/{{=it[i].image}}" width="160px" height="180px" /></a>
 							</div>
-							<div style="width:160px;margin:0 auto;font-size:14px;color:#333333;margin-top:10px;">{{=it[i].publishName}}</div>
+							<div style="width:160px;margin:0 auto;font-size:14px;color:#333333;margin-top:10px;position: relative;">{{=it[i].publishName}}
+								<div style="width:40px;position:absolute;right:-15px;top:-3px;"><a href="tencent://AddContact/?fromId=45&fromSubId=1&subcmd=all&uin={{=it[i].qq}}&website=www.ghplat.com"><img width="28px" src="images/online.png"/></a></div>
+							</div>
+											
 							<div style="width:160px;margin:0 auto;margin-top:10px;color:#333333;height:20px;">
 								<div style="width:18px;height:18px;float:left;"><img src="images/fans.png" width="18px" /></div>
 								<div style="float:left;margin-left:8px;font-size:13px;line-height: 18px;">{{=it[i].platformFans}}</div>
-								<div style="width:18px;height:18px;float:right;"><img alt="{{=it[i].platformName}}" src="images/weixin.png" width="18px" /></div>
+								<div style="width:18px;height:18px;float:right;">{{? it[i].platformIcon!=null}}<img alt="{{=it[i].platformName}}" src="{{=it[i].platformIcon}}" width="18px" />{{?}}</div>
 							</div>
 							<div style="width:160px;height:1px;border-top:1px dotted #707070;margin:0 auto;margin-top:8px;"></div>
 							<div style="width:160px;margin:0 auto;height:24px;margin-top:10px;">
-								<div style="float:left;margin-top:4px;"><div style="cursor:pointer;width:16px;height:16px;border:1px #333333 solid;"></div></div>
+								<div onclick="selectAddCart(this)" style="float:left;margin-top:4px;position: relative;cursor:pointer;">
+									<div style="cursor:pointer;width:16px;height:16px;border:1px #333333 solid;"></div>
+									<div class="selectAddCart" attrId="{{=it[i].id}}" style="position: absolute;top:0px;left:0px;display:none;"><img src="images/check_26.png" width="100%" /></div>								
+								</div>
 								<div style="float:right;">
-									<div class="addCart" style="width:82px;height:24px;font-size:12px;color:#333333;line-height:23px;text-align:center;border-radius:3px;border:1px #333333 solid;cursor:pointer;">+&nbsp;加入购物车</div>
+									<div class="addCart" attrId="{{=it[i].id}}" style="width:82px;height:24px;font-size:12px;color:#333333;line-height:23px;text-align:center;border-radius:3px;border:1px #333333 solid;cursor:pointer;">+&nbsp;加入购物车</div>
 								</div>
 							</div>
 						</div>
@@ -286,33 +353,33 @@ function getPublishList(gpagesize){
 			</div>
 		</div>
 		<%@include file="footer.jsp" %>
-<div id="rightDiv" style="width:56px;right:0px;background: white;position: fixed;top:335px;right:2px;">
-	<div style="width:100%;position: relative;">
-		<div class="hoverFontb" attrstr="div1" style="cursor:pointer;width: 36px;height:36px;padding:10px;border: 1px rgb(242,242,242) solid;position: relative;">
-			<img src="images/online.png" />
-		</div>
-		<div class="div1" style="position: absolute;top:0px;right:55px;width:140px;height:57px;background: white;display:none;">
-			<div style="float:left;padding:15px;margin-left:-3px;margin-top:2px;"><img src="images/smile.png" width="25px" /></div>
-			<div style="float:left;color:#333333;font-size:14px;line-height: 56px;margin-left:-4px;">点击我咨询哦</div>
-			<div class="div" style="float:left;  font-size: 0;line-height: 0;border-width: 10px;border-color: white;border-right-width: 0; border-style: dashed;border-left-style: solid;border-top-color: transparent;border-bottom-color: transparent;position: absolute;top:19px;right:-10px;  "></div>
-		</div>
-		<div class="hoverFontb" attrstr="div2" style="cursor:pointer;width: 36px;height:36px;padding:10px;border: 1px rgb(242,242,242) solid;border-top:0px;border-bottom: 0px;"><img src="images/tel.png" /></div>
-		<div class="div2" style="position: absolute;top:58px;right:55px;width:140px;height:57px;background: white;display:none;">
-			<div style="width:100%;line-height: 57px;">
-				<img src="images/number.png" style="margin-top:15px;width:93%;margin-left:4%;" />
-			</div>
-			<div class="div" style="float:left;  font-size: 0;line-height: 0;border-width: 10px;border-color: white;border-right-width: 0; border-style: dashed;border-left-style: solid;border-top-color: transparent;border-bottom-color: transparent;position: absolute;top:19px;right:-10px;  "></div>
-		</div>
-		<div class="hoverFontb" attrstr="div3" style="cursor:pointer;width: 36px;height:36px;padding:10px;border: 1px rgb(242,242,242) solid;"><img src="images/QR-Code.png" /></div>
-		<div class="div3" style="position: absolute;top:116px;right:55px;width:140px;height:160px;background: white;display:none;">
-			<div style="width:100%;padding:10px;padding-bottom: 0px;">
-				<img src="images/erweima.jpg" style="width:120px;" />
-			</div>
-			<div style="width:100%;color:#333333;font-size:14px;text-align: center;padding-bottom: 15px;">扫一扫关注官方微信</div>
-			<div class="div" style="float:left;  font-size: 0;line-height: 0;border-width: 10px;border-color: white;border-right-width: 0; border-style: dashed;border-left-style: solid;border-top-color: transparent;border-bottom-color: transparent;position: absolute;top:19px;right:-10px;  "></div>
-		</div>
-		<div onclick="$('body').scrollTop(0)" style="cursor:pointer;width: 16px;height:16px;padding:20px;border: 1px rgb(242,242,242) solid;border-top:0px;"><img src="images/top.png" /></div>
-	</div>
-</div>
+<!-- <div id="rightDiv" style="width:56px;right:0px;background: white;position: fixed;top:335px;right:2px;"> -->
+<!-- 	<div style="width:100%;position: relative;"> -->
+<!-- 		<div class="hoverFontb" attrstr="div1" style="cursor:pointer;width: 36px;height:36px;padding:10px;border: 1px rgb(242,242,242) solid;position: relative;"> -->
+<!-- 			<img src="images/online.png" /> -->
+<!-- 		</div> -->
+<!-- 		<div class="div1" style="position: absolute;top:0px;right:55px;width:140px;height:57px;background: white;display:none;"> -->
+<!-- 			<div style="float:left;padding:15px;margin-left:-3px;margin-top:2px;"><img src="images/smile.png" width="25px" /></div> -->
+<!-- 			<div style="float:left;color:#333333;font-size:14px;line-height: 56px;margin-left:-4px;">点击我咨询哦</div> -->
+<!-- 			<div class="div" style="float:left;  font-size: 0;line-height: 0;border-width: 10px;border-color: white;border-right-width: 0; border-style: dashed;border-left-style: solid;border-top-color: transparent;border-bottom-color: transparent;position: absolute;top:19px;right:-10px;  "></div> -->
+<!-- 		</div> -->
+<!-- 		<div class="hoverFontb" attrstr="div2" style="cursor:pointer;width: 36px;height:36px;padding:10px;border: 1px rgb(242,242,242) solid;border-top:0px;border-bottom: 0px;"><img src="images/tel.png" /></div> -->
+<!-- 		<div class="div2" style="position: absolute;top:58px;right:55px;width:140px;height:57px;background: white;display:none;"> -->
+<!-- 			<div style="width:100%;line-height: 57px;"> -->
+<!-- 				<img src="images/number.png" style="margin-top:15px;width:93%;margin-left:4%;" /> -->
+<!-- 			</div> -->
+<!-- 			<div class="div" style="float:left;  font-size: 0;line-height: 0;border-width: 10px;border-color: white;border-right-width: 0; border-style: dashed;border-left-style: solid;border-top-color: transparent;border-bottom-color: transparent;position: absolute;top:19px;right:-10px;  "></div> -->
+<!-- 		</div> -->
+<!-- 		<div class="hoverFontb" attrstr="div3" style="cursor:pointer;width: 36px;height:36px;padding:10px;border: 1px rgb(242,242,242) solid;"><img src="images/QR-Code.png" /></div> -->
+<!-- 		<div class="div3" style="position: absolute;top:116px;right:55px;width:140px;height:160px;background: white;display:none;"> -->
+<!-- 			<div style="width:100%;padding:10px;padding-bottom: 0px;"> -->
+<!-- 				<img src="images/erweima.jpg" style="width:120px;" /> -->
+<!-- 			</div> -->
+<!-- 			<div style="width:100%;color:#333333;font-size:14px;text-align: center;padding-bottom: 15px;">扫一扫关注官方微信</div> -->
+<!-- 			<div class="div" style="float:left;  font-size: 0;line-height: 0;border-width: 10px;border-color: white;border-right-width: 0; border-style: dashed;border-left-style: solid;border-top-color: transparent;border-bottom-color: transparent;position: absolute;top:19px;right:-10px;  "></div> -->
+<!-- 		</div> -->
+<!-- 		<div onclick="$('body').scrollTop(0)" style="cursor:pointer;width: 16px;height:16px;padding:20px;border: 1px rgb(242,242,242) solid;border-top:0px;"><img src="images/top.png" /></div> -->
+<!-- 	</div> -->
+<!-- </div> -->
 </body>
 </html>

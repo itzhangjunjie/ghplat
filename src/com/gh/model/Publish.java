@@ -1,6 +1,8 @@
 package com.gh.model;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -14,6 +16,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 @Entity
 @Table(name="GH_publish")
@@ -27,16 +30,29 @@ public class Publish {
     @GeneratedValue(strategy=GenerationType.SEQUENCE,generator="publish_seq")
 	private long id;
 	
+	@Transient
+	private Map<String,String> priceMap = new HashMap<String,String>();//价格字段对应
+	@Transient
+	private Map<String,String> infoMap = new HashMap<String,String>();//info字段对应
+	@Transient
+	private String qq;
 	
 	@JoinColumn(name="PUBLISH_TYPE")
 	@ManyToOne(targetEntity=PublishType.class)
 	private PublishType publishTypeObj =  new PublishType();
 	
 	
+	public String getQq() {
+		return qq;
+	}
+	public void setQq(String qq) {
+		this.qq = qq;
+	}
 	@Column(name="GHID")
 	private String ghid;//标识符
 	@Column(name="MEDIA_ID")
 	private long mediaId;//供应商标识
+	
 //	@Column(name="PUBLISH_TYPE")
 //	private String publishType;//类型
 	@Column(name="PUBLISH_NAME")
@@ -55,6 +71,8 @@ public class Publish {
 	private String image;//头像
 	@Column(name="PLATFORM_NAME")
 	private String platformName;//平台名称
+	@Column(name="PLATFORM_ICON")
+	private String platformIcon;//平台的图片
 	@Column(name="PLATFORM_FANS")
 	private int platformFans;//平台粉丝数
 	@Column(name="POWER_SCORE")
@@ -144,6 +162,20 @@ public class Publish {
 	@Column(name="PRICE_20")
 	private String price20;
 	
+	
+	
+	public Map<String, String> getInfoMap() {
+		return infoMap;
+	}
+	public void setInfoMap(Map<String, String> infoMap) {
+		this.infoMap = infoMap;
+	}
+	public Map<String, String> getPriceMap() {
+		return priceMap;
+	}
+	public void setPriceMap(Map<String, String> priceMap) {
+		this.priceMap = priceMap;
+	}
 	public PublishType getPublishTypeObj() {
 		return publishTypeObj;
 	}
@@ -486,6 +518,12 @@ public class Publish {
 	}
 	public void setPrice20(String price20) {
 		this.price20 = price20;
+	}
+	public String getPlatformIcon() {
+		return platformIcon;
+	}
+	public void setPlatformIcon(String platformIcon) {
+		this.platformIcon = platformIcon;
 	}
 	@Override
 	public String toString() {

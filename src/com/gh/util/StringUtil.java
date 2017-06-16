@@ -891,6 +891,8 @@ public class StringUtil {
             	publish.setInfo04(jsonObject.getString("columnValue"));
             }else if("5".equals(key)){
             	publish.setInfo05(jsonObject.getString("columnValue"));
+            }else if("6".equals(key)){
+            	publish.setInfo06(jsonObject.getString("columnValue"));
             }
         }	
 	}
@@ -913,8 +915,113 @@ public class StringUtil {
             	publish.setPrice04(jsonObject.getString("columnValue"));
             }else if("5".equals(key)){
             	publish.setPrice05(jsonObject.getString("columnValue"));
+            }else if("6".equals(key)){
+            	publish.setPrice06(jsonObject.getString("columnValue"));
             }
         }	
+	}
+	
+	public static String getPublishPrice(Publish publish){
+		String priceStr = "";
+		//System.out.println(publish.getId()+"||"+publish.getPrice01()+"||"+publish.getPrice02()+"||"+publish.getPrice03()+"||"+publish.getPrice04()+"||");
+		if(publish.getPrice01()!=null){
+			priceStr = priceStr+"1,";
+		}
+		if(publish.getPrice02()!=null){
+			priceStr = priceStr+"2,";
+		}
+		if(publish.getPrice03()!=null){
+			priceStr = priceStr+"3,";
+		}
+		if(publish.getPrice04()!=null){
+			priceStr = priceStr+"4,";
+		}
+		if(publish.getPrice05()!=null){
+			priceStr = priceStr+"5,";
+		}
+		if(publish.getPrice06()!=null){
+			priceStr = priceStr+"6,";
+		}
+		if(publish.getPrice07()!=null){
+			priceStr = priceStr+"7,";
+		}
+		if(publish.getPrice08()!=null){
+			priceStr = priceStr+"8,";
+		}
+		return priceStr;
+	}
+	
+	public static String getPublishColumnValue(Publish publish,String position){
+		if(position.equals("1")){
+			return publish.getPrice01();
+		}else if(position.equals("2")){
+			return publish.getPrice02();
+		}else if(position.equals("3")){
+			return publish.getPrice03();
+		}else if(position.equals("4")){
+			return publish.getPrice04();
+		}else if(position.equals("5")){
+			return publish.getPrice05();
+		}else if(position.equals("6")){
+			return publish.getPrice06();
+		}else if(position.equals("7")){
+			return publish.getPrice07();
+		}else if(position.equals("8")){
+			return publish.getPrice08();
+		}
+		return null;
+	}
+
+	public static String getPublishColumnValueInfo(Publish publish,String position){
+		if(position.equals("1")){
+			return publish.getInfo01();
+		}else if(position.equals("2")){
+			return publish.getInfo02();
+		}else if(position.equals("3")){
+			return publish.getInfo03();
+		}else if(position.equals("4")){
+			return publish.getInfo04();
+		}else if(position.equals("5")){
+			return publish.getInfo05();
+		}else if(position.equals("6")){
+			return publish.getInfo06();
+		}else if(position.equals("7")){
+			return publish.getInfo07();
+		}else if(position.equals("8")){
+			return publish.getInfo08();
+		}
+		return null;
+	}
+
+
+	public static String getPublishInfo(Publish publish) {
+		String infoStr = "";
+		//System.out.println(publish.getId()+"||"+publish.getPrice01()+"||"+publish.getPrice02()+"||"+publish.getPrice03()+"||"+publish.getPrice04()+"||");
+		if(publish.getInfo01()!=null){
+			infoStr = infoStr+"1,";
+		}
+		if(publish.getInfo02()!=null){
+			infoStr = infoStr+"2,";
+		}
+		if(publish.getInfo03()!=null){
+			infoStr = infoStr+"3,";
+		}
+		if(publish.getInfo04()!=null){
+			infoStr = infoStr+"4,";
+		}
+		if(publish.getInfo05()!=null){
+			infoStr = infoStr+"5,";
+		}
+		if(publish.getInfo06()!=null){
+			infoStr = infoStr+"6,";
+		}
+		if(publish.getInfo07()!=null){
+			infoStr = infoStr+"7,";
+		}
+		if(publish.getInfo08()!=null){
+			infoStr = infoStr+"8,";
+		}
+		return infoStr;
 	}
 	
 }

@@ -1,6 +1,7 @@
 package com.gh.service.impl;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -10,6 +11,7 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 
 import com.gh.dao.IBaseDao;
+import com.gh.dto.CartListDTO;
 import com.gh.dto.CaseDTO;
 import com.gh.dto.PublishForm;
 import com.gh.dto.PublishTypeDTO;
@@ -27,6 +29,7 @@ import com.gh.model.PublishType;
 import com.gh.service.IPublishService;
 import com.gh.util.FileUtil;
 import com.gh.util.PageList;
+import com.gh.util.StringUtil;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -159,6 +162,26 @@ public class PublishServiceImpl implements IPublishService{
 		}
 		hql = hql +" order by gp.publishTime desc ";
 		PageList<Publish> resultPage = basePublishDao.findPageList(hql, publishForm.getPageSize(), publishForm.getPageCount());
+		String medias = "";
+		for(Publish publish:resultPage.getList()){
+			medias = medias+publish.getMediaId()+",";
+		}
+		if(!"".equals(medias)){
+			medias = medias.substring(0,medias.lastIndexOf(","));
+		}
+		String msql = "select gm.qq,gm.media_id from gh_media gm where gm.media_id in ("+medias+")";
+		List<Object[]> results = this.baseDao.findListBySql(msql);
+		for(Object[] obj :results){
+			Object ob = obj[1];
+			if(ob!=null){
+				for(Publish publish:resultPage.getList()){
+					if(publish.getMediaId()==Integer.parseInt(ob.toString())){
+						publish.setQq((String)obj[0]);
+						break;
+					}
+				}
+			}
+		}
 		return resultPage;
 	}
 	@Override
@@ -270,7 +293,7 @@ public class PublishServiceImpl implements IPublishService{
 		}
 		hql = hql +" order by caseDetails.caseObj.case_publish_time desc";
 		PageList<CaseDetails> resultPage = this.baseCaseDetailsDao.findPageList(hql, publishForm.getPageSize(), publishForm.getPageCount());
-		System.out.println(resultPage.getList().get(0).getCaseObj().getCaseImageList().size());
+		//System.out.println(resultPage.getList().get(0).getCaseObj().getCaseImageList().size());
 		String caseIdStr = "";
 		for(CaseDetails caseDetailsObj:resultPage.getList()){
 			caseIdStr = caseIdStr+caseDetailsObj.getCaseObj().getCase_id()+",";
@@ -279,17 +302,19 @@ public class PublishServiceImpl implements IPublishService{
 			caseIdStr = caseIdStr.substring(0,caseIdStr.length()-1);
 		}
 		String phql ="from CaseDetails cd where cd.caseObj.case_id in ("+caseIdStr+") ";
-		List<CaseDetails> resultPage2 = this.baseCaseDetailsDao.findList(phql);
-		if(resultPage.getList().size()>0){
-			for(CaseDetails caseDetailsObj:resultPage.getList()){
-				if(resultPage2.size()>0){
-					List<Publish> childPublish = new ArrayList<Publish>();
-					for(CaseDetails ccaseDetailsObj:resultPage2){
-						if(ccaseDetailsObj.getCaseObj().getCase_id()==caseDetailsObj.getCaseObj().getCase_id()){
-							childPublish.add(ccaseDetailsObj.getPublish());
+		if(!"".equals(caseIdStr)){
+			List<CaseDetails> resultPage2 = this.baseCaseDetailsDao.findList(phql);
+			if(resultPage.getList().size()>0){
+				for(CaseDetails caseDetailsObj:resultPage.getList()){
+					if(resultPage2.size()>0){
+						List<Publish> childPublish = new ArrayList<Publish>();
+						for(CaseDetails ccaseDetailsObj:resultPage2){
+							if(ccaseDetailsObj.getCaseObj().getCase_id()==caseDetailsObj.getCaseObj().getCase_id()){
+								childPublish.add(ccaseDetailsObj.getPublish());
+							}
 						}
+						caseDetailsObj.getCaseObj().setChildPublish(childPublish);
 					}
-					caseDetailsObj.getCaseObj().setChildPublish(childPublish);
 				}
 			}
 		}
@@ -382,6 +407,137 @@ public class PublishServiceImpl implements IPublishService{
 			}
 		}
 		
+	}
+
+	
+	@Override
+	public void updateCase(Case caseObj, String imageArray, String publishArray,String beforeUrl) throws Exception {
+		Case currentCase = this.baseCaseDao.getById(Case.class, caseObj.getCase_id());
+		if(caseObj.getImage().contains("/temp")){
+			String srcImage = caseObj.getImage().replace("/ghplat/attachment/temp", "");
+			FileUtil.copyFile(beforeUrl+"/temp"+srcImage, beforeUrl+"/case"+srcImage);
+			FileUtil.delete(beforeUrl+"/temp"+srcImage);
+			currentCase.setImage("/case"+srcImage);
+		}
+		currentCase.setCase_title(caseObj.getCase_title());
+		currentCase.setCase_brand(caseObj.getCase_brand());
+		currentCase.setCase_desc(caseObj.getCase_desc());
+		currentCase.setCase_Industry(caseObj.getCase_Industry());
+		currentCase.setCase_product(caseObj.getCase_product());
+		if(imageArray!=null){
+			String sql = "delete from gh_case_image gci where gci.case_id = ?";
+			baseCaseImage.executeSql(sql, currentCase.getCase_id());
+			JSONArray imageja = JSONArray.fromObject(imageArray);
+			for (Object obj : imageja) {
+				JSONObject jsonObject = (JSONObject) obj;
+				String image = jsonObject.getString("url");
+				CaseImage ci = new CaseImage();
+				if(image.contains("/temp")){
+					String srcImage = jsonObject.getString("url").replace("/ghplat/attachment/temp", "");
+					FileUtil.copyFile(beforeUrl+"/temp"+srcImage, beforeUrl+"/case"+srcImage);
+					FileUtil.delete(beforeUrl+"/temp"+srcImage);
+					ci.setImageUrl("/caseImage"+srcImage);
+				}else{
+					ci.setImageUrl(jsonObject.getString("url").substring(jsonObject.getString("url").indexOf("/caseImage")));
+				}
+				ci.setImageTitle(jsonObject.getString("title"));
+				ci.setImageDesc(jsonObject.getString("details"));
+				ci.setCaseId(currentCase.getCase_id());
+				ci.setGhid(UUID.randomUUID().toString().replace("-", ""));
+				baseCaseImage.save(ci);
+			}
+		}
+		if(publishArray!=null){
+			String sql = "delete from gh_case_detail gcd where gcd.case_id = ?";
+			baseCaseImage.executeSql(sql, currentCase.getCase_id());
+			JSONArray publishja = JSONArray.fromObject(publishArray);
+			for (Object obj : publishja) {
+				JSONObject jsonObject = (JSONObject) obj;
+				CaseDetails cd = new CaseDetails();
+				Publish publish = new Publish();
+				publish.setId(jsonObject.getLong("publishId"));
+				cd.setPublish(publish);
+				cd.setPublishType(jsonObject.getString("publishType"));
+				cd.setCaseObj(caseObj);
+				cd.setGhid(UUID.randomUUID().toString().replace("-", ""));
+				baseCaseDetails.save(cd);
+			}
+		}
+		baseCaseDao.update(currentCase);
+	}
+	@Override
+	public void delete(Long case_id) throws Exception {
+		String isql = "delete from gh_case_image gci where gci.case_id = ?";
+		baseCaseImage.executeSql(isql, case_id);
+		String dsql = "delete from gh_case_detail gcd where gcd.case_id = ?";
+		baseCaseImage.executeSql(dsql, case_id);
+		this.baseCaseDao.delete(Case.class, case_id);
+	}
+	
+	@Override
+	public List<Publish> getCartList(String ids) throws Exception {
+		ids = ids.substring(0,ids.lastIndexOf(","));
+		String hql ="from Publish gp where gp.id in ("+ids+")";
+		List<Publish> plist = this.basePublishDao.findList(hql);
+		String psql ="select cpp.column_name,cpp.publish_type,cpp.column_position from cfg_publish_price cpp ";
+		List<Object[]> results = this.baseDao.findListBySql(psql);
+		for(Publish publish:plist){
+			String pricelist = StringUtil.getPublishPrice(publish);
+			Map<String,String> priceMap = new HashMap<String,String>();
+			for(Object[] objj :results){
+				String ptype = (String)objj[1];
+				Object ob = objj[2];
+				String cposition = null;
+				if(ob!=null){
+					cposition = String.valueOf(Integer.parseInt(ob.toString()));
+				}
+				if(ptype.equals(publish.getPublishTypeObj().getPublishFieldId())&&pricelist.contains(cposition)){
+					priceMap.put((String)objj[0], StringUtil.getPublishColumnValue(publish, cposition));
+				}
+				
+			}
+			publish.setPriceMap(priceMap);
+		}
+		return plist;
+	}
+	@Override
+	public Publish getpublishDetails(String publishghid) throws Exception {
+		String phql = "from Publish p where p.ghid = ?";
+		Publish publish = this.basePublishDao.findObject(phql,publishghid);
+		String psql ="select cpp.column_name,cpp.publish_type,cpp.column_position from cfg_publish_price cpp ";
+		List<Object[]> results = this.baseDao.findListBySql(psql);
+		String pricelist = StringUtil.getPublishPrice(publish);
+		Map<String,String> priceMap = new HashMap<String,String>();
+		for(Object[] objj :results){
+			String ptype = (String)objj[1];
+			Object ob = objj[2];
+			String cposition = null;
+			if(ob!=null){
+				cposition = String.valueOf(Integer.parseInt(ob.toString()));
+			}
+			if(ptype.equals(publish.getPublishTypeObj().getPublishFieldId())&&pricelist.contains(cposition)){
+				priceMap.put((String)objj[0], StringUtil.getPublishColumnValue(publish, cposition));
+			}
+			
+		}
+		publish.setPriceMap(priceMap);
+		String infosql = "select cpi.publish_type,cpi.column_name,cpi.column_position from cfg_publish_info cpi";
+		List<Object[]> resultsinfo = this.baseDao.findListBySql(infosql);
+		String infolist = StringUtil.getPublishInfo(publish);
+		Map<String,String> infoMap = new HashMap<String,String>();
+		for(Object[] objj :resultsinfo){
+			String ptype = (String)objj[0];
+			Object ob = objj[2];
+			String cposition = null;
+			if(ob!=null){
+				cposition = String.valueOf(Integer.parseInt(ob.toString()));
+			}
+			if(ptype.equals(publish.getPublishTypeObj().getPublishFieldId())&&infolist.contains(cposition)){
+				infoMap.put((String)objj[1], StringUtil.getPublishColumnValueInfo(publish, cposition));
+			}
+		}
+		publish.setInfoMap(infoMap);
+		return publish;
 	}
 
 }

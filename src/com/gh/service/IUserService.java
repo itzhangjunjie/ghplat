@@ -20,6 +20,12 @@ public interface IUserService {
 	 * 是否存在手机号    type为自媒体，广告主
 	 */
 	public int isExistsMobile(String mobile,String type) throws Exception;
+
+
+	/**
+	 * 修改密码
+	 */
+	public void updateUserPassword(String mobile, String password) throws Exception;
 	
 	
 }

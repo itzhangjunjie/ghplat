@@ -49,6 +49,12 @@ public class BannerController extends BaseControllerSupport{
 					banner.setCreateTime(new Date());
 					banner.setStatus(1);
 					baseService.save(banner);
+				}else{
+					String pid = request.getParameter("pid");
+					banner.setUrl(pid);
+					banner.setCreateTime(new Date());
+					banner.setStatus(1);
+					baseService.save(banner);
 				}
 			}
 		} catch (Exception e) {

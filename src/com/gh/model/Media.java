@@ -20,7 +20,7 @@ public class Media {
  	@Id
     @Column(name = "MEDIA_ID")
     @GeneratedValue(strategy=GenerationType.SEQUENCE,generator="media_seq")
-    private Long mediaId;//供应商标识
+    private Long id;//供应商标识
  	@Column(name="GHID")
 	private String ghid;//标识符
     @Basic(optional = false)
@@ -74,11 +74,12 @@ public class Media {
 	public void setGhid(String ghid) {
 		this.ghid = ghid;
 	}
-	public Long getMediaId() {
-		return mediaId;
+	
+	public Long getId() {
+		return id;
 	}
-	public void setMediaId(Long mediaId) {
-		this.mediaId = mediaId;
+	public void setId(Long id) {
+		this.id = id;
 	}
 	public String getUsername() {
 		return username;

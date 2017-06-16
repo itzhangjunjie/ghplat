@@ -7,7 +7,7 @@ a,img{border:0;text-decoration:none;}
 .menu li a{font-size:16px;color:#333333;}
 .first a{font-weight: bold;color:#fc6769 !important;}
 
-
+.plisDiv tr td{text-align: center;}
 
 
 #wrap2{ float: left; width:658px;height:96px;position: relative;}
@@ -84,3 +84,6 @@ a,img{border:0;text-decoration:none;}
 .wb11:hover{background-position:-225px -479px;}
 .wb5:hover{background-position:-205px -216px;}
 .wb4:hover{background-position:-154px -216px;}
+
+
+.u-flyer{display: block;width: 50px;height: 50px;border-radius: 50px;position: fixed;z-index: 9999;} 

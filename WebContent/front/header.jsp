@@ -7,6 +7,9 @@
 <script src="js/menu.js" type="text/javascript"></script>
 <script type="text/javascript" src="js/slider.js"></script> 
 
+<script src="js/jquery.fly.min.js" type="text/javascript"></script>
+
+
 <link rel="stylesheet" href="css/menu.css" type="text/css" />
 <script src="js/ajaxfileupload.js" type="text/javascript"></script>
 <script src="js/menu.js" type="text/javascript"></script>
@@ -16,8 +19,16 @@
 <script type="text/javascript" src="js/mySlider.js"></script>
 <link rel="stylesheet" href="css/pagination.css" type="text/css" />
 <script src="js/jquery.pagination.js" type="text/javascript"></script>
+<script src="js/main.js" type="text/javascript"></script>
 <script type="text/javascript">
 $(function(){
+	var cartIds = getCookie("cartIds");
+	if(cartIds!=null){
+		var totalCount = cartIds.split(",").length-1;
+		$('.headCartCount').html(totalCount);
+	}else{
+		$('.headCartCount').html(0);
+	}
 	$('#demo01').flexslider({
 		animation: "slide",
 		direction:"horizontal",
@@ -98,10 +109,12 @@ function register(type){
 	}
 	var etest =/^[_a-z0-9]+(.[_a-z0-9]+)*@[a-z0-9-]+(.[a-z0-9-]+)*(.[a-z]{2,5})$/;
 	var email= $(bname+' .email').val();
-	if(email==''||!etest.test(email)){
-		$(bname+' .emailMsg').html('邮箱不对');
-		$(bname+' .emailMsg').show();
-		return;
+	if(type!='自媒体'){
+		if(email==''||!etest.test(email)){
+			$(bname+' .emailMsg').html('邮箱不对');
+			$(bname+' .emailMsg').show();
+			return;
+		}
 	}
 	var password = $(bname+' .password').val();
 	if(password==''||password.length>12||password<6){
@@ -274,7 +287,7 @@ a:link {color: #707070}
 		</div>
 		<div style="float:right;">
 			<div style="float:left;"><img src="images/shopping-cart.png" width="15px"/></div>
-			<div style="float:left;margin-left:7px;" class="hoverFont">购物车<span style="color:#fc6769;margin-left:3px;font-weight: bold;">3</span></div>
+			<div onclick="location.href='cartList.jsp'" style="float:left;margin-left:7px;" class="hoverFont"><i id="end"></i>购物车<span class="headCartCount" style="color:#fc6769;margin-left:3px;font-weight: bold;">3</span></div>
 			<div style="float:left;width:1px;height:11px;background:#707070;margin-left:10px;margin-top:3px;"></div>
 			<div style="float:left;margin-left:10px;" class="hoverFont">消息中心</div>
 			<div style="float:left;width:1px;height:11px;background:#707070;margin-left:10px;margin-top:3px;"></div>
@@ -362,18 +375,18 @@ a:link {color: #707070}
 				<span style="height:44px;margin-left:10px;line-height: 48px;width:5px;text-align:left;color:red;font-size:14px; ">*</span>
 				<div class="usernameMsg" class="errormsg" style="display:none;color:red;top:14px;right:32px;position: absolute;font-size:12px;">姓名不能超过5个字</div>
 			</div>
+<!-- 			<div style="width:320px;margin:0 auto;margin-top:10px;position: relative;"> -->
+<!-- 				<input class="email" style="margin:0px;width:300px;height:44px;padding:6px;color:#333333;text-align:left;background: rgb(249,249,249);" type="text" placeholder="邮箱" /> -->
+<!-- 				<span style="height:44px;margin-left:10px;line-height: 48px;width:5px;text-align:left;color:red;font-size:14px; ">*</span> -->
+<!-- 				<div class="emailMsg" class="errormsg" style="display:none;color:red;top:14px;right:32px;position: absolute;font-size:12px;">邮箱格式不正确</div> -->
+<!-- 			</div> -->
 			<div style="width:320px;margin:0 auto;margin-top:10px;position: relative;">
-				<input class="email" style="margin:0px;width:300px;height:44px;padding:6px;color:#333333;text-align:left;background: rgb(249,249,249);" type="text" placeholder="邮箱" />
-				<span style="height:44px;margin-left:10px;line-height: 48px;width:5px;text-align:left;color:red;font-size:14px; ">*</span>
-				<div class="emailMsg" class="errormsg" style="display:none;color:red;top:14px;right:32px;position: absolute;font-size:12px;">邮箱格式不正确</div>
-			</div>
-			<div style="width:320px;margin:0 auto;margin-top:10px;position: relative;">
-				<input class="password" style="margin:0px;width:300px;height:44px;padding:6px;color:#333333;text-align:left;background: rgb(249,249,249);" type="text" placeholder="密码" />
+				<input class="password" style="margin:0px;width:300px;height:44px;padding:6px;color:#333333;text-align:left;background: rgb(249,249,249);" type="password" placeholder="密码" />
 				<span style="height:44px;margin-left:10px;line-height: 48px;width:5px;text-align:left;color:red;font-size:14px; ">*</span>
 				<div class="passwordMsg" class="errormsg" style="display:none;color:red;top:14px;right:32px;position: absolute;font-size:12px;">密码必须6-12位</div>
 			</div>
 			<div style="width:320px;margin:0 auto;margin-top:10px;position: relative;">
-				<input class="repassword" style="margin:0px;width:300px;height:44px;padding:6px;color:#333333;text-align:left;background: rgb(249,249,249);" type="text" placeholder="确认密码" />
+				<input class="repassword" style="margin:0px;width:300px;height:44px;padding:6px;color:#333333;text-align:left;background: rgb(249,249,249);" type="password" placeholder="确认密码" />
 				<span style="height:44px;margin-left:10px;line-height: 48px;width:5px;text-align:left;color:red;font-size:14px; ">*</span>
 				<div class="repasswordMsg" class="errormsg" style="display:none;color:red;top:14px;right:32px;position: absolute;font-size:12px;">密码不一致</div>
 			</div>
@@ -410,13 +423,13 @@ a:link {color: #707070}
 				<span style="height:44px;margin-left:10px;line-height: 48px;width:5px;text-align:left;color:red;font-size:14px; ">*</span>
 			</div>
 			<div style="width:320px;margin:0 auto;margin-top:10px;">
-				<input class="loginpassword" style="margin:0px;width:300px;height:44px;padding:6px;color:#333333;text-align:left;background: rgb(249,249,249);" type="text" placeholder="密码" />
+				<input class="loginpassword" style="margin:0px;width:300px;height:44px;padding:6px;color:#333333;text-align:left;background: rgb(249,249,249);" type="password" placeholder="密码" />
 				<span style="height:44px;margin-left:10px;line-height: 48px;width:5px;text-align:left;color:red;font-size:14px; ">*</span>
 			</div>
 			<div style="width:320px;margin:0 auto;margin-top:12px;">
 				<div onclick="login('自媒体')" style="cursor:pointer;width:300px;hegiht:48px;background:#fc6769;color:white; text-align: center;line-height: 48px;">登录</div>
 				<div class="loginMsg" class="errormsg" style="display:none;color:red;font-size:12px;float:left;margin-left:5px;margin-top:10px;">用户名和密码不对</div>
-				<div style="float:right;font-size:12px;margin:10px 20px 10px 0px;"><a href="#" style="color:#23527c;">忘记密码</a></div>
+				<div style="float:right;font-size:12px;margin:10px 20px 10px 0px;"><a href="person.jsp" style="color:#23527c;">忘记密码</a></div>
 			</div>
 		</div>
 	</div>
@@ -447,12 +460,12 @@ a:link {color: #707070}
 				<div class="emailMsg" class="errormsg" style="display:none;color:red;top:14px;right:32px;position: absolute;font-size:12px;">邮箱格式不正确</div>
 			</div>
 			<div style="width:320px;margin:0 auto;margin-top:10px;position: relative;">
-				<input class="password" style="margin:0px;width:300px;height:44px;padding:6px;color:#333333;text-align:left;background: rgb(249,249,249);" type="text" placeholder="密码" />
+				<input class="password" style="margin:0px;width:300px;height:44px;padding:6px;color:#333333;text-align:left;background: rgb(249,249,249);" type="password" placeholder="密码" />
 				<span style="height:44px;margin-left:10px;line-height: 48px;width:5px;text-align:left;color:red;font-size:14px; ">*</span>
 				<div class="passwordMsg" class="errormsg" style="display:none;color:red;top:14px;right:32px;position: absolute;font-size:12px;">密码必须6-12位</div>
 			</div>
 			<div style="width:320px;margin:0 auto;margin-top:10px;position: relative;">
-				<input class="repassword" style="margin:0px;width:300px;height:44px;padding:6px;color:#333333;text-align:left;background: rgb(249,249,249);" type="text" placeholder="确认密码" />
+				<input class="repassword" style="margin:0px;width:300px;height:44px;padding:6px;color:#333333;text-align:left;background: rgb(249,249,249);" type="password" placeholder="确认密码" />
 				<span style="height:44px;margin-left:10px;line-height: 48px;width:5px;text-align:left;color:red;font-size:14px; ">*</span>
 				<div class="repasswordMsg" class="errormsg" style="display:none;color:red;top:14px;right:32px;position: absolute;font-size:12px;">密码不一致</div>
 			</div>
@@ -489,13 +502,13 @@ a:link {color: #707070}
 				<span style="height:44px;margin-left:10px;line-height: 48px;width:5px;text-align:left;color:red;font-size:14px; ">*</span>
 			</div>
 			<div style="width:320px;margin:0 auto;margin-top:10px;">
-				<input class="loginpassword" style="margin:0px;width:300px;height:44px;padding:6px;color:#333333;text-align:left;background: rgb(249,249,249);" type="text" placeholder="密码" />
+				<input class="loginpassword" style="margin:0px;width:300px;height:44px;padding:6px;color:#333333;text-align:left;background: rgb(249,249,249);" type="password" placeholder="密码" />
 				<span style="height:44px;margin-left:10px;line-height: 48px;width:5px;text-align:left;color:red;font-size:14px; ">*</span>
 			</div>
 			<div style="width:320px;margin:0 auto;margin-top:12px;">
 				<div onclick="login('广告主')" style="cursor:pointer;width:300px;hegiht:48px;background:#fc6769;color:white; text-align: center;line-height: 48px;">登录</div>
 				<div class="loginMsg" class="errormsg" style="display:none;color:red;font-size:12px;float:left;margin-left:5px;margin-top:10px;">用户名和密码不对</div>
-				<div style="float:right;font-size:12px;margin:10px 20px 10px 0px;"><a href="#" style="color:#23527c;">忘记密码</a></div>
+				<div style="float:right;font-size:12px;margin:10px 20px 10px 0px;"><a href="person.jsp" style="color:#23527c;">忘记密码</a></div>
 			</div>
 		</div>
 	</div>

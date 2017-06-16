@@ -54,7 +54,7 @@
 	border:1px #fc6769 solid;
 	color:#fc6769;
 }
-.M-box .next,.M-box .prev,.M-box1 .next,.M-box1 .prev{
+.M-box .next,.M-box .prev,.M-box1 .next,.M-box1 .prev,.M-box2 .next,.M-box2 .prev,.M-box3 .next,.M-box3 .prev{
     font-size: 12px;
     width:55px;
 }

@@ -22,7 +22,7 @@
 				<a href="../addCase" style="text-decoration: none;color:#333333;"><div class="hoverFont" style="border-raduis:2px;margin-top:20px;width:100px;height:25px;border:1px #333333 solid;text-align: center;line-height: 25px;float:right;">+新增案例</div></a>
 			</div>
 			<c:forEach var="caseDetailsObj" items="${caseList.list }" >
-				<div style="width:1140px;padding:20px 30px 40px 30px;background: white;margin:0 auto;margin-top:15px;margin-bottom:20px;border:1px #eeeeee solid;overflow: hidden;">
+				<div class="caseDiv" style="width:1140px;padding:20px 30px 40px 30px;background: white;margin:0 auto;margin-top:15px;margin-bottom:20px;border:1px #eeeeee solid;overflow: hidden;">
 					<div style="width:100%;height:24px;">
 						<div style="width:80%;float:left;color:#333333;font-weight: bold;font-size:18px;">${caseDetailsObj.caseObj.case_title }</div>
 						<div style="width:20%;float:right;color:#333333;font-size:12px;margin-top:8px;display:none;">
@@ -130,15 +130,15 @@
 function changeImageDetails(tt){
 	var title = $(tt).attr('imageTitle');
 	var desc = $(tt).attr('imageDesc');
-	$('.imageDetailsTitle').html(title);
-	$('.imageDetailsDesc').html(desc);
-	$('.imageDetailsDiv').show();
+	$(tt).parents('.caseDiv').find('.imageDetailsTitle').html(title);
+	$(tt).parents('.caseDiv').find('.imageDetailsDesc').html(desc);
+	$(tt).parents('.caseDiv').find('.imageDetailsDiv').show();
 }
 
 function dolog(_info, _callback) {
 var img = new Image();
 img.onload=img.onerror=_callback;
-img.src = 'http://www.jq-school.com/images/logo.gif';
+img.src = '/ghplat/front/images/logo.png';
 }
 
 var layerWxcode = document.getElementById('layerWxcode');

@@ -2,6 +2,7 @@ package com.gh.controller;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.gh.model.Advertiser;
 import com.gh.model.IndexBanner;
 import com.gh.model.Media;
+import com.gh.model.Publish;
 import com.gh.service.IBaseService;
 import com.gh.service.IIndexBannerService;
 import com.gh.service.IUserService;
@@ -46,8 +48,11 @@ public class IndexController extends BaseControllerSupport{
 			PageList<IndexBanner> tuiguangs = bannerService.getBannerList(map,page);
 			request.setAttribute("tuiguangs", tuiguangs);
 			System.out.println("tuiguangs:"+tuiguangs.getList().size());
-			map.put("module", "我们的合作伙伴");// 我们的合作伙伴  
+			map.put("module", "自媒体展示");// 我们的合作伙伴  
+			List<Publish> zimeitis = bannerService.getBannerPublishList(map);
+			request.setAttribute("zimeitilist", zimeitis);
 			page.setRows(20);
+			map.put("module", "我们的合作伙伴");// 我们的合作伙伴
 			PageList<IndexBanner> hezuos = bannerService.getBannerList(map,page);
 			request.setAttribute("hezuos", hezuos);
 		} catch (Exception e) {
@@ -69,7 +74,11 @@ public class IndexController extends BaseControllerSupport{
 			if(mobile!=null){
 				if(userService.isExistsMobile(mobile, type)==-1){
 					String code = StringUtil.getRandStr(4);
-					SendMessageUtil.sendMessage("【勾画科技】你正在注册"+type+"，验证码："+code, mobile);
+					if(type.equals("修改密码")){
+						SendMessageUtil.sendMessage("【勾画互动】修改密码"+type+"，验证码："+code, mobile);
+					}else{
+						SendMessageUtil.sendMessage("【勾画互动】你正在注册"+type+"，验证码："+code, mobile);
+					}
 					//request.getSession().setAttribute("regCode", code);
 					jsonObject.put("code", code);
 					jsonObject.put("result", "yes");
@@ -86,7 +95,49 @@ public class IndexController extends BaseControllerSupport{
 		}
 		return jsonObject.toString();
 	}
-	
+	@RequestMapping(value="/sendPasswordCodeMsg")
+	public @ResponseBody String sendPasswordCodeMsg(HttpServletRequest request){
+		try {
+			jsonObject.clear();
+			String mobile = request.getParameter("mobile");
+			String type = request.getParameter("type");
+			if(mobile!=null){
+				if(userService.isExistsMobile(mobile, type)==1){
+					String code = StringUtil.getRandStr(4);
+					if(type.equals("修改密码")){
+						SendMessageUtil.sendMessage("【勾画互动】修改密码"+type+"，验证码："+code, mobile);
+					}else{
+						SendMessageUtil.sendMessage("【勾画互动】你正在注册"+type+"，验证码："+code, mobile);
+					}
+					jsonObject.put("code", code);
+					jsonObject.put("result", "yes");
+				}else{
+					jsonObject.put("result", "no");
+					jsonObject.put("reason", "手机号未注册");
+				}
+			}else{
+				jsonObject.put("result", "no");
+				jsonObject.put("reason", "手机号为空");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return jsonObject.toString();
+	}
+	@RequestMapping(value="/updatePassword")
+	public @ResponseBody String updatePassword(HttpServletRequest request){
+		try {
+			 jsonObject.clear();
+			 String mobile = request.getParameter("mobile");
+			 String password = request.getParameter("password");
+			 userService.updateUserPassword(mobile,password);
+			jsonObject.put("result", "yes");
+		} catch (Exception e) {
+			jsonObject.put("result", "no");
+			e.printStackTrace();
+		}
+		return jsonObject.toString();
+	}
 	@Resource
 	private IBaseService<Media> baseMediaService;
 	@Resource
@@ -138,6 +189,7 @@ public class IndexController extends BaseControllerSupport{
 		}
 		return jsonObject.toString();
 	}
+	
 	
 	@RequestMapping(value="/login")
 	public @ResponseBody String login(HttpServletRequest request){

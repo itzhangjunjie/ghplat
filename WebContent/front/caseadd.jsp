@@ -49,6 +49,7 @@ function changeDiv(msg,tt){
 	if(msg=='anliDiv'){
 		$('#submitAdd').attr('attrId',"20");
 		$('#colseAdd').attr('attrId',"20");
+		$('.saveanliDiv').hide();
 	}else{
 		$('#submitAdd').attr('attrId',"1");
 		$('#colseAdd').attr('attrId',"1");
@@ -266,46 +267,46 @@ function sumbitAddPublish(){
 	}else{// attrId = 20 是保存案例
 		var ctitle = $('#ctitle').val();
 		if(ctitle==''||ctitle.length>40){
-			$('#ctitleMsg').val('填写主题错误');
-			$('#ctitleMsg').show();
+			$('.ctitleMsg').val('填写主题错误');
+			$('.ctitleMsg').show();
 			return;
 		}
 		var cbrand = $('#cbrand').val();
 		if(cbrand==''||cbrand.length>10){
-			$('#cbrandMsg').val('填写品牌错误');
-			$('#cbrandMsg').show();
+			$('.cbrandMsg').val('填写品牌错误');
+			$('.cbrandMsg').show();
 			return;
 		}
 		var cindustry = $('#cindustry').val();
 		if(cindustry==''||cindustry.length>10){
-			$('#cindustryMsg').val('填写行业错误');
-			$('#cindustryMsg').show();
+			$('.cindustryMsg').val('填写行业错误');
+			$('.cindustryMsg').show();
 			return;
 		}
 		var cproduct = $('#cproduct').val();
 		if(cproduct==''||cproduct.length>10){
-			$('#cproductMsg').val('填写产品错误');
-			$('#cproductMsg').show();
+			$('.cproductMsg').val('填写产品错误');
+			$('.cproductMsg').show();
 			return;
 		}
 		var cdesc = $('#cdesc').val();
 		if(cdesc==''||cdesc.length>10){
-			$('#cdescMsg').val('填写详情错误');
-			$('#cdescMsg').show();
+			$('.cdescMsg').val('填写详情错误');
+			$('.cdescMsg').show();
 			return;
 		}
 		var cimage = $('#uploadImageImg2').attr('src');
 		if(cimage.indexOf('addImage')>=0){
 			$('body').scrollTop(50);
-			$('#cimageMsg').show();
+			$('.cimageMsg').show();
 			return;
 		}
 		var imageArray = new Array();
-		for(var i=0;i<$('.anliImageDis').length;i++){
+		for(var i=0;i<$('.addbaseanlimsgDiv').find('.anliImageDis').length;i++){
 			var imageObj = {};
-			imageObj.url = $($('.anliImageDis')[i]).find(".imageShowDiv").attr('src');
-			imageObj.title = $($('.anliImageDis')[i]).find(".cimageTitle").val();
-			imageObj.details = $($('.anliImageDis')[i]).find(".cimageDetails").val();
+			imageObj.url = $($('.addbaseanlimsgDiv').find('.anliImageDis')[i]).find(".imageShowDiv").attr('src');
+			imageObj.title = $($('.addbaseanlimsgDiv').find('.anliImageDis')[i]).find(".cimageTitle").val();
+			imageObj.details = $($('.addbaseanlimsgDiv').find('.anliImageDis')[i]).find(".cimageDetails").val();
 			imageArray.push(imageObj);
 		}
 		if(imageArray.length==0){
@@ -313,10 +314,10 @@ function sumbitAddPublish(){
 			return;
 		}
 		var publishArray = new Array();
-		for(var i=0;i<$('.wrap').find('.addZiMeiTiSu').length;i++){
+		for(var i=0;i<$('.addbaseanlimsgDiv').find('.wrap').find('.addZiMeiTiSu').length;i++){
 			var publishObj = {};
-			publishObj.publishId = $($('.wrap').find('.addZiMeiTiSu')[i]).attr("attrPid");
-			publishObj.publishType = $($('.wrap').find('.addZiMeiTiSu')[i]).attr("attrPtype");
+			publishObj.publishId = $($('.addbaseanlimsgDiv').find('.wrap').find('.addZiMeiTiSu')[i]).attr("attrPid");
+			publishObj.publishType = $($('.addbaseanlimsgDiv').find('.wrap').find('.addZiMeiTiSu')[i]).attr("attrPtype");
 			publishArray.push(publishObj);
 		}
 		if(publishArray.length==0){
@@ -340,26 +341,7 @@ function sumbitAddPublish(){
 			},
 			success: function(data, status, xhr) {
 				if(data.result=="yes"){
-					var templDiv = $('.anliDiv2').clone();
-					$(templDiv).find('.ttile').val(ctitle);
-					$(templDiv).find('.tbrand').val(cbrand);
-					$(templDiv).find('.thangye').val(cindustry);
-					$(templDiv).find('.tproduct').val(cproduct);
-					$(templDiv).find('.tdesc').val(cdesc);
-					var divhtml = $('.wrap').find('#article_pic_slider').html();
-					$(templDiv).find('.article_pic_slider').html(divhtml);
-					var anldiv = '';
-					for(var i=0;i<imageArray.length;i++){
-						var antem = $('.anliImageTempl').clone();
-						antem.find('.tanliImage').attr('src',imageArray[i].url);
-						antem.find('.tanliTitle').attr('placeholder',imageArray[i].title);
-						antem.find('.tanliDetails').attr('placeholder',imageArray[i].details);
-						anldiv = anldiv +$(antem).html();
-					}
-					$(templDiv).find('.canliImageDis').append(anldiv);
-					$(templDiv).find('.uploadImageImg2').attr('src',cimage);
-					$(templDiv).show();
-					$('.anliDiv').append(templDiv);
+					alert('添加成功！');
 				}
 			}
 		});
@@ -426,7 +408,7 @@ function getCaseList(cpagesize){
 			         'num_edge_entries'    : 2,  
 			         'prev_text'           : "上一页",  
 			         'next_text'           : "下一页",  
-			         'current_page'        : pagesize-1,
+			         'current_page'        : pagesize,
 			         'callback'            : function(page_id,jq){
 			        	 getCaseList(page_id+1);
 			        	 $("body").scrollTop(0);
@@ -456,14 +438,14 @@ function getPublishList(gpagesize){
 				$('.basemsglisttemDiv').html(htmla(plist));
 				var pagecount = data.pageCount;
 				var pagesize = data.pageSize;
-				 $('.M-box').pagination(pagecount,{
+				 $('.M-box3').pagination(pagecount,{
 					 'items_per_page'      : 15,  
 			         'num_display_entries' : 5, 
 			         'ellipse_text'        : "...",
 			         'num_edge_entries'    : 2,  
 			         'prev_text'           : "上一页",  
 			         'next_text'           : "下一页",  
-			         'current_page'        : pagesize-1,
+			         'current_page'        : pagesize,
 			         'callback'            : function(page_id,jq){
 			        	 getPublishList(page_id+1);
 			        	 $("body").scrollTop(0);
@@ -492,7 +474,7 @@ function addBaseMsgDiv(){
 }
 function addBaseAnLiMsgDiv(){
 	$('.addbaseanlimsgDiv').show();
-	$('.saveanliDiv').show();
+	$('.saveanliDiv').hide();
 	//$('.basemsglistDiv').hide();
 }
 function editPublish(spid,index){
@@ -597,10 +579,111 @@ var currentCaseid= 0;
 function jiluid(id){
 	currentCaseid = id;
 }
+function updateCaseObj(tid){
+	var ctitle =$('.caseDetailsDiv'+tid).find('.ctitle').val();
+	if(ctitle==''||ctitle.length>40){
+		$('.caseDetailsDiv'+tid).find('.ctitleMsg').val('填写主题错误');
+		$('.caseDetailsDiv'+tid).find('.ctitleMsg').show();
+		return;
+	}
+	var cbrand = $('.caseDetailsDiv'+tid).find('.cbrand').val();
+	if(cbrand==''||cbrand.length>10){
+		$('.caseDetailsDiv'+tid).find('.cbrandMsg').val('填写品牌错误');
+		$('.caseDetailsDiv'+tid).find('.cbrandMsg').show();
+		return;
+	}
+	var cindustry = $('.caseDetailsDiv'+tid).find('.cindustry').val();
+	if(cindustry==''||cindustry.length>10){
+		$('.caseDetailsDiv'+tid).find('.cindustryMsg').val('填写行业错误');
+		$('.caseDetailsDiv'+tid).find('.cindustryMsg').show();
+		return;
+	}
+	var cproduct = $('.caseDetailsDiv'+tid).find('.cproduct').val();
+	if(cproduct==''||cproduct.length>10){
+		$('.caseDetailsDiv'+tid).find('.cproductMsg').val('填写产品错误');
+		$('.caseDetailsDiv'+tid).find('.cproductMsg').show();
+		return;
+	}
+	var cdesc = $('.caseDetailsDiv'+tid).find('.cdesc').val();
+	if(cdesc==''||cdesc.length>300){
+		$('.caseDetailsDiv'+tid).find('.cdescMsg').val('填写详情错误');
+		$('.caseDetailsDiv'+tid).find('.cdescMsg').show();
+		return;
+	}
+	var cimage = $('.caseDetailsDiv'+tid).find('.uploadImageImg').attr('src');
+	if(cimage.indexOf('addImage')>=0){
+		$('body').scrollTop(50);
+		$('.caseDetailsDiv'+tid).find('.cimageMsg').show();
+		return;
+	}
+	var imageArray = new Array();
+	for(var i=0;i<$('.caseDetailsDiv'+tid).find('.anliImageDis').length;i++){
+		var imageObj = {};
+		imageObj.url = $($('.caseDetailsDiv'+tid).find('.anliImageDis')[i]).find(".imageShowDiv").attr('src');
+		imageObj.title = $($('.caseDetailsDiv'+tid).find('.anliImageDis')[i]).find(".cimageTitle").val();
+		imageObj.details = $($('.caseDetailsDiv'+tid).find('.anliImageDis')[i]).find(".cimageDetails").val();
+		imageArray.push(imageObj);
+	}
+	if(imageArray.length==0){
+		alert('至少一张图片');
+		return;
+	}
+	var publishArray = new Array();
+	for(var i=0;i<$('.caseDetailsDiv'+tid).find('.wrap').find('.addZiMeiTiSu').length;i++){
+		var publishObj = {};
+		publishObj.publishId = $($('.caseDetailsDiv'+tid).find('.wrap').find('.addZiMeiTiSu')[i]).attr("attrPid");
+		publishObj.publishType = $($('.caseDetailsDiv'+tid).find('.wrap').find('.addZiMeiTiSu')[i]).attr("attrPtype");
+		publishArray.push(publishObj);
+	}
+	if(publishArray.length==0){
+		alert('自媒体至少一个');
+		return;
+	}
+	$.ajax({
+		type: "post",
+		url: "../updateCase",
+		async: false, //_config.async,
+		dataType: 'json',
+		data:{
+			'case_id':tid,
+			'case_title':ctitle,
+			'case_brand':cbrand,
+			'case_Industry':cindustry,
+			'case_product':cproduct,
+			'case_desc':cdesc,
+			'image':cimage,
+			'imageArray':JSON.stringify(imageArray),
+			'publishArray':JSON.stringify(publishArray)
+		},
+		success: function(data, status, xhr) {
+			if(data.result=="yes"){
+				alert('修改成功！');
+			}
+		}
+	});
+}
+function deleteCaseObj(tid){
+	if(confirm("确定要删除吗？")){
+		$.ajax({
+			type: "post",
+			url: "../deleteCase",
+			async: false, //_config.async,
+			dataType: 'json',
+			data:{
+				'case_id':tid
+			},
+			success: function(data, status, xhr) {
+				if(data.result=="yes"){
+					$('.caseDetailsDiv'+tid).remove();
+				}
+			}
+		});
+	}
+}
 </script>
 </head>
 <body style="padding:0px;margin:0px;">
-<input type="hidden" value="${sessionScope.user.mediaId}" id="mediaId" />
+<input type="hidden" value="${sessionScope.user.id}" id="mediaId" />
 	<%@include file="header.jsp" %>
 	<div style="width:100%;background:rgb(242,242,242);height:auto;overflow: hidden;">
 			<div style="width:1198px;background: white;margin:0 auto;margin-top:20px;margin-bottom:20px;border:1px #eeeeee solid;overflow: hidden;">
@@ -635,14 +718,14 @@ function jiluid(id){
 										</div>
 									{{ } }} 
 								</script>
+								<div style="width:100%;">
+									<div id="pageDiv" style="margin:0 auto;margin-top:20px;margin-bottom:20px;min-width: 385px;max-width: 470px;height:32px;">
+										<div class="M-box3" ></div>
+									</div>
+								</div>
 								<script> 
 									getPublishList(1);//获取第一页媒体列表数据
 								</script> 
-								<div style="width:100%;">
-									<div id="pageDiv" style="margin:0 auto;margin-top:20px;margin-bottom:20px;min-width: 385px;max-width: 470px;height:32px;">
-										<div class="M-box" ></div>
-									</div>
-								</div>
 							</div>
 							<div class="addbasemsgDiv" style="display:none;">
 								<table style="width:100%;font-size: 14px;color:#333333;font-family: 微软雅黑;border-collapse:separate; border-spacing:0px 30px;" class="addpublishTable">
@@ -727,129 +810,36 @@ function jiluid(id){
 							<div style="width:100%;margin:0 auto;height:48px;cursor:pointer;">
 								<div onclick="addBaseAnLiMsgDiv()" class="hoverFont" style="border-raduis:2px;margin-top:20px;width:100px;height:25px;border:1px #333333 solid;text-align: center;line-height: 25px;float:right;">+新增发布</div>
 							</div>
-							<div class="caselistDiv" style="overflow: hidden;">
-							</div>
-							<div style="width:100%;">
-								<div id="pageDiv" style="margin:0 auto;margin-top:20px;margin-bottom:20px;min-width: 385px;max-width: 470px;height:32px;">
-									<div class="M-box2" ></div>
+							<div class="addbaseanlimsgDiv caseDetailsDiv3" style="display:none;padding:30px;font-size:14px;color:#333333;background: #fbfbfb;border:1px #999999 solid;margin-top:20px;overflow: hidden;position: relative;">
+								<div style="position: absolute;bottom:10px;right:10px;">
+									<div style="width:60px;height:30px;background: #fc6769;color:white;font-size:16px;line-height: 30px;float:left;border-radius:5px;text-align: center;cursor: pointer;" onclick="sumbitAddPublish()" attrid="20">保&nbsp;存</div>
+									<div style="width:60px;height:30px;background: #fc6769;color:white;font-size:16px;line-height: 30px;float:left;margin-left:10px;border-radius:5px;text-align: center;cursor: pointer;" onclick="colsePublish()" attrid="20">取&nbsp;消</div>
 								</div>
-							</div>							
-							<script id="caselistTmpDiv" type="text/x-dot-template">
-								{{for(var i=0;i<it.length;i++){ }} 
-							<div class="alldivlist anliDivlist caseDetailsDiv{{=it[i].case_id}}" style="padding:20px;border:1px #999999 solid;height:auto;background: #fbfbfb;margin-top:20px;margin-bottom: 30px;overflow: hidden;">
-								<div style="width:100%;height:48px;">
-									<div style="width:100px;height:48px;line-height: 48px;float:left;">案例主题&nbsp;:</div>
-									<div style="width:400px;height:48px;line-height: 48px;float:left;position: relative;"><input id="ctitle" style="width:400px;height:48px;padding:6px;color:#333333;text-align: left;" value="{{=it[i].case_title}}" placeholder="请填写案例主题" type="text" />
-										<div class="ctitleMsg" class="errormsg" style="display:none;color:red;top:0px;right:8px;position: absolute;font-size:12px;">姓名不能超过5个字</div>
-								    </div>
-									<div style="width:100px;height:48px;line-height: 48px;float:left;"></div>
-								</div>
-								<div style="width:100%;margin-top:30px;height:48px;">
-									<div style="width:100px;height:48px;line-height: 48px;float:left;">品牌&nbsp;:</div>
-									<div style="width:200px;height:48px;line-height: 48px;float:left;position: relative;"><input id="cbrand" style="width:200px;height:48px;padding:6px;color:#333333;text-align: left;" value="{{=it[i].case_brand}}" placeholder="请填写品牌" type="text" /> 
-											<div class="cbrandMsg" class="errormsg" style="display:none;color:red;top:4px;right:8px;position: absolute;font-size:12px;">姓名不能超过5个字</div>
-									</div>
-									<div style="width:60px;height:48px;line-height: 48px;float:left;margin-left:30px;">行业&nbsp;:</div>
-									<div style="width:200px;height:48px;line-height: 48px;float:left;position: relative"><input id="cindustry" style="width:200px;height:48px;padding:6px;color:#333333;text-align: left;" value="{{=it[i].case_Industry}}" placeholder="请填写行业" type="text" /> 
-										<div class="cindustryMsg" class="errormsg" style="display:none;color:red;top:4px;right:8px;position: absolute;font-size:12px;">姓名不能超过5个字</div>
-									</div>
-									<div style="width:60px;height:48px;line-height: 48px;float:left;margin-left:30px;">产品&nbsp;:</div>
-									<div style="width:200px;height:48px;line-height: 48px;float:left;position: relative"><input id="cproduct" style="width:200px;height:48px;padding:6px;color:#333333;text-align: left;" value="{{=it[i].case_product}}" placeholder="请填写产品" type="text" />
-										<div class="cproductMsg" class="errormsg" style="display:none;color:red;top:4px;right:8px;position: absolute;font-size:12px;">姓名不能超过5个字</div>
-									</div>
-								</div>
-								<div style="width:100%;margin-top:30px;height:75px;">
-									<div style="width:100px;height:60px;line-height: 18px;float:left;">案例描述&nbsp;:</div>
-									<div style="width:975px;float:left;position: relative"><input id="cdesc" style="width:980px;height:75px;color:#333333;padding: 0 10px 43px;text-align: left;" placeholder="请填写案例描述" value="{{=it[i].case_desc}}" type="text" /> 
-										<div class="cdescMsg" class="errormsg" style="display:none;color:red;top:50px;right:8px;position: absolute;font-size:12px;">姓名不能超过5个字</div>
-									</div>
-								</div>
-								<div style="width:100%;margin-top:30px;height:98px;">
-									<div style="width:100px;height:96px;line-height: 18px;float:left;line-height: 96px;">案例置顶图&nbsp;:</div>
-									<div style="float:left;width:96px;height:96px;border:1px #dfdfdf solid;">
-										<div class="uploadClickClass" style="width:100%;height:100%;cursor: pointer;">
-											<div style="width:100%;height:100%;position: relative;"><img id="uploadImageImg{{=it[i].case_id}}" style="width:96px;height:96px;" src="images/addImage.png" />
-												<div id="cimageMsg" class="wrongClass" style="display:none;font-size:12px;color:#fc6769;height:20px;position: absolute;bottom: 3px;left:12px;">上传主图错误</div>
-											</div>
-										</div>
-										<input id="uploadImageInput{{=it[i].case_id}}" onchange="ajaxFileUploadImage({{=it[i].case_id}},1)" accept="image/*" name="files" class="uploadClass" type="file" style="display:none;"/>
-									</div>
-									<div style="width:100px;height:96px;line-height: 18px;float:left;line-height: 96px;margin-left:24px;">自媒体弹窗&nbsp;:</div>
-									<div  class="addZiMeiTi" style="width:200px;float:left;height:96px;position: relative;display:none;">
-										<div style="width:96px;height:96px;float:left;"><img id="mtImage" style="width:96px;height:96px;" src="http://61.129.51.62:8080/GhWemediaWar//images/2300/201612021204profilePhoto陈翔六点半.jpg" /></div>
-										<div style="float:left;width:100px;height:96px;">
-											<div id="mtName" style="margin-top:12px;margin-left:15px;width:90px;height:16px;overflow: hidden;line-height:16px;color:black;font-weight: bold;font-size:14px;">陈翔</div>
-											<div id="mtPlatform" style="margin-top:6px;margin-left:15px;width:70px;height:18px;overflow: hidden;color:#333333;font-size:12px;">秒拍</div>
-											<div style="margin-top:6px;margin-left:15px;width:70px;height:33px;overflow: hidden;color:#333333;font-size:12px;">粉丝数：<br/><span id="mtFancount">2837000</span></div>
-										</div>
-									</div>
-									<div id="wrap2" class="wrap" attrCount="3" style="display:none;">
-										<div class="article_pic_left_btn">
-										     <img src="images/space_16_23.png" id="cardArrowLeft" class="live_card_arrow_left_physical" />
-										 </div>
-										<div class="puzzle_card" id="puzzle_card2">
-											<div class="showbox" id="showbox2">
-											  <ul id="article_pic_slider">
-											  </ul>
-											</div>
-										</div>
-								        <div class="article_pic_right_btn">
-								          <img src="images/space_16_23.png" id="cardArrowRight" class="live_card_arrow_right_physical" />
-								        </div>
-									</div>
-									<div class="addPublishMT" style="float:left;width:96px;height:96px;border:1px #dfdfdf solid;">
-										<a onclick="jiluid({{=it[i].case_id}})" id="addPublishA" href="#addPublishDiv" style="text-decoration: none;">
-											<div class="fbClickClass" style="width:100%;height:100%;cursor: pointer;">
-												<div style="width:100%;height:100%;"><img style="width:96px;height:96px;" src="images/addImage.png" /></div>
-											</div>
-										</a>
-									</div>
-								</div>
-								<div style="width:100%;margin-top:30px;height:98px;">
-									<div class="anliImagesDiv" style="width:100%;margin-top:30px;">
-										<div style="width:100px;min-height:110px;line-height: 18px;float:left;"><div style="width:100%;margin-top:25px;">案例照片&nbsp;:</div><div style="font-size:12px;">(可上传多张)</div></div>
-										<div class="addImageDiv{{=it[i].case_id}}" style="float:left;width:96px;height:96px;border:1px #dfdfdf solid;">
-											<div class="uploadClickClass" style="width:100%;height:100%;cursor: pointer;">
-												<div style="width:100%;height:100%;"><img id="uploadImageImg{{=it[i].case_id}}" style="width:96px;height:96px;" src="images/addImage.png" />
-													<div id="cimage2Msg" class="wrongClass" style="display:none;font-size:12px;color:#fc6769;height:20px;position: absolute;bottom: 3px;left:12px;">至少上传一张</div>
-												</div>
-											</div>
-											<input id="uploadImageInput{{=it[i].case_id}}" multiple="multiple" accept="image/*" onchange="ajaxFileUploadImage({{=it[i].case_id}},2)" name="files" class="uploadClass" type="file" style="display:none;"/>
-										</div>
-									</div>
-								</div>
-							</div>
-								{{} }}
-							</script>
-							<script> 
-								getCaseList(1);//获取案例列表数据
-							</script> 
-							<div class="addbaseanlimsgDiv" style="display:none;padding:30px;font-size:14px;color:#333333;background: #fbfbfb;border:1px #999999 solid;margin-top:20px;overflow: hidden;">
 								<div style="width:100%;height:48px;">
 									<div style="width:100px;height:48px;line-height: 48px;float:left;">案例主题&nbsp;:</div>
 									<div style="width:400px;height:48px;line-height: 48px;float:left;position: relative;"><input id="ctitle" style="width:400px;height:48px;padding:6px;color:#333333;text-align: left;" placeholder="请填写案例主题" type="text" />
-										<div class="ctitleMsg" class="errormsg" style="display:none;color:red;top:0px;right:8px;position: absolute;font-size:12px;">姓名不能超过5个字</div>
+										<div class="ctitleMsg wrongClass" style="display:none;color:red;top:0px;right:8px;position: absolute;font-size:12px;">姓名不能超过5个字</div>
 								    </div>
 									<div style="width:100px;height:48px;line-height: 48px;float:left;"></div>
 								</div>
 								<div style="width:100%;margin-top:30px;height:48px;">
 									<div style="width:100px;height:48px;line-height: 48px;float:left;">品牌&nbsp;:</div>
 									<div style="width:200px;height:48px;line-height: 48px;float:left;position: relative;"><input id="cbrand" style="width:200px;height:48px;padding:6px;color:#333333;text-align: left;" placeholder="请填写品牌" type="text" /> 
-											<div class="cbrandMsg" class="errormsg" style="display:none;color:red;top:4px;right:8px;position: absolute;font-size:12px;">姓名不能超过5个字</div>
+											<div class="cbrandMsg wrongClass" style="display:none;color:red;top:4px;right:8px;position: absolute;font-size:12px;">姓名不能超过5个字</div>
 									</div>
 									<div style="width:60px;height:48px;line-height: 48px;float:left;margin-left:30px;">行业&nbsp;:</div>
 									<div style="width:200px;height:48px;line-height: 48px;float:left;position: relative"><input id="cindustry" style="width:200px;height:48px;padding:6px;color:#333333;text-align: left;" placeholder="请填写品牌" type="text" /> 
-										<div class="cindustryMsg" class="errormsg" style="display:none;color:red;top:4px;right:8px;position: absolute;font-size:12px;">姓名不能超过5个字</div>
+										<div class="cindustryMsg wrongClass" style="display:none;color:red;top:4px;right:8px;position: absolute;font-size:12px;">姓名不能超过5个字</div>
 									</div>
 									<div style="width:60px;height:48px;line-height: 48px;float:left;margin-left:30px;">产品&nbsp;:</div>
 									<div style="width:200px;height:48px;line-height: 48px;float:left;position: relative"><input id="cproduct" style="width:200px;height:48px;padding:6px;color:#333333;text-align: left;" placeholder="请填写品牌" type="text" />
-										<div class="cproductMsg" class="errormsg" style="display:none;color:red;top:4px;right:8px;position: absolute;font-size:12px;">姓名不能超过5个字</div>
+										<div class="cproductMsg wrongClass"  style="display:none;color:red;top:4px;right:8px;position: absolute;font-size:12px;">姓名不能超过5个字</div>
 									</div>
 								</div>
 								<div style="width:100%;margin-top:30px;height:75px;">
 									<div style="width:100px;height:60px;line-height: 18px;float:left;">案例描述&nbsp;:</div>
 									<div style="width:975px;float:left;position: relative"><input id="cdesc" style="width:980px;height:75px;color:#333333;padding: 0 10px 43px;text-align: left;" placeholder="请填写案例描述" type="text" /> 
-										<div class="cdescMsg" class="errormsg" style="display:none;color:red;top:50px;right:8px;position: absolute;font-size:12px;">姓名不能超过5个字</div>
+										<div class="cdescMsg wrongClass" style="display:none;color:red;top:50px;right:8px;position: absolute;font-size:12px;">姓名不能超过5个字</div>
 									</div>
 								</div>
 								<div style="width:100%;margin-top:30px;height:98px;">
@@ -886,7 +876,7 @@ function jiluid(id){
 								        </div>
 									</div>
 									<div class="addPublishMT" style="float:left;width:96px;height:96px;border:1px #dfdfdf solid;">
-										<a id="addPublishA" href="#addPublishDiv" style="text-decoration: none;">
+										<a id="addPublishA" onclick="jiluid(3)" href="#addPublishDiv" style="text-decoration: none;">
 											<div class="fbClickClass" style="width:100%;height:100%;cursor: pointer;">
 												<div style="width:100%;height:100%;"><img style="width:96px;height:96px;" src="images/addImage.png" /></div>
 											</div>
@@ -896,7 +886,7 @@ function jiluid(id){
 								<div style="width:100%;margin-top:30px;height:98px;">
 									<div class="anliImagesDiv" style="width:100%;margin-top:30px;">
 										<div style="width:100px;min-height:110px;line-height: 18px;float:left;"><div style="width:100%;margin-top:25px;">案例照片&nbsp;:</div><div style="font-size:12px;">(可上传多张)</div></div>
-										<div class="addImageDiv" style="float:left;width:96px;height:96px;border:1px #dfdfdf solid;">
+										<div class="addImageDiv3" style="float:left;width:96px;height:96px;border:1px #dfdfdf solid;">
 											<div class="uploadClickClass" style="width:100%;height:100%;cursor: pointer;">
 												<div style="width:100%;height:100%;"><img id="uploadImageImg3" style="width:96px;height:96px;" src="images/addImage.png" />
 													<div id="cimage2Msg" class="wrongClass" style="display:none;font-size:12px;color:#fc6769;height:20px;position: absolute;bottom: 3px;left:12px;">至少上传一张</div>
@@ -907,6 +897,126 @@ function jiluid(id){
 									</div>
 								</div>
 							</div>
+							<div class="caselistDiv" style="overflow: hidden;">
+							</div>
+							<div style="width:100%;">
+								<div id="pageDiv" style="margin:0 auto;margin-top:20px;margin-bottom:20px;min-width: 385px;max-width: 470px;height:32px;">
+									<div class="M-box2" ></div>
+								</div>
+							</div>							
+							<script id="caselistTmpDiv" type="text/x-dot-template">
+								{{for(var i=0;i<it.length;i++){ }} 
+							<div class="alldivlist anliDivlist caseDetailsDiv{{=it[i].case_id}}" style="padding:20px;border:1px #999999 solid;height:auto;background: #fbfbfb;margin-top:20px;margin-bottom: 30px;overflow: hidden;position: relative;">
+								<div style="position: absolute;bottom:10px;right:10px;">
+									<div onclick="updateCaseObj({{=it[i].case_id}})" style="float:left;" class="hoverFont">修改</div>
+									<div onclick="deleteCaseObj({{=it[i].case_id}})" style="float:left;margin-left:10px;" class="hoverFont">删除</div>
+								</div>
+								<div style="width:100%;height:48px;">
+									<div style="width:100px;height:48px;line-height: 48px;float:left;">案例主题&nbsp;:</div>
+									<div style="width:400px;height:48px;line-height: 48px;float:left;position: relative;"><input class="ctitle" style="width:400px;height:48px;padding:6px;color:#333333;text-align: left;" value="{{=it[i].case_title}}" placeholder="请填写案例主题" type="text" />
+										<div class="ctitleMsg wrongClass" style="display:none;color:red;top:0px;right:8px;position: absolute;font-size:12px;">姓名不能超过5个字</div>
+								    </div>
+									<div style="width:100px;height:48px;line-height: 48px;float:left;"></div>
+								</div>
+								<div style="width:100%;margin-top:30px;height:48px;">
+									<div style="width:100px;height:48px;line-height: 48px;float:left;">品牌&nbsp;:</div>
+									<div style="width:200px;height:48px;line-height: 48px;float:left;position: relative;"><input class="cbrand" style="width:200px;height:48px;padding:6px;color:#333333;text-align: left;" value="{{=it[i].case_brand}}" placeholder="请填写品牌" type="text" /> 
+											<div class="cbrandMsg wrongClass" style="display:none;color:red;top:4px;right:8px;position: absolute;font-size:12px;">姓名不能超过5个字</div>
+									</div>
+									<div style="width:60px;height:48px;line-height: 48px;float:left;margin-left:30px;">行业&nbsp;:</div>
+									<div style="width:200px;height:48px;line-height: 48px;float:left;position: relative"><input class="cindustry" style="width:200px;height:48px;padding:6px;color:#333333;text-align: left;" value="{{=it[i].case_Industry}}" placeholder="请填写行业" type="text" /> 
+										<div class="cindustryMsg wrongClass" style="display:none;color:red;top:4px;right:8px;position: absolute;font-size:12px;">姓名不能超过5个字</div>
+									</div>
+									<div style="width:60px;height:48px;line-height: 48px;float:left;margin-left:30px;">产品&nbsp;:</div>
+									<div style="width:200px;height:48px;line-height: 48px;float:left;position: relative"><input class="cproduct" style="width:200px;height:48px;padding:6px;color:#333333;text-align: left;" value="{{=it[i].case_product}}" placeholder="请填写产品" type="text" />
+										<div class="cproductMsg wrongClass" style="display:none;color:red;top:4px;right:8px;position: absolute;font-size:12px;">姓名不能超过5个字</div>
+									</div>
+								</div>
+								<div style="width:100%;margin-top:30px;height:75px;">
+									<div style="width:100px;height:60px;line-height: 18px;float:left;">案例描述&nbsp;:</div>
+									<div style="width:975px;float:left;position: relative"><input class="cdesc" style="width:980px;height:75px;color:#333333;padding: 0 10px 43px;text-align: left;" placeholder="请填写案例描述" value="{{=it[i].case_desc}}" type="text" /> 
+										<div class="cdescMsg wrongClass" style="display:none;color:red;top:50px;right:8px;position: absolute;font-size:12px;">姓名不能超过5个字</div>
+									</div>
+								</div>
+								<div style="width:100%;margin-top:30px;height:98px;">
+									<div style="width:100px;height:96px;line-height: 18px;float:left;line-height: 96px;">案例置顶图&nbsp;:</div>
+									<div style="float:left;width:96px;height:96px;border:1px #dfdfdf solid;">
+										<div class="uploadClickClass" style="width:100%;height:100%;cursor: pointer;">
+											<div style="width:100%;height:100%;position: relative;"><img id="uploadImageImg{{=it[i].case_id}}" class="uploadImageImg" style="width:96px;height:96px;" src="../attachment{{=it[i].image}}" />
+												<div id="cimageMsg" class="wrongClass" style="display:none;font-size:12px;color:#fc6769;height:20px;position: absolute;bottom: 3px;left:12px;">上传主图错误</div>
+											</div>
+										</div>
+										<input id="uploadImageInput{{=it[i].case_id}}" onchange="ajaxFileUploadImage({{=it[i].case_id}},1)" accept="image/*" name="files" class="uploadClass" type="file" style="display:none;"/>
+									</div>
+									<div style="width:100px;height:96px;line-height: 18px;float:left;line-height: 96px;margin-left:24px;">自媒体弹窗&nbsp;:</div>
+									<div  class="addZiMeiTi" style="width:200px;float:left;height:96px;position: relative;display:none;">
+										<div style="width:96px;height:96px;float:left;"><img id="mtImage" style="width:96px;height:96px;" src="http://61.129.51.62:8080/GhWemediaWar//images/2300/201612021204profilePhoto陈翔六点半.jpg" /></div>
+										<div style="float:left;width:100px;height:96px;">
+											<div id="mtName" style="margin-top:12px;margin-left:15px;width:90px;height:16px;overflow: hidden;line-height:16px;color:black;font-weight: bold;font-size:14px;">陈翔</div>
+											<div id="mtPlatform" style="margin-top:6px;margin-left:15px;width:70px;height:18px;overflow: hidden;color:#333333;font-size:12px;">秒拍</div>
+											<div style="margin-top:6px;margin-left:15px;width:70px;height:33px;overflow: hidden;color:#333333;font-size:12px;">粉丝数：<br/><span id="mtFancount">2837000</span></div>
+										</div>
+									</div>
+									<div id="wrap2" class="wrap" attrCount="3" style="{{? it[i].childPublish.length==0}}display:none;{{?}}">
+										<div class="article_pic_left_btn">
+										     <img src="images/space_16_23.png" id="cardArrowLeft" class="live_card_arrow_left_physical" />
+										 </div>
+										<div class="puzzle_card" id="puzzle_card2">
+											<div class="showbox" id="showbox2">
+											  <ul id="article_pic_slider">
+{{for(var j=0;j<it[i]['childPublish'].length;j++){ }} 
+							<li class="addZiMeiTiSu" attrptype="{{=it[i]['childPublish'][j].publishTypeObj.publishFieldId}}" attrpid="{{=it[i]['childPublish'][j].id}}"><div style="width: 200px; float: left; height: 96px; position: relative; display: block;" class="addZiMeiTiSub" attrid="651"><div style="width:96px;height:96px;float:left;"><img src="../attachment{{=it[i]['childPublish'][j].image}}" style="width:96px;height:96px;" id="mtImage"></div>
+								<div style="float:left;width:100px;height:96px;"><div style="margin-top:12px;margin-left:15px;width:90px;height:16px;overflow: hidden;line-height:16px;color:black;font-weight: bold;font-size:14px;" id="mtName">{{=it[i]['childPublish'][j].publishName}}</div><div style="margin-top:6px;margin-left:15px;width:70px;height:18px;overflow: hidden;color:#333333;font-size:12px;" id="mtPlatform">{{=it[i]['childPublish'][j].publishTypeObj.publishFieldName}}</div>
+								<div style="margin-top:6px;margin-left:15px;width:70px;height:33px;overflow: hidden;color:#333333;font-size:12px;">粉丝数：<br><span id="mtFancount">{{=it[i]['childPublish'][j].platformFans}}</span></div></div></div></li>
+						{{} }}
+											  </ul>
+											</div>
+										</div>
+								        <div class="article_pic_right_btn">
+								          <img src="images/space_16_23.png" id="cardArrowRight" class="live_card_arrow_right_physical" />
+								        </div>
+									</div>
+									<div class="addPublishMT" style="float:left;width:96px;height:96px;border:1px #dfdfdf solid;">
+										<a onclick="jiluid({{=it[i].case_id}})" id="addPublishA" href="#addPublishDiv" style="text-decoration: none;">
+											<div class="fbClickClass" style="width:100%;height:100%;cursor: pointer;">
+												<div style="width:100%;height:100%;"><img style="width:96px;height:96px;" src="images/addImage.png" /></div>
+											</div>
+										</a>
+									</div>
+								</div>
+								<div style="width:100%;margin-top:30px;height:98px;">
+									<div class="anliImagesDiv" style="width:100%;margin-top:30px;">
+										<div style="width:100px;min-height:110px;line-height: 18px;float:left;"><div style="width:100%;margin-top:25px;">案例照片&nbsp;:</div><div style="font-size:12px;">(可上传多张)</div></div>
+{{for(var k=0;k<it[i].caseImageList.length;k++){}}
+<div class="anliImageDis" style="float: left; width: 215px; height: 96px; border: 1px solid rgb(223, 223, 223); margin-right: 20px; position: relative; display: block;">
+	<div style="width:96px;height:96px;cursor: pointer;float:left;" class="uploadClickClass">
+		<div style="width:100%;height:100%;"><img src="/ghplat/attachment{{=it[i].caseImageList[k].imageUrl}}" style="width:96px;height:96px;" class="imageShowDiv"></div>
+	</div>
+	<div style="width:114px;height:96px;float:left;">
+		<div style="margin-top:6px;height:24px;"><input style="padding:2px;color:#333333;text-align: left;width:110px;height:24px;" placeholder="填写图片的标题" value="{{=it[i].caseImageList[k].imageTitle}}" class="cimageTitle"></div>
+		<div style="margin-top:8px;margin-left:5px;">
+			<textarea cols="3" rows="20" style="font-size:14px;padding:2px;color:#333333;text-align: left;width:110px;height:50px;" class="cimageDetails" placeholder="填写图片的描述" >{{=it[i].caseImageList[k].imageDesc}}</textarea>
+		</div>
+	</div>
+	<div style="float:left;cursor:pointer;width:22px;position: absolute;top:-15px;right:-10px;" onclick="colseDiv(this)" class="colseImageDiv"><img style="height:22px;" src="images/colse.jpg"></div>
+</div>
+{{} }}
+										<div class="addImageDiv{{=it[i].case_id}}2" style="float:left;width:96px;height:96px;border:1px #dfdfdf solid;">
+											<div class="uploadClickClass" style="width:100%;height:100%;cursor: pointer;">
+												<div style="width:100%;height:100%;"><img id="uploadImageImg{{=it[i].case_id}}2" style="width:96px;height:96px;" src="images/addImage.png" />
+													<div id="cimage2Msg" class="wrongClass" style="display:none;font-size:12px;color:#fc6769;height:20px;position: absolute;bottom: 3px;left:12px;">至少上传一张</div>
+												</div>
+											</div>
+											<input id="uploadImageInput{{=it[i].case_id}}2" multiple="multiple" accept="image/*" onchange="ajaxFileUploadImage({{=it[i].case_id}}2,2)" name="files" class="uploadClass" type="file" style="display:none;"/>
+										</div>
+									</div>
+								</div>
+							</div>
+								{{} }}
+							</script>
+							<script> 
+								getCaseList(1);//获取案例列表数据
+							</script> 
 						</div>
 					</div>
 					<div class="saveanliDiv" style="width:100%;height:45px;display:none;">

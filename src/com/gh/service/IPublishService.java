@@ -3,6 +3,7 @@ package com.gh.service;
 import java.util.List;
 import java.util.Map;
 
+import com.gh.dto.CartListDTO;
 import com.gh.dto.CaseDTO;
 import com.gh.dto.PublishForm;
 import com.gh.dto.PublishTypeDTO;
@@ -46,5 +47,14 @@ public interface IPublishService {
 	 * 保存案例
 	 */
 	void saveCase(Case caseObj, String imageArray, String publishArray,String beforeUrl) throws Exception;
+
+	void updateCase(Case caseObj, String imageArray, String publishArray, String beforeUrl) throws Exception;
+
+	void delete(Long case_id) throws Exception;
+
+	List<Publish> getCartList(String ids) throws Exception;
+
+	Publish getpublishDetails(String publishghid) throws Exception;
+	
 
 }

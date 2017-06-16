@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.gh.dto.CartListDTO;
 import com.gh.dto.CaseDTO;
 import com.gh.dto.PublishForm;
 import com.gh.dto.PublishTypeDTO;
@@ -37,6 +38,25 @@ public class PublishController extends BaseControllerSupport{
 	private IPublishService publishService;
 	@Resource
 	private IBaseService<Publish> baseService;
+	@Resource
+	private IBaseService<Case> baseCaseService;
+	
+	
+	@RequestMapping(value = "/getCartList", method = {RequestMethod.POST})
+	public @ResponseBody String getCartList(HttpServletRequest request){
+		jsonObject.clear();
+		try {
+			String ids = request.getParameter("pIds");
+			List<Publish> publishlist = publishService.getCartList(ids);
+			jsonObject.put("publishList", JSONArray.fromObject(publishlist,jsonConfig));
+			jsonObject.put("result", "yes");
+		} catch (Exception e) {
+			jsonObject.put("result", "no");
+			e.printStackTrace();
+		}
+		return jsonObject.toString();
+	}
+	
 	
 	@RequestMapping(value = "/getPublish", method = {RequestMethod.GET})
 	public String getPublish(HttpServletRequest request){
@@ -53,7 +73,6 @@ public class PublishController extends BaseControllerSupport{
 	@RequestMapping(value = "/addCase", method = {RequestMethod.GET})
 	public String addPublish(HttpServletRequest request){
 		try {
-			jsonObject.clear();
 			Media media = (Media)request.getSession().getAttribute("user");
 			if(media==null){
 				return "redirect:/index";
@@ -77,7 +96,7 @@ public class PublishController extends BaseControllerSupport{
 				jsonObject.put("reason", "nologin");
 			}else{
 				String beforeUrl = request.getSession().getServletContext().getRealPath("/attachment");
-				caseObj.setMedia_id(media.getMediaId());
+				caseObj.setMedia_id(media.getId());
 				if(caseObj.getImage()==null){
 					jsonObject.put("result", "no");
 					jsonObject.put("reason", "noImage");
@@ -92,6 +111,44 @@ public class PublishController extends BaseControllerSupport{
 				caseObj.setCase_status("1");
 				caseObj.setGhid(UUID.randomUUID().toString().replace("-", ""));
 				publishService.saveCase(caseObj,imageArray,publishArray,beforeUrl);
+				jsonObject.put("result", "yes");
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return jsonObject.toString();
+	}
+	
+	@RequestMapping(value = "/updateCase", method = {RequestMethod.POST})
+	public @ResponseBody String updateCase(HttpServletRequest request,String imageArray,String publishArray,Case caseObj){
+		try {
+			jsonObject.clear();
+			Media media = (Media)request.getSession().getAttribute("user");
+			if(media==null){
+				jsonObject.put("result", "no");
+				jsonObject.put("reason", "nologin");
+			}else{
+				String beforeUrl = request.getSession().getServletContext().getRealPath("/attachment");
+				publishService.updateCase(caseObj,imageArray,publishArray,beforeUrl);
+				jsonObject.put("result", "yes");
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return jsonObject.toString();
+	}
+	
+	@RequestMapping(value = "/deleteCase", method = {RequestMethod.POST})
+	public @ResponseBody String deleteCase(HttpServletRequest request){
+		try {
+			jsonObject.clear();
+			Media media = (Media)request.getSession().getAttribute("user");
+			if(media==null){
+				jsonObject.put("result", "no");
+				jsonObject.put("reason", "nologin");
+			}else{
+				Long case_id = Long.parseLong(request.getParameter("case_id"));
+				publishService.delete(case_id);
 				jsonObject.put("result", "yes");
 			}
 		}catch(Exception e){
@@ -128,7 +185,7 @@ public class PublishController extends BaseControllerSupport{
 				jsonObject.put("reason", "nologin");
 			}else{
 				
-				publish.setMediaId(media.getMediaId());
+				publish.setMediaId(media.getId());
 				//publish.setPublishTime(new Date());
 				publish.setGhid(UUID.randomUUID().toString().replace("-", ""));
 				if(publish.getImage()==null){
@@ -162,7 +219,7 @@ public class PublishController extends BaseControllerSupport{
 				jsonObject.put("result", "no");
 				jsonObject.put("reason", "nologin");
 			}else{
-				publish.setMediaId(media.getMediaId());
+				publish.setMediaId(media.getId());
 				publish.setPublishTime(new Date());
 				publish.setGhid(UUID.randomUUID().toString().replace("-", ""));
 				if(publish.getImage()==null){
@@ -178,7 +235,6 @@ public class PublishController extends BaseControllerSupport{
 				publish.setPublishStatus("1");
 				StringUtil.setPublishInfo(publish, infoArray);
 				StringUtil.setPublishPrice(publish, priceArray);
-				System.out.println(publish.toString());
 				baseService.save(publish);
 				jsonObject.put("result", "yes");
 			}
@@ -195,7 +251,7 @@ public class PublishController extends BaseControllerSupport{
 			publishForm.setPublishId(publishId);
 			if(request.getSession().getAttribute("user")!=null){
 				Media media = (Media)request.getSession().getAttribute("user");
-				publishForm.setMediaId(media.getMediaId());
+				publishForm.setMediaId(media.getId());
 			}
 			PageList<CaseDetails> caseList = publishService.getCaseList(publishForm);
 			request.setAttribute("caseList", caseList);
@@ -244,5 +300,15 @@ public class PublishController extends BaseControllerSupport{
 		}
 		return jsonObject.toString();
 	}
-	
+	@RequestMapping(value = "/getPublishDetails", method = {RequestMethod.GET})
+	public String getPublishDetails(HttpServletRequest request){
+		try {
+			String publishghid = request.getParameter("pghid");
+			Publish pdetails = publishService.getpublishDetails(publishghid);
+			request.setAttribute("pdetails", pdetails);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return "/front/publishDetails";
+	}
 }

@@ -15,9 +15,23 @@
 		<meta name="apple-mobile-web-app-status-bar-style" content="black">
 		<meta name="apple-mobile-web-app-capable" content="yes">
 		<meta name="format-detection" content="telephone=no">
-
+		<script src="../js/jquery-1.8.2.min.js" type="text/javascript"></script>
+		<script src="../js/doT.min.js" type="text/javascript"></script>
+		<link rel="stylesheet" type="text/css" href="../js/fancybox/jquery.fancybox.css" media="screen" />
+		<script type="text/javascript" src="../js/fancybox/jquery.fancybox.js"></script>
 		<link rel="stylesheet" href="plugins/layui/css/layui.css" media="all" />
 		<link rel="stylesheet" type="text/css" href="http://www.jq22.com/jquery/font-awesome.4.6.0.css">
+		<script type="text/javascript">
+		
+// 		$("#zimeitiId").fancybox({
+// 			'titlePosition': 'inside',
+// 			'transitionIn': 'none',
+// 			'transitionOut': 'none',
+// 			'beforeShow':function(){
+// 				searchPublish();
+// 			}
+// 		});
+		</script>
 	</head>
 
 	<body>
@@ -60,10 +74,58 @@
 				</div>
 				<div class="layui-form-item showhide media" style="display:none;">
 					<label class="layui-form-label">自媒体</label>
-					<a href="javascript:;" class="layui-btn layui-btn-small" id="search">
-						<i class="layui-icon"></i> 自媒体选择
-					</a>
+					<div class="layui-input-block">
+<!-- 					<a href="#zimeitiSelectDiv" id="zimeitiId" class="layui-btn layui-btn-small" id="search"> -->
+<!-- 						<i class="layui-icon"></i> 自媒体选择 -->
+							<input type="text" name="pid" lay-verify="title" autocomplete="off" placeholder="请输入媒体的id" class="layui-input">
+<!-- 					</a> -->
+					</div>
 				</div>
+<!-- 				<div style="display:none;"> -->
+<!-- 					<div id="zimeitiSelectDiv" style="width:300px;"> -->
+<!-- 					</div> -->
+<!-- 				</div> -->
+<!-- <!-- 				<script id="publishTmpDiv" type="text/x-dot-template"> --> 
+<!-- 						<div style="width:100%;"> -->
+<!-- 							<div style="float:left;"><input type="text" id="searchStr" autocomplete="off" placeholder="请输入搜索词" class="layui-input"></div> -->
+<!-- 							<div style="float:left;margin-left:10px;line-height: 40px;cursor:pointer;"><i class="layui-icon"></i> 搜索</div> -->
+<!-- 						</div> -->
+<!-- 						<table style="width:100%;font-size: 14px;color:#333333;font-family: 微软雅黑;border-collapse:separate; border-spacing:0px 5px;margin-top:2px;"> -->
+<!-- 							<tr><td>标题</td><td>粉丝数</td><td>类型</td><td>平台</td><td>操作</td></tr> -->
+<!-- 					{{for(var i=0;i<it.length;i++){ }}  -->
+<!-- 							<tr><td>{{=it[i].publishName}}</td><td>{{=it[i].platformFans}}</td><td>{{=it[i].publishTypeObj.publishFieldName}}</td><td>{{=it[i].platformName}}</td><td><button style="width:40px;height:20px;line-height: 20px;text-align: center;background-color: #009688;border: medium none;border-radius: 2px; color: #fff;cursor: pointer;">选择</button></td></tr> -->
+<!-- 					{{ } }}  -->
+<!-- 						</table> -->
+<!-- 				</script> -->
+<!-- <!-- 				<script type="text/javascript"> --> 
+<!-- // 				function searchPublish(){ -->
+<!-- // 					var pbsearch = $('#searchStr').val(); -->
+<!-- // 					var datajson = {}; -->
+<!-- // 					datajson.pageCount = 30; -->
+<!-- // 					datajson.pageSize = 1; -->
+<!-- // 					if(pbsearch!=null&&pbsearch!=''){ -->
+<!-- // 						datajson.publishName = pbsearch; -->
+<!-- // 					} -->
+<!-- // 					$.ajax({ -->
+<!-- // 						type: "post", -->
+<!-- // 						url: "../../getPublishStr", -->
+<!-- // 						async: false, //_config.async, -->
+<!-- // 						dataType: 'json', -->
+<!-- // 						data:datajson, -->
+<!-- // 						success: function(data, status, xhr) { -->
+<!-- // 							if(data.result=="yes"){ -->
+<!-- // 								var plist = data.datas; -->
+<!-- // 								$('#zimeitiSelectDiv').html(""); -->
+<!-- // 								var htmla =  doT.template($("#publishTmpDiv").text()); -->
+<!-- // 								console.log(htmla(plist)); -->
+<!-- // 								$('#zimeitiSelectDiv').html(htmla(plist)); -->
+<!-- // 								var pagecount = data.pageCount; -->
+<!-- // 								var pagesize = data.pageSize; -->
+<!-- // 							} -->
+<!-- // 						} -->
+<!-- // 					}); -->
+<!-- // 				} -->
+<!-- <!--  				</script>  --> 
 				<div class="layui-form-item showhide image">
 					<label class="layui-form-label">图片</label>
 					<div class="layui-inline">
