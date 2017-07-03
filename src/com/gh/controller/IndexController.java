@@ -1,13 +1,22 @@
 package com.gh.controller;
 
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.image.BufferedImage;
+import java.net.InetAddress;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.UUID;
 
 import javax.annotation.Resource;
+import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -191,6 +200,25 @@ public class IndexController extends BaseControllerSupport{
 	}
 	
 	
+	@RequestMapping(value="/vefityMobile")
+	public @ResponseBody String vefityMobile(HttpServletRequest request){
+		try {
+			 jsonObject.clear();
+			 String index = request.getParameter("index");
+			 String mobile = request.getParameter("mobile");
+			 int isexists = userService.isExistsMobile(mobile, index);
+			 if(isexists==-1){
+				 jsonObject.put("result", "yes");
+			 }else{
+				 jsonObject.put("result", "no");
+			 }
+		} catch (Exception e) {
+			jsonObject.put("result", "no");
+			e.printStackTrace();
+		}
+		return jsonObject.toString();
+	}
+	
 	@RequestMapping(value="/login")
 	public @ResponseBody String login(HttpServletRequest request){
 		try {
@@ -198,6 +226,13 @@ public class IndexController extends BaseControllerSupport{
 			 String mobile = request.getParameter("mobile");
 			 String password = request.getParameter("password");
 			 String type = request.getParameter("type");
+			 String strCode = request.getParameter("strCode");
+			 String sessionStrCode = (String) request.getSession().getAttribute("strCode");
+			 if(!strCode.equals(sessionStrCode)){
+				 jsonObject.put("result", "no");
+				 jsonObject.put("reason", "验证码不对");
+				 return jsonObject.toString();
+			 }
 			 if("自媒体".equals(type)){
 				 Media media = userService.userMediaLogin(mobile, password);
 				 if(media!=null){
@@ -206,19 +241,29 @@ public class IndexController extends BaseControllerSupport{
 					 jsonObject.put("result", "yes");
 				 }else{
 					 jsonObject.put("result", "no");
+					 jsonObject.put("reason", "用户名或密码不对");
 				 }
 			}else if("广告主".equals(type)){
 				Advertiser ad = userService.userAdvertiserLogin(mobile, password);
 				if(ad!=null){
+					InetAddress ia = InetAddress.getLocalHost();
+					String macStr = SendMessageUtil.getLocalMac(ia);
+					String userflag = ad.getUserFlag().substring(0, 1);
+					if(!ad.getMachineId().equals(macStr)&&userflag.equals("1")){
+						 jsonObject.put("result", "no");
+						 jsonObject.put("reason", "只能在一台机器下登陆");
+					}
 					 request.getSession().setAttribute("user", ad);
 					 request.getSession().setAttribute("type", "广告主");
 					 jsonObject.put("result", "yes");
 				 }else{
 					 jsonObject.put("result", "no");
+					 jsonObject.put("reason", "用户名或密码不对");
 				 }
 			}
 		} catch (Exception e) {
 			jsonObject.put("result", "no");
+			jsonObject.put("reason", "系统错误");
 			e.printStackTrace();
 		}
 		return jsonObject.toString();
@@ -237,4 +282,67 @@ public class IndexController extends BaseControllerSupport{
 		}
 		return jsonObject.toString();
 	}
+	
+	@RequestMapping(value="/authCode")
+    public void getAuthCode(HttpServletRequest request, HttpServletResponse response){
+		try {
+			int width = 63;
+			int height = 37;
+			Random random = new Random();
+			//设置response头信息
+			//禁止缓存
+			response.setHeader("Pragma", "No-cache");
+			response.setHeader("Cache-Control", "no-cache");
+			response.setDateHeader("Expires", 0);
+			
+			//生成缓冲区image类
+			BufferedImage image = new BufferedImage(width, height, 1);
+			//产生image类的Graphics用于绘制操作
+			Graphics g = image.getGraphics();
+			//Graphics类的样式
+			g.setColor(this.getRandColor(200, 250));
+			g.setFont(new Font("Times New Roman",0,28));
+			g.fillRect(0, 0, width, height);
+			//绘制干扰线
+			for(int i=0;i<40;i++){
+				g.setColor(this.getRandColor(130, 200));
+				int x = random.nextInt(width);
+				int y = random.nextInt(height);
+				int x1 = random.nextInt(12);
+				int y1 = random.nextInt(12);
+				g.drawLine(x, y, x + x1, y + y1);
+			}
+			
+			//绘制字符
+			String strCode = "";
+			for(int i=0;i<4;i++){
+				String rand = String.valueOf(random.nextInt(10));
+				strCode = strCode + rand;
+				g.setColor(new Color(20+random.nextInt(110),20+random.nextInt(110),20+random.nextInt(110)));
+				g.drawString(rand, 13*i+6, 28);
+			}
+			//将字符保存到session中用于前端的验证
+			request.getSession().setAttribute("strCode", strCode);
+			g.dispose();
+			
+			ImageIO.write(image, "JPEG", response.getOutputStream());
+			response.getOutputStream().flush();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+    }
+	
+	//创建颜色
+   public Color getRandColor(int fc,int bc){
+        Random random = new Random();
+        if(fc>255)
+            fc = 255;
+        if(bc>255)
+            bc = 255;
+        int r = fc + random.nextInt(bc - fc);
+        int g = fc + random.nextInt(bc - fc);
+        int b = fc + random.nextInt(bc - fc);
+        return new Color(r,g,b);
+    }
 }

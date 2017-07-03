@@ -12,6 +12,10 @@
 $(document).ready(function(){
 	var cartIds = getCookie("cartIds");
 	getCartList(cartIds);
+	var uesFlag = $('#uesFlag').val(); var flag2 = uesFlag.substring(1,2);
+	if(flag2=='1'){
+		$('#imprtDataDiv').show();
+	}
 })
 function getCartList(ids){
 	$.ajax({
@@ -28,10 +32,10 @@ function getCartList(ids){
 		   }
 	});
 }
-function selectPrice(tt){
+function selectPrice(tt,pid){
 	$(tt).parent().parent().find('.priceclass').hide();
 	var column = $(tt).val();
-	$('span[attrStr='+column+']').show();
+	$('span[attrStr='+column+'-'+pid+']').show();
 	selecttotal();
 }
 function selecttotal(){
@@ -103,7 +107,7 @@ function saveOrder(){
 			var orderObj = {};
 			orderObj.publishId = $($('tr[attrflag="1"]')[i]).attr('attrPid');
 			orderObj.priceStr = $($('tr[attrflag="1"]')[i]).find('.priceStrSel').val();
-			orderObj.price = $($('tr[attrflag="1"]')[i]).find('span[attrStr="'+orderObj.priceStr+'"]').html();
+			orderObj.price = $($('tr[attrflag="1"]')[i]).find('span[attrStr="'+orderObj.priceStr+'-'+orderObj.publishId+'"]').html();
 			orderObj.publishType = $($('tr[attrflag="1"]')[i]).attr('attrPtype');
 			totalPrice = totalPrice+parseInt(orderObj.price);
 			orderArray.push(orderObj);
@@ -120,7 +124,7 @@ function saveOrder(){
 			   dataType:"json",
 			   success: function(msg){
 				   if(msg.result=='yes'){
-					   
+					   location.href="../getOrderList";
 				   }else{
 					   $('#qiyeloginA').click();
 				   }
@@ -129,10 +133,10 @@ function saveOrder(){
 	}
 }
 function dataExport(){
-// 	var user= $('#userType').val();
-// 	if(user==null||user==''){
-// 		$('#qiyeloginA').click();
-// 	}else{
+	var user= $('#userType').val();
+	if(user==null||user==''){
+		$('#qiyeloginA').click();
+	}else{
 		var totalPrice = 0;
 		var orderArray = new Array();
 		for(var i=0;i<$('tr[attrflag="1"]').length;i++){
@@ -156,13 +160,13 @@ function dataExport(){
 			   dataType:"json",
 			   success: function(msg){
 				   if(msg.result=='yes'){
-					   
+					   window.open("../downFile")
 				   }else{
 					   $('#qiyeloginA').click();
 				   }
 			   }
 		});
-// 	}
+	}
 }
 function importData(){
 	dataExport();
@@ -190,6 +194,7 @@ function selectWtdl(tt){
 </head>
 <body style="padding:0px;margin:0px;">
 <input type="hidden" value="${sessionScope.user.id}" id="userType" />
+<input type="hidden" value="${sessionScope.user.userFlag }" id="uesFlag"/>
 <%@include file="header.jsp" %>
 <div style="width:1200px;margin:0 auto;height:1px;background: rgb(242,242,242);"></div>
 <div style="width:1200px;margin:30px auto 10px;overflow: hidden;">
@@ -201,7 +206,7 @@ function selectWtdl(tt){
 			<div style="cursor:pointer;float:left;margin-left:10px;color:#333333;font-size:12px;line-height: 20px;">全选</div>
 			<div onclick="deleteAll()" style="cursor:pointer;float:left;margin-left:30px;font-size:14px;line-height: 19px;" class="hoverFont">全部删除</div>
 		</div>
-		<div onclick="importData()" style="width:70px;height:22px;border:1px #333333 solid;text-align: center;line-height: 22px;float: right;font-size:14px;cursor:pointer;">导出方案</div>
+		<div id="imprtDataDiv" onclick="importData()" style="display:none;width:70px;height:22px;border:1px #333333 solid;text-align: center;line-height: 22px;float: right;font-size:14px;cursor:pointer;">导出方案</div>
 		<div style="width:110px;margin-top:2px;height:22px;text-align: center;line-height: 22px;float: right;font-size:14px;cursor:pointer;margin-right:20px;">
 			<div style="cursor:pointer;width:16px;height:16px;border:1px #333333 solid;position: relative;float:left;" onclick="selectWtdl(this)">
 				<div wdtlflag="-1" class="wdtlSelectDiv" style="position: absolute;top:0px;left:0px;display:none;">
@@ -224,14 +229,14 @@ function selectWtdl(tt){
 			<td><div style="margin-top:1px;">{{=it.publishList[i].publishTypeObj.publishFieldName}}</div></td>
 			<td class="fansTd">{{=it.publishList[i].platformFans}}</td>
 			<td>
-			<select class="priceStrSel" style="width:100px;height:25px;text-align: center;" onchange="selectPrice(this)">
+			<select class="priceStrSel" style="width:100px;height:25px;text-align: center;" onchange="selectPrice(this,{{=it.publishList[i].id}})">
 				{{ for(var prop in it.publishList[i].priceMap) { }}
 				<option value="{{=prop}}">{{=prop}}</option>
 				{{}}}
 			</select>
 			</td><td>
 				{{ var ind = 0; for(var prop in it.publishList[i].priceMap) { ind=ind+1;}}
-				<span attrStr="{{=prop}}" style="{{? ind==2}}display:none;{{?}}" class="priceclass">{{=it.publishList[i].priceMap[prop]}}</span>
+				<span attrStr="{{=prop}}-{{=it.publishList[i].id}}" style="{{? ind==2}}display:none;{{?}}" class="priceclass">{{=it.publishList[i].priceMap[prop]}}</span>
 				{{}}}
 			</td>
 			<td><span onclick="deleteCPublish(this,{{=it.publishList[i].id}})" class="hoverFont">删除</span></td></tr>
@@ -242,10 +247,10 @@ function selectWtdl(tt){
 	</div>
 	<div style="width:1200px;height:52px;margin-top:50px;">
 		<div style="width:1060px;border: 1px #dfdfdf solid;border-right: 0px;font-size:14px;float:left;">
-			<span style="line-height: 52px;margin-left:30px;">投放数量<span class="cartCount" style="color:red;margin-left:1px;">2</span>个</span>
-			<span style="margin-left:10px;">预计覆盖人数<span class="cartPersonCount" style="color:red;margin-left:3px;">20000</span></span>
-			<span style="margin-left:10px;">预计阅读人数<span class="cartViewCount" style="color:red;margin-left:3px;">16000</span></span>
-			<span style="float:right;margin-right:15px;line-height: 45px;">合计：<span class="moneytotal" style="color:red;font-size:24px;">16000</span></span>
+			<span style="line-height: 52px;margin-left:30px;">投放数量<span class="cartCount" style="color:red;margin-left:1px;">0</span>个</span>
+			<span style="margin-left:10px;">预计覆盖人数<span class="cartPersonCount" style="color:red;margin-left:3px;">0</span></span>
+			<span style="margin-left:10px;">预计阅读人数<span class="cartViewCount" style="color:red;margin-left:3px;">0</span></span>
+			<span style="float:right;margin-right:15px;line-height: 45px;">合计：<span class="moneytotal" style="color:red;font-size:24px;">0</span></span>
 		</div>
 		<div onclick="saveOrder()" style="width:139px;height:54px;color:white;font-size:18px;float:left;background: #fc6769;line-height: 54px;text-align: center;cursor: pointer;">立即推广</div>
 	</div>

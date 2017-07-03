@@ -11,5 +11,7 @@ public interface IOrderService {
 	public void saveOrder(int type,long userid,String publishArray,String totalCount,String flag) throws Exception;
 
 	public PageList<Order> getOrderList(PublishForm publishForm, long userid) throws Exception;
+
+	public void deleteOrder(long orderId) throws Exception;
 	
 }

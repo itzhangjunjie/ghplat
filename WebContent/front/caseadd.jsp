@@ -53,6 +53,8 @@ function changeDiv(msg,tt){
 	}else{
 		$('#submitAdd').attr('attrId',"1");
 		$('#colseAdd').attr('attrId',"1");
+		$('.addbasemsgDiv').hide();
+		$('.basemsglistDiv').show();
 	}
 	$('.alldiv').hide();
 	$('.'+msg).show();
@@ -77,6 +79,7 @@ function selectPrice(tt){
 	$(priceDiv).show();
 	$(priceDiv).removeClass('addpriceDiv').addClass('priceDiv');
 	$($(priceDiv).find('.priceInput')).attr('placeholder',pricevalue);
+	$($(priceDiv).find('.priceFontDiv')).html(pricevalue+":");
 	$($(priceDiv).find('.priceInput')).attr('columnName',$(tt).val());
 	$(tt).parent().parent().append(priceDiv);
 }
@@ -213,8 +216,8 @@ function sumbitAddPublish(){
 				pbpriceArray.push(pbpriceobj);
 			}
 		}
+		var publisharea = $('.publisharea').val();
 		//alert(pbpriceArray[0].columnName+"||"+pbpriceArray[0].columnValue+"||"+pbpriceArray[0].fieldName);
-		
 		if(statusflag==2){//attrId = 2 编辑Publish
 			var spid = $('#submitAdd').attr('attrPid');
 			$.ajax({
@@ -230,6 +233,7 @@ function sumbitAddPublish(){
 					'publishName':pbname,
 					'publishField':pbfield,
 					'platformName':pbplatform,
+					'publishRegion':publisharea,
 					'platformFans':pbfancount,
 					'infoArray':JSON.stringify(pbinfoArray),
 					'priceArray':JSON.stringify(pbpriceArray)
@@ -254,6 +258,7 @@ function sumbitAddPublish(){
 					'publishField':pbfield,
 					'platformName':pbplatform,
 					'platformFans':pbfancount,
+					'publishRegion':publisharea,
 					'infoArray':JSON.stringify(pbinfoArray),
 					'priceArray':JSON.stringify(pbpriceArray)
 				},
@@ -267,31 +272,31 @@ function sumbitAddPublish(){
 	}else{// attrId = 20 是保存案例
 		var ctitle = $('#ctitle').val();
 		if(ctitle==''||ctitle.length>40){
-			$('.ctitleMsg').val('填写主题错误');
+			$('.ctitleMsg').html('填写主题错误');
 			$('.ctitleMsg').show();
 			return;
 		}
 		var cbrand = $('#cbrand').val();
 		if(cbrand==''||cbrand.length>10){
-			$('.cbrandMsg').val('填写品牌错误');
+			$('.cbrandMsg').html('填写品牌错误');
 			$('.cbrandMsg').show();
 			return;
 		}
 		var cindustry = $('#cindustry').val();
 		if(cindustry==''||cindustry.length>10){
-			$('.cindustryMsg').val('填写行业错误');
+			$('.cindustryMsg').html('填写行业错误');
 			$('.cindustryMsg').show();
 			return;
 		}
 		var cproduct = $('#cproduct').val();
 		if(cproduct==''||cproduct.length>10){
-			$('.cproductMsg').val('填写产品错误');
+			$('.cproductMsg').html('填写产品错误');
 			$('.cproductMsg').show();
 			return;
 		}
 		var cdesc = $('#cdesc').val();
-		if(cdesc==''||cdesc.length>10){
-			$('.cdescMsg').val('填写详情错误');
+		if(cdesc==''||cdesc.length>300){
+			$('.cdescMsg').html('填写详情错误');
 			$('.cdescMsg').show();
 			return;
 		}
@@ -478,19 +483,20 @@ function addBaseAnLiMsgDiv(){
 	//$('.basemsglistDiv').hide();
 }
 function editPublish(spid,index){
-	$('#uploadImageImg1').attr('src','../attachment'+plist[index].image);
+	$('#uploadImageImg1').attr('src','/ghplat/attachment'+plist[index].image);
 	var pid = plist[index].publishTypeObj.publishFieldId;
 	$("#pbtype").find("option[value='"+pid+"']").attr("selected",true);
 	changeType($("#pbtype"));
 	$('#pbname').val(plist[index].publishName);
 	$('#pbfancount').val(plist[index].platformFans);
 	$("#pbfield"+pid).find("option[value='"+plist[index].publishField+"']").attr("selected",true);
+	$('.publisharea').find("option[value='"+plist[index].publishRegion+"']").attr("selected",true);
 	var info01 = plist[index].info01;
 	var info02 = plist[index].info02;
 	var info03 = plist[index].info03;
 	var info04 = plist[index].info04;
 	var info05 = plist[index].info05;
-	console.log(info01+"||"+info02+"||"+info03+"||"+info04+"||"+info05)
+	//console.log(info01+"||"+info02+"||"+info03+"||"+info04+"||"+info05)
 	if(info01!=null&&info01!=''&&info01!='undefined'){
 		$(".select"+pid).find("[columnname='1']").val(info01);
 	}
@@ -511,11 +517,13 @@ function editPublish(spid,index){
 	var price03 = plist[index].price03;
 	var price04 = plist[index].price04;
 	var price05 = plist[index].price05;
+	$('.priceDiv').hide();
 	if(price01!=null&&price01!=''&&price01!='undefined'){
 		var priceDiv = $('.addpriceDiv').clone();
 		$(priceDiv).show();
 		$(priceDiv).removeClass('addpriceDiv').addClass('priceDiv');
 		$($(priceDiv).find('.priceInput')).val(price01);
+		$($(priceDiv).find('.priceFontDiv')).html($('option[attrPriceName="price01"]').html()+":");
 		$($(priceDiv).find('.priceInput')).attr('columnName',1);
 		$('.ppricetr'+pid).children('td[colspan="2"]').append(priceDiv);
 	}
@@ -524,6 +532,7 @@ function editPublish(spid,index){
 		$(priceDiv).show();
 		$(priceDiv).removeClass('addpriceDiv').addClass('priceDiv');
 		$($(priceDiv).find('.priceInput')).val(price02);
+		$($(priceDiv).find('.priceFontDiv')).html($('option[attrPriceName="price02"]').html()+":");
 		$($(priceDiv).find('.priceInput')).attr('columnName',2);
 		$('.ppricetr'+pid).children('td[colspan="2"]').append(priceDiv);
 	}
@@ -533,6 +542,7 @@ function editPublish(spid,index){
 		$(priceDiv).removeClass('addpriceDiv').addClass('priceDiv');
 		$($(priceDiv).find('.priceInput')).val(price03);
 		$($(priceDiv).find('.priceInput')).attr('columnName',3);
+		$($(priceDiv).find('.priceFontDiv')).html($('option[attrPriceName="price03"]').html()+":");
 		$('.ppricetr'+pid).children('td[colspan="2"]').append(priceDiv);
 	}
 	if(price04!=null&&price04!=''&&price04!='undefined'){
@@ -541,6 +551,7 @@ function editPublish(spid,index){
 		$(priceDiv).removeClass('addpriceDiv').addClass('priceDiv');
 		$($(priceDiv).find('.priceInput')).val(price04);
 		$($(priceDiv).find('.priceInput')).attr('columnName',4);
+		$($(priceDiv).find('.priceFontDiv')).html($('option[attrPriceName="price04"]').html()+":");
 		$('.ppricetr'+pid).children('td[colspan="2"]').append(priceDiv);
 	}
 	if(price05!=null&&price05!=''&&price05!='undefined'){
@@ -548,6 +559,7 @@ function editPublish(spid,index){
 		$(priceDiv).show();
 		$(priceDiv).removeClass('addpriceDiv').addClass('priceDiv');
 		$($(priceDiv).find('.priceInput')).val(price05);
+		$($(priceDiv).find('.priceFontDiv')).html($('option[attrPriceName="price05"]').html()+":");
 		$($(priceDiv).find('.priceInput')).attr('columnName',5);
 		$('.ppricetr'+pid).children('td[colspan="2"]').append(priceDiv);
 	}
@@ -680,6 +692,16 @@ function deleteCaseObj(tid){
 		});
 	}
 }
+function changeArea0(tt){
+	var val = $(tt).val();
+	$('.attrErCode').hide();
+	$('option[attrErCode="'+val+'"]').show();
+}
+function changeArea1(tt){
+	var val = $(tt).val();
+	$('.attrSanCode').hide();
+	$('option[attrSanCode="'+val+'"]').show();
+}
 </script>
 </head>
 <body style="padding:0px;margin:0px;">
@@ -703,12 +725,12 @@ function deleteCaseObj(tid){
 								<script id="publishTmpDiv" type="text/x-dot-template">
 									{{for(var i=0;i<it.length;i++){ }} 
 										<div style="position: relative;width:560px;height:150px;float:left;{{? (i+2)%2==0}}margin-right:20px;{{?}}margin-top:20px;color:#333333;font-size:14px;background: #e7e7e7;">
-											<div style="width:150px;height:150px;float:left;"><img width="150px" height="150px" src="http://61.129.51.62:8080/GhWemediaWar/{{=it[i].image}}"/></div>
+											<div style="width:150px;height:150px;float:left;"><img width="150px" height="150px" src="/ghplat/attachment{{=it[i].image}}"/></div>
 											<div style="width:360px;float:left;margin-left:20px;">
-												<div style="width:100%;margin-top:10px;">直播平台：<span >{{=it[i].publishTypeObj.publishFieldName}}</span></div>
-												<div style="width:100%;margin-top:10px;">直播平台：<span >微信工作好</span></div>
-												<div style="width:100%;margin-top:10px;">直播平台：<span >微信工作好</span></div>
-												<div style="width:100%;margin-top:10px;">直播平台：<span >微信工作好</span></div>
+												<div style="width:100%;margin-top:10px;">标题：<span >{{=it[i].publishName}}</span></div>
+												<div style="width:100%;margin-top:10px;">平台：<span >{{=it[i].publishTypeObj.publishFieldName}}</span></div>
+												<div style="width:100%;margin-top:10px;">粉丝数：<span >{{=it[i].platformFans}}</span></div>
+												<div style="width:100%;margin-top:10px;">所属领域：<span >{{=it[i].publishField}}</span></div>
 											</div>
 											<div style="position: absolute;right:5px;top:5px;">
 												<div class="hoverFont" onclick="editPublish({{=it[i].id}},{{=i}})" style="float:left;">编辑</div>
@@ -750,6 +772,31 @@ function deleteCaseObj(tid){
 											</c:forEach>
 										</select>
 									</td><td></td></tr>
+									<tr><td>区域&nbsp;:
+									</td><td>
+										
+										<select class="pbarea" onchange="changeArea0(this)" style="float:left;width:120px;color:#333333;height:48px;font-size:14px;padding-left:6px;">
+											<c:forEach var="publisharea" items="${publishArea }"  varStatus="st" >
+												<c:if test="${publisharea.priority=='1' }">
+													<option value="${publisharea.area_code }" <c:if test="${publisharea.area_name=='上海市' }">selected="selected"</c:if> style="padding:6px;font-size:14px;color:#333333;">${publisharea.area_name }</option>
+												</c:if>
+											</c:forEach>
+										</select>
+										<select onchange="changeArea1(this)" style="float:left;margin-left:10px;width:120px;color:#333333;height:48px;font-size:14px;padding-left:6px;">
+											<c:forEach var="publisharea" items="${publishArea }"  varStatus="st" >
+												<c:if test="${publisharea.priority=='2' }">
+													<option class="attrErCode" attrErCode="${publisharea.parent_area_code }" <c:if test="${publisharea.area_name=='市辖区' }">selected="selected"</c:if> value="${publisharea.area_code }" style="display:none;padding:6px;font-size:14px;color:#333333;">${publisharea.area_name }</option>
+												</c:if>
+											</c:forEach>
+										</select>
+										<select class="publisharea" style="float:left;margin-left:10px;width:120px;color:#333333;height:48px;font-size:14px;padding-left:6px;">
+											<c:forEach var="publisharea" items="${publishArea }"  varStatus="st" >
+												<c:if test="${publisharea.priority=='3' }">
+													<option class="attrSanCode" attrSanCode="${publisharea.parent_area_code }" <c:if test="${publisharea.area_name=='奉贤区' }">selected="selected"</c:if> value="${publisharea.area_name }" style="display:none;padding:6px;font-size:14px;color:#333333;">${publisharea.area_name }</option>
+												</c:if>
+											</c:forEach>
+										</select>
+									</td><td></td></tr>
 									<tr><td>标题&nbsp;:
 									</td><td>
 										<input id="pbname" style="width:350px;height:48px;padding:6px;color:#333333;text-align: left;" type="text" placeholder="请填写案例标题" />
@@ -760,6 +807,7 @@ function deleteCaseObj(tid){
 									</td><td><div id="fancountMsg" class="wrongClass" style="display:none;font-size:14px;color:#fc6769;height:20px;">填写粉丝数不对</div></td></tr>
 									<c:forEach var="publisha" items="${ptdto }" varStatus="stt">
 										<c:if test="${publisha.publishFieldList.size()>1 }">
+<%-- 										<c:if test="${stt.index<1 }"> --%>
 											<tr class="pfieldtr pfieldtr${publisha.publishType }" style="<c:if test='${stt.index!=0 }'>display:none;</c:if>"><td>所属领域&nbsp;:</td><td>
 												<select id="pbfield${publisha.publishType }" style="width:350px;color:#333333;height:48px;font-size:14px;padding-left:6px;">
 													<c:forEach var="publishField" items="${publisha.publishFieldList }" >
@@ -796,7 +844,7 @@ function deleteCaseObj(tid){
 													<select onchange="selectPrice(this)" style="width:140px;color:#999999;height:48px;font-size:14px;padding-left:6px;">
 														<option style="display:none;" value="0">请选择价格类型</option>
 														<c:forEach var="publishprice" items="${publisha.publishPrice }" >
-															<option style="padding:6px;font-size:14px;color:#333333;" value="${publishprice.columnPosition }">${publishprice.columnName }</option>
+															<option attrPriceName="price0${publishprice.columnPosition }" style="padding:6px;font-size:14px;color:#333333;" value="${publishprice.columnPosition }">${publishprice.columnName }</option>
 														</c:forEach>
 													</select>
 												</div>
@@ -854,7 +902,7 @@ function deleteCaseObj(tid){
 									</div>
 									<div style="width:100px;height:96px;line-height: 18px;float:left;line-height: 96px;margin-left:24px;">自媒体弹窗&nbsp;:</div>
 									<div  class="addZiMeiTi" style="width:200px;float:left;height:96px;position: relative;display:none;">
-										<div style="width:96px;height:96px;float:left;"><img id="mtImage" style="width:96px;height:96px;" src="http://61.129.51.62:8080/GhWemediaWar//images/2300/201612021204profilePhoto陈翔六点半.jpg" /></div>
+										<div style="width:96px;height:96px;float:left;"><img id="mtImage" style="width:96px;height:96px;" src="/ghplat/attachment//images/2300/201612021204profilePhoto陈翔六点半.jpg" /></div>
 										<div style="float:left;width:100px;height:96px;">
 											<div id="mtName" style="margin-top:12px;margin-left:15px;width:90px;height:16px;overflow: hidden;line-height:16px;color:black;font-weight: bold;font-size:14px;">陈翔</div>
 											<div id="mtPlatform" style="margin-top:6px;margin-left:15px;width:70px;height:18px;overflow: hidden;color:#333333;font-size:12px;">秒拍</div>
@@ -950,7 +998,7 @@ function deleteCaseObj(tid){
 									</div>
 									<div style="width:100px;height:96px;line-height: 18px;float:left;line-height: 96px;margin-left:24px;">自媒体弹窗&nbsp;:</div>
 									<div  class="addZiMeiTi" style="width:200px;float:left;height:96px;position: relative;display:none;">
-										<div style="width:96px;height:96px;float:left;"><img id="mtImage" style="width:96px;height:96px;" src="http://61.129.51.62:8080/GhWemediaWar//images/2300/201612021204profilePhoto陈翔六点半.jpg" /></div>
+										<div style="width:96px;height:96px;float:left;"><img id="mtImage" style="width:96px;height:96px;" src="/ghplat/attachment//images/2300/201612021204profilePhoto陈翔六点半.jpg" /></div>
 										<div style="float:left;width:100px;height:96px;">
 											<div id="mtName" style="margin-top:12px;margin-left:15px;width:90px;height:16px;overflow: hidden;line-height:16px;color:black;font-weight: bold;font-size:14px;">陈翔</div>
 											<div id="mtPlatform" style="margin-top:6px;margin-left:15px;width:70px;height:18px;overflow: hidden;color:#333333;font-size:12px;">秒拍</div>
@@ -1051,7 +1099,7 @@ function deleteCaseObj(tid){
 			<script id="publishTmp" type="text/x-dot-template">
 		{{for(var i=0;i<it.length;i++){ }} 
 			<div attrId="{{=it[i].id}}" attrType="{{=it[i].publishTypeObj.publishFieldId}}" style="width:180px;float:left;height:80px;position: relative;border: 1px #999999 solid;{{? (i+2)%2==0}}margin-right:26px;{{?}}margin-top:20px;">
-				<div style="width:80px;height:80px;float:left;"><img class="mtImage" style="width:80px;height:80px;" src="http://61.129.51.62:8080/GhWemediaWar/{{=it[i].image}}" /></div>
+				<div style="width:80px;height:80px;float:left;"><img class="mtImage" style="width:80px;height:80px;" src="/ghplat/attachment{{=it[i].image}}" /></div>
 				<div style="float:left;width:100px;height:80px;">
 					<div class="mtName" style="margin-top:13px;margin-left:10px;width:90px;height:16px;overflow: hidden;line-height:16px;color:black;font-weight: bold;font-size:14px;">{{=it[i].publishName}}</div>
 					<div class="mtPlatform" style="margin-top:6px;margin-left:10px;width:70px;height:14px;overflow: hidden;color:#333333;font-size:12px;">
@@ -1080,9 +1128,10 @@ function deleteCaseObj(tid){
 	</div>
 	<div class="colseImageDiv" onclick="colseDiv(this)" style="float:left;cursor:pointer;width:22px;position: absolute;top:-15px;right:-10px;"><img src="images/colse.jpg" style="height:22px;"/></div>
 </div>
-<div class="addpriceDiv" style="width:140px;height:48px;float:left;position: relative;margin-left:20px;display:none;">
-	<div style="float:left;width:140px;">
-		<input class="priceInput" style="width:140px;height:48px;padding:6px;color:#333333;" placeholder="请填写案例主题" type="text" />
+<div class="addpriceDiv" style="height:48px;float:left;position: relative;margin-left:20px;display:none;">
+	<div class="priceFontDiv" style="float:left;overflow: hidden;height:48px;line-height: 48px;">多大的的：</div>
+	<div style="float:left;width:98px;">
+		<input class="priceInput" style="width:90px;height:48px;padding:6px;color:#333333;" placeholder="请填写案例主题" type="text" />
 	</div>
 	<div onclick="colseDiv(this)" style="float:left;cursor:pointer;width:22px;position: absolute;top:-5px;right:-5px;"><img src="images/colse.jpg" style="height:22px;"/></div>
 </div>

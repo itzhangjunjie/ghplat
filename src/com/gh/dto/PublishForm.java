@@ -15,8 +15,15 @@ public class PublishForm {
 	private long mediaId;//媒体id
 	private String publishName;//媒体的
 	private long publishId;//媒体id
+	private String publisharea;//区域筛选
 	
 	
+	public String getPublisharea() {
+		return publisharea;
+	}
+	public void setPublisharea(String publisharea) {
+		this.publisharea = publisharea;
+	}
 	public int getPageCount() {
 		return pageCount;
 	}

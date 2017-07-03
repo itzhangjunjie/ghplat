@@ -11,6 +11,15 @@ var cnavs = [{
 		"icon": "&#19221;",
 		"href": "/ghplat/admin/bannerAdd"
 	}]
+},{
+	"title": "媒体推广管理",
+	"icon": "fa-cubes",
+	"spread": true,
+	"children": [{
+		"title": "媒体列表",
+		"icon": "&#62221;",
+		"href": "/ghplat/admin/meitiList"
+	}]
 }];
 
 

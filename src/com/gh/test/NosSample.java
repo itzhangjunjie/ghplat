@@ -12,6 +12,7 @@ import java.util.List;
 
 import com.netease.cloud.ClientException;
 import com.netease.cloud.ServiceException;
+import com.netease.cloud.WebServiceClient;
 import com.netease.cloud.auth.PropertiesCredentials;
 import com.netease.cloud.services.nos.Nos;
 import com.netease.cloud.services.nos.NosClient;
@@ -37,53 +38,54 @@ import com.netease.cloud.services.nos.transfer.model.UploadResult;
 public class NosSample {
 
 	
-	public static void main3(String[] args) {
+	public static void main(String[] args) {
 		try {
 			String bucketName = "weman";
-	        String anotherKey="20170613.mp3";
-//			/** Another way to use the sdk,upload the file.**/
-//			TransferManager tx = new TransferManager(new PropertiesCredentials(
-//					NosSample.class.getResourceAsStream("credentials.properties")));
-//			
-//			/** This field is not used, but you can use the clientFromManager like the nosClient.**/
-//			@SuppressWarnings("unused")
-//			Nos clientFromManager = tx.getNosClient();
-//			
-//			Upload upload = tx.upload(new PutObjectRequest(bucketName, anotherKey, new File("C:\\Users\\solone\\Desktop\\01插件\\111.mp3")));
-//			try {
-//				UploadResult result = upload.waitForUploadResult();
-//				System.out.println(result.getBucketName() + "/" + result.getKey());
-//			} catch (Exception e) {
-//				System.out.println("Upload failed . Errors occur in uploading as file ,you may be need to upload this file again.");
-//				System.exit(-1);
-//			} finally{
-//				/** Release all resource including threadPool and httpclient.**/
-//				tx.shutdownNow();
-//			}
+	        String anotherKey="20170613.mp4";
+			/** Another way to use the sdk,upload the file.**/
+			TransferManager tx = new TransferManager(new PropertiesCredentials(
+					NosSample.class.getResourceAsStream("credentials.properties")));
+			
+			/** This field is not used, but you can use the clientFromManager like the nosClient.**/
+			@SuppressWarnings("unused")
+			Nos clientFromManager = tx.getNosClient();
+			((WebServiceClient) clientFromManager).setEndpoint("nos-eastchina1.126.net");
+			Upload upload = tx.upload(new PutObjectRequest(bucketName, anotherKey, new File("G:\\tmp\\111.mp4")));
+			try {
+				UploadResult result = upload.waitForUploadResult();
+				System.out.println(result.getBucketName() + "/" + result.getKey());
+			} catch (Exception e) {
+				System.out.println("Upload failed . Errors occur in uploading as file ,you may be need to upload this file again.");
+				System.exit(-1);
+			} finally{
+				/** Release all resource including threadPool and httpclient.**/
+				tx.shutdownNow();
+			}
 	      //要上传文件的路径
-	        String filePath = "C:\\Users\\solone\\Desktop\\01插件\\111.mp3";
-	        System.out.println(new File(filePath).getPath());
-	        try {
-	        	 Nos nosClient = new NosClient(new PropertiesCredentials(
-	             		NosSample.class.getResourceAsStream("credentials.properties")));
-	        	 nosClient.putObject("weman","your-weman.mp3", new File(filePath));
-	        }catch (Exception e){
-	        System.out.println(e.getMessage());
-	        }
+//	        String filePath = "C:\\Users\\solone\\Desktop\\01插件\\111.mp3";
+//	        System.out.println(new File(filePath).getPath());
+//	        try {
+//	        	 NosClient nosClient = new NosClient(new PropertiesCredentials(
+//	             		NosSample.class.getResourceAsStream("credentials.properties")));
+//	        	 nosClient.setEndpoint("nos-eastchina1.126.net");
+//	        	 nosClient.putObject("weman","your-weman.mp3", new File(filePath));
+//	        }catch (Exception e){
+//	        System.out.println(e.getMessage());
+//	        }
 		} catch (Exception e) {
 			// TODO: handle exception
 		}
 	}
 	
-    public static void main(String[] args) throws IOException {
+    public static void main2(String[] args) throws IOException {
         /*
          * Be sure fill your access key and secret key in file 'credentials.properties' .
          */
-        Nos nosClient = new NosClient(new PropertiesCredentials(
+    	NosClient nosClient = new NosClient(new PropertiesCredentials(
         		NosSample.class.getResourceAsStream("credentials.properties")));
-
-        String bucketName = "weman1";
-        String key = "123";
+    	nosClient.setEndpoint("nos-eastchina1.126.net");
+        String bucketName = "weman";
+        String key = "aa";
 
         /** the file size is need large than 11M**/
         String filePathString = "";

@@ -22,36 +22,41 @@ function addCartDiv(){
 <div style="width:100%;background:rgb(242,242,242);height:auto;overflow: hidden;">
 	<div style="width:1198px;background: white;margin:0 auto;margin-top:20px;margin-bottom:20px;border:1px #eeeeee solid;overflow: hidden;">
 		<div style="width:1140px;margin-left:30px;margin-top:30px;padding-bottom: 20px;">
-			<div style="width:100%;height:155px;">
-				<div style="float:left;font-size:14px;width:130px;text-align: left;line-height: 120px;">头像：</div>
-				<div style="float:left;margin-left:20px;"><img width="150px" height="120px" src="../attachment${pdetails.image }"/></div>
+			<div style="width:100%;height:140px;">
+				<div style="float:left;"><img width="150px" height="120px" src="../attachment${pdetails.image }"/></div>
 			</div>
-			<div style="width:100%;height:40px;margin-top:20px;">
-				<div style="float:left;font-size:14px;width:130px;text-align: left;line-height: 40px;">类型：</div>
+			<div style="width:100%;height:40px;">
+				<div style="float:left;font-size:14px;width:160px;text-align: left;line-height: 40px;">类型：</div>
 				<div style="float:left;margin-left:20px;height:40px;line-height: 40px;font-size:14px;">${pdetails.publishTypeObj.publishFieldName }</div>
 			</div>
-			<div style="width:100%;height:40px;margin-top:20px;">
-				<div style="float:left;font-size:14px;width:130px;text-align: left;line-height: 40px;">标题：</div>
+			<div style="width:100%;height:40px;">
+				<div style="float:left;font-size:14px;width:160px;text-align: left;line-height: 40px;">标题：</div>
 				<div style="float:left;margin-left:20px;height:40px;line-height: 40px;font-size:14px;">${pdetails.publishName }</div>
 			</div>
-			<div style="width:100%;height:40px;margin-top:20px;">
-				<div style="float:left;font-size:14px;width:130px;text-align: left;line-height: 40px;">粉丝数：</div>
+			<div style="width:100%;height:40px;">
+				<div style="float:left;font-size:14px;width:160px;text-align: left;line-height: 40px;">粉丝数：</div>
 				<div style="float:left;margin-left:20px;height:40px;line-height: 40px;font-size:14px;">${pdetails.platformFans }</div>
 			</div>
-			<div style="width:100%;height:40px;margin-top:20px;">
-				<div style="float:left;font-size:14px;width:130px;text-align: left;line-height: 40px;">平台类型：</div>
-				<div style="float:left;margin-left:20px;height:40px;line-height: 40px;font-size:14px;">${pdetails.platformName }</div>
+			<div style="width:100%;height:40px;">
+				<div style="float:left;font-size:14px;width:160px;text-align: left;line-height: 40px;">所属领域：</div>
+				<div style="float:left;margin-left:20px;height:40px;line-height: 40px;font-size:14px;">${pdetails.publishField }</div>
 			</div>
-			<c:forEach items="${pdetails.priceMap }" var="priceMap">
-				<div style="width:100%;height:40px;margin-top:20px;">
-					<div style="float:left;font-size:14px;width:130px;text-align: left;line-height: 40px;">${priceMap.key }价格：</div>
-					<div style="float:left;margin-left:20px;height:40px;line-height: 40px;font-size:14px;">￥${priceMap.value }</div>
+			<c:if test="${pdetails.platformName!=null }">
+				<div style="width:100%;height:40px;">
+					<div style="float:left;font-size:14px;width:160px;text-align: left;line-height: 40px;">平台类型：</div>
+					<div style="float:left;margin-left:20px;height:40px;line-height: 40px;font-size:14px;">${pdetails.platformName }</div>
+				</div>
+			</c:if>
+			<c:forEach items="${pdetails.infoMap }" var="infoMap">
+				<div style="width:100%;height:40px;">
+					<div style="float:left;font-size:14px;width:160px;text-align: left;line-height: 40px;">${infoMap.key }：</div>
+					<div style="float:left;margin-left:20px;height:40px;line-height: 40px;font-size:14px;">${infoMap.value }</div>
 				</div>
 			</c:forEach>
-			<c:forEach items="${pdetails.infoMap }" var="infoMap">
-				<div style="width:100%;height:40px;margin-top:20px;">
-					<div style="float:left;font-size:14px;width:130px;text-align: left;line-height: 40px;">${infoMap.key }：</div>
-					<div style="float:left;margin-left:20px;height:40px;line-height: 40px;font-size:14px;">${infoMap.value }</div>
+			<c:forEach items="${pdetails.priceMap }" var="priceMap">
+				<div style="width:100%;height:40px;">
+					<div style="float:left;font-size:14px;width:160px;text-align: left;line-height: 40px;">${priceMap.key }价格：</div>
+					<div style="float:left;margin-left:20px;height:40px;line-height: 40px;font-size:14px;">￥${priceMap.value }</div>
 				</div>
 			</c:forEach>
 			<div style="width:100%;height:50px;margin-top:20px;">

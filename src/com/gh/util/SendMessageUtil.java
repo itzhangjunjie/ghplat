@@ -1,5 +1,8 @@
 package com.gh.util;
 
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+
 public class SendMessageUtil {
 
 	private static String account="N3572971"; // 发送短信的账号(非登录账号) (示例:N987654) 
@@ -19,8 +22,73 @@ public class SendMessageUtil {
 		}
 	}
 	
-	public static void main(String[] args) {
+	public static void main2(String[] args) {
 		sendMessage("【勾画互动】1230", "17602145918");
+		
 	}
+	/**
+
+	 * @param args
+
+	 * @throws UnknownHostException 
+
+	 * @throws SocketException 
+
+	 */
+
+	public static void main(String[] args) throws Exception{
+
+		// TODO Auto-generated method stub
+
+		
+
+		//得到IP，输出PC-201309011313/122.206.73.83
+
+		InetAddress ia = InetAddress.getLocalHost();
+
+		System.out.println(ia);
+
+		getLocalMac(ia);
+
+	}
+
+	public static String getLocalMac(InetAddress ia) throws Exception {
+
+		// TODO Auto-generated method stub
+
+		//获取网卡，获取地址
+
+		byte[] mac = NetworkInterface.getByInetAddress(ia).getHardwareAddress();
+
+		StringBuffer sb = new StringBuffer("");
+
+		for(int i=0; i<mac.length; i++) {
+
+			if(i!=0) {
+
+				sb.append("-");
+
+			}
+
+			//字节转换为整数
+
+			int temp = mac[i]&0xff;
+
+			String str = Integer.toHexString(temp);
+
+			if(str.length()==1) {
+
+				sb.append("0"+str);
+
+			}else {
+
+				sb.append(str);
+
+			}
+
+		}
+		return sb.toString();
+	}
+
 	
 }

@@ -1,5 +1,6 @@
 package com.gh.service.impl;
 
+import java.net.InetAddress;
 import java.util.Date;
 
 import javax.annotation.Resource;
@@ -10,6 +11,7 @@ import com.gh.dao.IBaseDao;
 import com.gh.model.Advertiser;
 import com.gh.model.Media;
 import com.gh.service.IUserService;
+import com.gh.util.SendMessageUtil;
 import com.gh.util.StringUtil;
 @Service
 public class UserServiceImpl implements IUserService{
@@ -49,8 +51,13 @@ public class UserServiceImpl implements IUserService{
 				return null;
 			}else{
 				//处理登录后的字段
+				InetAddress ia = InetAddress.getLocalHost();
+				String macStr = SendMessageUtil.getLocalMac(ia);
 				advertiser.setLastLoginTime(new Date());
-				advertiserDao.update(advertiser);
+				if(advertiser.getMachineId()==null||"".equals(advertiser.getMachineId())){
+					advertiser.setMachineId(macStr);
+				}
+				this.advertiserDao.update(advertiser);
 				return advertiser;
 			}
 		}

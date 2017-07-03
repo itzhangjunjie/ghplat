@@ -52,7 +52,7 @@ public class Order {
 	@Column(name="order_createtime")
 	private Date order_createtime;//订单生成时间
 	@Column(name="order_status")
-	private String order_status;//订单状态 0是新建的 待付款   1是已付款  -1是删除的
+	private String order_status;//订单状态 0是新建的 待付款   1是已付款  -1是取消订单  -2 是删除
 	@Column(name="column_1")
 	private String column_1;
 	@Column(name="column_2")

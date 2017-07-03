@@ -74,7 +74,7 @@ public class Publish {
 	@Column(name="PLATFORM_ICON")
 	private String platformIcon;//平台的图片
 	@Column(name="PLATFORM_FANS")
-	private int platformFans;//平台粉丝数
+	private long platformFans;//平台粉丝数
 	@Column(name="POWER_SCORE")
 	private int powerScore;//权重值
 	@Column(name="KEYWORD")
@@ -248,10 +248,10 @@ public class Publish {
 	public void setPlatformName(String platformName) {
 		this.platformName = platformName;
 	}
-	public int getPlatformFans() {
+	public long getPlatformFans() {
 		return platformFans;
 	}
-	public void setPlatformFans(int platformFans) {
+	public void setPlatformFans(long platformFans) {
 		this.platformFans = platformFans;
 	}
 	public int getPowerScore() {

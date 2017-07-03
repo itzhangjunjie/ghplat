@@ -9,7 +9,6 @@
 
 <script src="js/jquery.fly.min.js" type="text/javascript"></script>
 
-
 <link rel="stylesheet" href="css/menu.css" type="text/css" />
 <script src="js/ajaxfileupload.js" type="text/javascript"></script>
 <script src="js/menu.js" type="text/javascript"></script>
@@ -95,7 +94,7 @@ function register(type){
 		}
 	}
 	var mobile=$(bname+' .mobile').val();
-	var mtest = /^([0-9]){11}$/;
+	var mtest = /^1[34578]\d{9}$/;
 	if(mobile==''||!mtest.test(mobile)){
 		$(bname+' .mobileMsg').html('手机号不对');
 		$(bname+' .mobileMsg').show();
@@ -107,7 +106,7 @@ function register(type){
 		$(bname+' .usernameMsg').show();
 		return;
 	}
-	var etest =/^[_a-z0-9]+(.[_a-z0-9]+)*@[a-z0-9-]+(.[a-z0-9-]+)*(.[a-z]{2,5})$/;
+	var etest = /^[A-Za-zd]+([-_.][A-Za-zd]+)*@([A-Za-zd]+[-.])+[A-Za-zd]{2,5}$/;
 	var email= $(bname+' .email').val();
 	if(type!='自媒体'){
 		if(email==''||!etest.test(email)){
@@ -117,7 +116,7 @@ function register(type){
 		}
 	}
 	var password = $(bname+' .password').val();
-	if(password==''||password.length>12||password<6){
+	if(password==''||password.length>16||password<8){
 		$(bname+' .passwordMsg').html('密码格式不对');
 		$(bname+' .passwordMsg').show();
 		return;
@@ -135,7 +134,7 @@ function register(type){
 		return;
 	}
 	var code = $(bname+' .code').val();
-	alert(code+"||regcode:"+regCode);
+	//alert(code+"||regcode:"+regCode);
 	if(code!=regCode){
 		$(bname+' .codeMsg').html('验证码不正确');
 		$(bname+' .codeMsg').show();
@@ -156,7 +155,11 @@ function register(type){
 		   dataType:"json",
 		   success: function(msg){
 			   if(msg.result=='yes'){
-				   
+				   if(type=='自媒体'){
+					   $('#zimeitiloginA').click();
+				   }else{
+					   $('#qiyeloginA').click();
+				   }
 			   }
 		   }
 	});
@@ -169,7 +172,7 @@ function login(type){
 		bname = '#qiyeloginDiv';
 	}
 	var mobile=$(bname+' .loginmobile').val();
-	var mtest = /^([0-9]){11}$/;
+	var mtest = /^1[34578]\d{9}$/;
 	if(mobile==''||!mtest.test(mobile)){
 		$(bname+' .loginMsg').html('手机号不对');
 		$(bname+' .loginMsg').show();
@@ -181,12 +184,19 @@ function login(type){
 		$(bname+' .loginMsg').show();
 		return;
 	}
+	var ercode = $(bname+' .authCode').val();
+	if(ercode==''||ercode.length!=4){
+		$(bname+' .loginMsg').html('验证码不正确');
+		$(bname+' .loginMsg').show();
+		return;
+	}
 	$.ajax({
 		   type: "POST",
 		   url: "../login",
 		   data:{
 			   'mobile'  :mobile,
 			   'password'   :password,
+			   'strCode':ercode,
 			   'type'   :type
 		   }, 
 		   dataType:"json",
@@ -194,7 +204,7 @@ function login(type){
 			   if(msg.result=='yes'){
 				   location.reload();
 			   }else{
-				   $(bname+' .loginMsg').html('用户名或密码不对');
+				   $(bname+' .loginMsg').html(msg.reason);
 				   $(bname+' .loginMsg').show();
 			   }
 		   }
@@ -207,7 +217,34 @@ function exit(){
 		   dataType:"json",
 		   success: function(msg){
 			   if(msg.result=='yes'){
-				   location.reload();
+				   location.href="../index";
+			   }
+		   }
+	});
+}
+function vefityMobile(tt,index){
+	var mobile = $(tt).val();
+	console.log(mobile);
+	var mtest = /^1[34578]\d{9}$/;
+	if(mobile==''||!mtest.test(mobile)){
+		$(tt).parent().find('.mobileMsg').html('手机号不对');
+		$(tt).parent().find('.mobileMsg').show();
+		return;
+	}
+	$.ajax({
+		   type: "POST",
+		   url: "../vefityMobile",
+		   data:{
+			   'index'  :index,
+			   'mobile'   :mobile
+		   }, 
+		   dataType:"json",
+		   success: function(msg){
+			   if(msg.result=='yes'){
+				   $(tt).parent().find('.mobileMsg').hide();
+			   }else{
+				   $(tt).parent().find('.mobileMsg').html('手机号已存在');
+				   $(tt).parent().find('.mobileMsg').show();
 			   }
 		   }
 	});
@@ -221,7 +258,7 @@ function sendCodeMsg(tt,type){
 		bname = '#qiyeregDiv';
 	}
 	var mobile = $(bname+' .mobile').val();
-	alert(mobile);
+	//alert(mobile);
 	var mtest = /^([0-9]){11}$/;
 	if(mobile==''||!mtest.test(mobile)){
 		$(bname+' .mobileMsg').html('手机号不对');
@@ -267,6 +304,9 @@ function sendCodeMsg(tt,type){
 		   }
 	});
 }
+function chageCode(index){
+    $('.codeImage'+index).attr('src','../authCode?abc='+Math.random());//链接后添加Math.random，确保每次产生新的验证码，避免缓存问题。
+}
 </script>
 <style type="text/css">
 *{margin:0;padding:0;list-style-type:none;font-family: 微软雅黑;}
@@ -286,9 +326,11 @@ a:link {color: #707070}
 			<a id="zimeitiregA" href="#zimeitiregDiv" style="text-decoration: none;"><div style="float:left;margin-left:10px;" class="hoverFont">注册</div></a>
 		</div>
 		<div style="float:right;">
-			<div style="float:left;"><img src="images/shopping-cart.png" width="15px"/></div>
-			<div onclick="location.href='cartList.jsp'" style="float:left;margin-left:7px;" class="hoverFont"><i id="end"></i>购物车<span class="headCartCount" style="color:#fc6769;margin-left:3px;font-weight: bold;">3</span></div>
-			<div style="float:left;width:1px;height:11px;background:#707070;margin-left:10px;margin-top:3px;"></div>
+			<c:if test="${sessionScope.type==null||sessionScope.type!='自媒体' }">
+				<div style="float:left;"><img src="images/shopping-cart.png" width="15px"/></div>
+				<div onclick="location.href='/ghplat/front/cartList.jsp'" style="float:left;margin-left:7px;" class="hoverFont"><i id="end"></i>购物车<span class="headCartCount" style="color:#fc6769;margin-left:3px;font-weight: bold;">3</span></div>
+				<div style="float:left;width:1px;height:11px;background:#707070;margin-left:10px;margin-top:3px;"></div>
+			</c:if>
 			<div style="float:left;margin-left:10px;" class="hoverFont">消息中心</div>
 			<div style="float:left;width:1px;height:11px;background:#707070;margin-left:10px;margin-top:3px;"></div>
 			<div style="float:left;margin-left:10px;" class="hoverFont">帮助中心</div>
@@ -307,9 +349,11 @@ a:link {color: #707070}
 		<div class="header">
 			<ul class="menu">
 				<li><a href="../index">首页</a></li>
-				<li><a href="../getPublish">案例</a></li>
-				<li><a href="http://www.17sucai.com/">媒介合作</a></li>
-				<li><a class="noclick" href="http://www.17sucai.com/">关于我们</a></li>
+				<c:if test="${sessionScope.type==null||sessionScope.type!='自媒体' }">
+					<li><a href="../getPublish">媒体推广</a></li>
+				</c:if>
+<!-- 				<li><a href="http://www.17sucai.com/">媒介合作</a></li> -->
+				<li><a class="noclick" href="#">关于我们</a></li>
 			</ul>
 		</div>
 		<c:if test="${sessionScope.type==null }">
@@ -322,7 +366,7 @@ a:link {color: #707070}
 		<c:if test="${sessionScope.type!=null }">
 			<div style="float:right;margin-right:0px;margin-top:36px;">
 				<div style="float:left;"><img src="images/login.png" style="width:25px;" /></div>
-				<div class="hoverFont" style="float:left;margin-left:10px;color:#333333;font-size:14px;line-height: 25px;">${sessionScope.user.username}</div>
+				<a href="../getOrderList"><div class="hoverFont" style="float:left;margin-left:10px;color:#333333;font-size:14px;line-height: 25px;">${sessionScope.user.username}</div></a>
 				<c:if test="${sessionScope.type=='自媒体' }">
 					<a href="../addCase"><div class="hoverFont" style="float:left;margin-left:15px;color:#333333;font-size:16px;line-height: 23px;">管理发布</div></a>
 				</c:if>
@@ -366,7 +410,7 @@ a:link {color: #707070}
 		<div style="width:100%;height:1px;background:#e5e5e5;"></div>
 		<div style="width:100%;margin-top:10px;">
 			<div style="width:320px;margin:0 auto;margin-top:20px;position: relative;">
-				<input class="mobile" style="margin:0px;width:300px;height:44px;padding:6px;color:#333333;text-align:left;background: rgb(249,249,249);" type="text" placeholder="用户名(手机号)" />
+				<input onblur="vefityMobile(this,'自媒体')" class="mobile" style="margin:0px;width:300px;height:44px;padding:6px;color:#333333;text-align:left;background: rgb(249,249,249);" type="text" placeholder="用户名(手机号)" />
 				<span style="height:44px;margin-left:10px;line-height: 48px;width:5px;text-align:left;color:red;font-size:14px; ">*</span>
 				<div class="mobileMsg" class="errormsg" style="display:none;color:red;top:14px;right:32px;position: absolute;font-size:12px;">用户名已存在</div>
 			</div>
@@ -426,6 +470,13 @@ a:link {color: #707070}
 				<input class="loginpassword" style="margin:0px;width:300px;height:44px;padding:6px;color:#333333;text-align:left;background: rgb(249,249,249);" type="password" placeholder="密码" />
 				<span style="height:44px;margin-left:10px;line-height: 48px;width:5px;text-align:left;color:red;font-size:14px; ">*</span>
 			</div>
+			<div style="width:320px;margin:0 auto;margin-top:5px;height:40px;">
+		 	      <div style="width:56px;line-height: 40px;float:left;font-size:14px;">验证码：</div> 
+		 	      <div style="float:left;margin-left:3px;"><input style="width:70px;margin:0px;height:38px;padding:6px;color:#333333;text-align:left;background: rgb(249,249,249);" class="authCode" name="authCode" type="text"/></div>
+		        <!--这里img标签的src属性的值为后台实现图片验证码方法的请求地址-->
+		        <div style="float:left;margin-left:6px;"><img type="image" src="../authCode" class="codeImage1" onclick="chageCode(1)" title="图片看不清？点击重新得到验证码" style="cursor:pointer;"/></div>
+		        <div style="width:50px;line-height: 40px;float:left;margin-left:10px;font-size:12px;"><a onclick="chageCode(1)" style="cursor: pointer;">换一张</a></div>
+		    </div>
 			<div style="width:320px;margin:0 auto;margin-top:12px;">
 				<div onclick="login('自媒体')" style="cursor:pointer;width:300px;hegiht:48px;background:#fc6769;color:white; text-align: center;line-height: 48px;">登录</div>
 				<div class="loginMsg" class="errormsg" style="display:none;color:red;font-size:12px;float:left;margin-left:5px;margin-top:10px;">用户名和密码不对</div>
@@ -440,7 +491,7 @@ a:link {color: #707070}
 		<div style="width:100%;height:1px;background:#e5e5e5;"></div>
 		<div style="width:100%;margin-top:10px;">
 			<div style="width:320px;margin:0 auto;margin-top:20px;position: relative;">
-				<input class="mobile" style="margin:0px;width:300px;height:44px;padding:6px;color:#333333;text-align:left;background: rgb(249,249,249);" type="text" placeholder="用户名(手机号)" />
+				<input onblur="vefityMobile(this,'广告主')" class="mobile" style="margin:0px;width:300px;height:44px;padding:6px;color:#333333;text-align:left;background: rgb(249,249,249);" type="text" placeholder="用户名(手机号)" />
 				<span style="height:44px;margin-left:10px;line-height: 48px;width:5px;text-align:left;color:red;font-size:14px; ">*</span>
 				<div class="mobileMsg" class="errormsg" style="display:none;color:red;top:14px;right:32px;position: absolute;font-size:12px;">用户名已存在</div>
 			</div>
@@ -487,7 +538,7 @@ a:link {color: #707070}
 			</div>
 			<div onclick="register('广告主')" style="width:320px;margin:0 auto;margin-top:12px;">
 				<div style="cursor:pointer;width:300px;hegiht:48px;background:#fc6769;color:white; text-align: center;line-height: 48px;">注册</div>
-				<div style="float:right;font-size:12px;margin:10px 20px 10px 0px;">已经是勾画会员？<a href="javascript:;" onclick="$('#zimeitiloginA').click();" style="color:#23527c;">登录</a></div>
+				<div style="float:right;font-size:12px;margin:10px 20px 10px 0px;">已经是勾画会员？<a href="javascript:;" onclick="$('#qiyeloginA').click();" style="color:#23527c;">登录</a></div>
 			</div>
 		</div>
 	</div>
@@ -505,6 +556,13 @@ a:link {color: #707070}
 				<input class="loginpassword" style="margin:0px;width:300px;height:44px;padding:6px;color:#333333;text-align:left;background: rgb(249,249,249);" type="password" placeholder="密码" />
 				<span style="height:44px;margin-left:10px;line-height: 48px;width:5px;text-align:left;color:red;font-size:14px; ">*</span>
 			</div>
+			<div style="width:320px;margin:0 auto;margin-top:5px;height:40px;">
+		 	      <div style="width:56px;line-height: 40px;float:left;font-size:14px;">验证码：</div> 
+		 	      <div style="float:left;margin-left:3px;"><input style="width:70px;margin:0px;height:38px;padding:6px;color:#333333;text-align:left;background: rgb(249,249,249);" class="authCode" name="authCode" type="text"/></div>
+		        <!--这里img标签的src属性的值为后台实现图片验证码方法的请求地址-->
+		        <div style="float:left;margin-left:6px;"><img type="image" src="../authCode" class="codeImage2" onclick="chageCode(2)" title="图片看不清？点击重新得到验证码" style="cursor:pointer;"/></div>
+		        <div style="width:50px;line-height: 40px;float:left;margin-left:10px;font-size:12px;"><a onclick="chageCode(2)" style="cursor: pointer;">换一张</a></div>
+		    </div>
 			<div style="width:320px;margin:0 auto;margin-top:12px;">
 				<div onclick="login('广告主')" style="cursor:pointer;width:300px;hegiht:48px;background:#fc6769;color:white; text-align: center;line-height: 48px;">登录</div>
 				<div class="loginMsg" class="errormsg" style="display:none;color:red;font-size:12px;float:left;margin-left:5px;margin-top:10px;">用户名和密码不对</div>

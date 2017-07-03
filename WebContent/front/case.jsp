@@ -33,7 +33,7 @@
 					</div>
 					<div style="width:100%;height:1px;background: #eeeeee;margin-top:10px;"></div>
 					<div style="width:100%;height:400px;margin-top:20px;">
-						<div style="width:600px;height:400px;float:left;"><img style="width:600px;height:400px;" src="../attachment${caseDetailsObj.caseObj.image }"/></div>
+						<div style="width:600px;height:400px;float:left;"><img style="width:600px;height:400px;" src="/ghplat/attachment${caseDetailsObj.caseObj.image }"/></div>
 						<div style="float:left;margin-left:20px;width:520px;height:400px;font-size:14px;position: relative;">
 							<div style="width:100%;height:22px;">
 								<div style="float:right;padding:2px 8px;text-align: center;color:white;background: black;">${caseDetailsObj.caseObj.case_Industry }</div>
@@ -73,7 +73,7 @@
 								  <ul id="article_pic_slider">
 								  		<c:forEach var="ccaseDetailsObj" items="${caseDetailsObj.caseObj.childPublish }" >
 									  		<li class="addZiMeiTiSu"><div style="width: 215px; float: left; height: 96px; position: relative; display: block;" class="" attrid="2794364">
-												<div style="width:96px;height:96px;float:left;"><img src="../attachment${ccaseDetailsObj.image }" style="width:96px;height:96px;" id="mtImage"></div>
+												<div style="width:96px;height:96px;float:left;"><img src="/ghplat/attachment${ccaseDetailsObj.image }" style="width:96px;height:96px;" id="mtImage"></div>
 													<div style="float:left;width:100px;height:96px;margin-left:18px;">
 														<div style="margin-top:12px;width:90px;height:16px;overflow: hidden;line-height:16px;color:black;font-weight: bold;font-size:14px;" id="mtName">${ccaseDetailsObj.publishName }</div>
 														<div style="margin-top:6px;width:70px;height:18px;overflow: hidden;color:#333333;font-size:12px;" id="mtPlatform">${ccaseDetailsObj.platformName }</div>
@@ -108,7 +108,7 @@
 									  <ul id="article_pic_slider">
 									  		<c:forEach var="caseImageObj" items="${caseDetailsObj.caseObj.caseImageList }" >
 										 		<li class="addZiMeiTiSu" style="margin-left:0px;width:160px;height:96px;float:left;">
-													<img onclick="changeImageDetails(this)" imageTitle="${caseImageObj.imageTitle }" imageDesc="${caseImageObj.imageDesc }" title="${caseImageObj.imageTitle }" src="../attachment${caseImageObj.imageUrl }" style="width:160px;height:96px;" class="mtImage">
+													<img onclick="changeImageDetails(this)" imageTitle="${caseImageObj.imageTitle }" imageDesc="${caseImageObj.imageDesc }" title="${caseImageObj.imageTitle }" src="/ghplat/attachment${caseImageObj.imageUrl }" style="width:160px;height:96px;" class="mtImage">
 												</li>
 									 		</c:forEach>
 									  </ul>

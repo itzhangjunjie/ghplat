@@ -66,7 +66,7 @@ public class OrderServiceImpl implements IOrderService{
 
 	@Override
 	public PageList<Order> getOrderList(PublishForm publishForm, long userid) throws Exception {
-		String hql ="from Order order where 1=1 "
+		String hql ="from Order order where 1=1 and order.order_status != -2"
 				+ " and order.order_advertiser_id = ? "
 				+ " order by order.order_createtime desc ";
 //		System.out.println(publishForm.getPageSize()+"||"+publishForm.getPageCount());
@@ -92,6 +92,13 @@ public class OrderServiceImpl implements IOrderService{
 			}
 		}
 		return orderlist;
+	}
+
+
+	@Override
+	public void deleteOrder(long orderId) throws Exception {
+		String sql="update gh_order god set god.order_status = -2 where god.order_id = "+orderId;
+		this.baseOrderDao.executeSql(sql);
 	}
 
 }

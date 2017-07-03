@@ -58,6 +58,8 @@ public class Advertiser {
     @Basic(optional=false)
     @Column(name="USER_FLAG")
     private String userFlag;//是否是会员
+    @Column(name="MACHINE_ID")
+    private String machineId;//主机的mac地址
     @Column(name = "COLUMN_1")
     private String column1;
     @Column(name = "COLUMN_2")
@@ -69,6 +71,12 @@ public class Advertiser {
     private Date column4;
     
     
+	public String getMachineId() {
+		return machineId;
+	}
+	public void setMachineId(String machineId) {
+		this.machineId = machineId;
+	}
 	public String getGhid() {
 		return ghid;
 	}

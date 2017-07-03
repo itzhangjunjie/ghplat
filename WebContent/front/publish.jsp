@@ -84,9 +84,11 @@ $(document).ready(function(){
 	     }  
 	 });
 	 $('.selectRedFont').click(function(){
-		 $(this).parent('div').find('.selectRedFont').removeClass('selectClass');
 		 if(!$(this).hasClass('selectClass')){
+			 $(this).parent('div').find('.selectRedFont').removeClass('selectClass');
 			 $(this).addClass('selectClass');
+		 }else{
+			 $(this).removeClass('selectClass');
 		 }
 		 getPublishList(1);
 	 })
@@ -102,8 +104,12 @@ function getPublishList(gpagesize){
 	var cpricevalue = $('.cpriceAllDiv').find('.selectClass').attr('attrId');
 	var pricevalue = $('.priceAllDiv').find('.selectClass').attr('attrId');
 	var publishnameInput = $('.publishnameInput').val();
+	var publisharea = $('.publisharea').val();
 	var datajson = {};
 	datajson.pageSize = gpagesize;
+	if(publisharea!=0){
+		datajson.publisharea = publisharea;
+	}
 	if(fieldvalue!=0){
 		datajson.publishType = typevalue;
 	}
@@ -181,7 +187,19 @@ function allSelectAddCart(tt){
 	var alen = $('.selectAddCart[addflag=1]').length;
 	$('.totalAddCart').html(alen);
 }
-
+function changeArea0(tt){
+	var val = $(tt).val();
+	$('.attrErCode').hide();
+	$('option[attrErCode="'+val+'"]').show();
+}
+function changeArea1(tt){
+	var val = $(tt).val();
+	$('.attrSanCode').hide();
+	$('option[attrSanCode="'+val+'"]').show();
+}
+function changeArea2(tt){
+	getPublishList(1);
+}
 </script>
 </head>
 <body style="padding:0px;margin:0px;">
@@ -275,6 +293,33 @@ function allSelectAddCart(tt){
 						</div>
 						<div style="width:1160px;height:1px;border-top:1px dotted #707070;margin:0 auto;"></div>
 					</div>
+					<div>
+						<div style="padding:20px;color:#707070;float:left;width:70px;">区域筛选&nbsp;:</div>
+						<select class="pbarea" onchange="changeArea0(this)" style="float:left;width:130px;color:#333333;height:35px;font-size:14px;padding-left:6px;margin-top:10px;">
+													<option>--请选择--</option>
+											<c:forEach var="publisharea" items="${publishArea }"  varStatus="st" >
+												<c:if test="${publisharea.priority=='1' }">
+													<option value="${publisharea.area_code }" style="padding:6px;font-size:14px;color:#333333;">${publisharea.area_name }</option>
+												</c:if>
+											</c:forEach>
+										</select>
+										<select onchange="changeArea1(this)" style="float:left;margin-left:10px;width:130px;color:#333333;height:35px;font-size:14px;padding-left:6px;margin-top:10px;margin-left:10px;">
+											<option>--请选择--</option>
+											<c:forEach var="publisharea" items="${publishArea }"  varStatus="st" >
+												<c:if test="${publisharea.priority=='2' }">
+													<option class="attrErCode" attrErCode="${publisharea.parent_area_code }" value="${publisharea.area_code }" style="display:none;padding:6px;font-size:14px;color:#333333;">${publisharea.area_name }</option>
+												</c:if>
+											</c:forEach>
+										</select>
+										<select onchange="changeArea2(this)" class="publisharea" style="float:left;margin-left:10px;width:130px;color:#333333;height:35px;font-size:14px;padding-left:6px;margin-top:10px;margin-left:10px;">
+											<option value="0">--请选择--</option>
+											<c:forEach var="publisharea" items="${publishArea }"  varStatus="st" >
+												<c:if test="${publisharea.priority=='3' }">
+													<option class="attrSanCode" attrSanCode="${publisharea.parent_area_code }" value="${publisharea.area_name }" style="display:none;padding:6px;font-size:14px;color:#333333;">${publisharea.area_name }</option>
+												</c:if>
+											</c:forEach>
+										</select>
+					</div>
 				</div>
 			</div>
 			<div style="width:1200px;margin:0 auto;margin-top:25px;height:40px;">
@@ -318,17 +363,19 @@ function allSelectAddCart(tt){
 						<div style="float:left;width:108px;color:#ffffff;font-size:18px;line-height: 52px;position: relative;">去购物车结算</div>
 					</div>
 				</div>
+				<input type="hidden" value="${sessionScope.user.userFlag }" id="uesFlag"/>
 <!-- 				tencent://message/?uin={{=it[i].qq}}&Site=&Menu=yes -->
 				<script id="publishTmp" type="text/x-dot-template">
-					{{for(var i=0;i<it.length;i++){ }} 
+					{{ var uesFlag = $('#uesFlag').val(); var flag1 = uesFlag.substring(0,1); for(var i=0;i<it.length;i++){ }} 
 						<div style="float:left;{{? (i+6)%5!=0}} margin-right:37px;{{?}}width:210px;height:330px;position: relative;background: white;margin-top:4px;{{? i>4}} margin-top:25px; {{?}}">
 							<div style="margin:0 auto;padding-top:30px;padding-left:25px;padding-right:25px;width:160px;height:180px;cursor:pointer;">
-								<a href="../getPublishDetails?pghid={{=it[i].ghid}}"><img class="mtimage" src="http://61.129.51.62:8080/GhWemediaWar/{{=it[i].image}}" width="160px" height="180px" /></a>
+								<a target="_bank" href="../getPublishDetails?pghid={{=it[i].ghid}}"><img class="mtimage" src="/ghplat/attachment{{=it[i].image}}" width="160px" height="180px" /></a>
 							</div>
+							{{? flag1=='1'}}
 							<div style="width:160px;margin:0 auto;font-size:14px;color:#333333;margin-top:10px;position: relative;">{{=it[i].publishName}}
 								<div style="width:40px;position:absolute;right:-15px;top:-3px;"><a href="tencent://AddContact/?fromId=45&fromSubId=1&subcmd=all&uin={{=it[i].qq}}&website=www.ghplat.com"><img width="28px" src="images/online.png"/></a></div>
 							</div>
-											
+							{{?}}
 							<div style="width:160px;margin:0 auto;margin-top:10px;color:#333333;height:20px;">
 								<div style="width:18px;height:18px;float:left;"><img src="images/fans.png" width="18px" /></div>
 								<div style="float:left;margin-left:8px;font-size:13px;line-height: 18px;">{{=it[i].platformFans}}</div>

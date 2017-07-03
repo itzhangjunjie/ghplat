@@ -39,7 +39,7 @@ public class OrderDetails {
 	@Column(name="column_2")
 	private String column_2;
 	@Column(name="column_3")
-	private long column_3;
+	private long column_3=0;
 	@Column(name="column_4")
 	private Date column_4;
 	

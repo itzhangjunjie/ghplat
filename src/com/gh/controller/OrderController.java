@@ -1,18 +1,26 @@
 package com.gh.controller;
 
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.List;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -27,6 +35,7 @@ import com.gh.service.IBaseService;
 import com.gh.service.IOrderService;
 import com.gh.service.IPublishService;
 import com.gh.util.PageList;
+import com.gh.util.StringUtil;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -38,6 +47,19 @@ public class OrderController extends BaseControllerSupport{
 	@Resource
 	private IOrderService orderService;
 	
+	
+	@RequestMapping(value = "/deleteOrder", method = {RequestMethod.POST})
+	public @ResponseBody String deleteOrder(HttpServletRequest request){
+		try {
+			long orderId = Long.parseLong(request.getParameter("orderId"));
+			orderService.deleteOrder(orderId);
+			jsonObject.put("result", "yes");
+		} catch (Exception e) {
+			jsonObject.put("result", "no");
+			e.printStackTrace();
+		}
+		return jsonObject.toString();
+	}
 	@RequestMapping(value = "/getOrderList", method = {RequestMethod.GET})
 	public String getOrderList(PublishForm publishForm,HttpServletRequest request){
 		try {
@@ -92,10 +114,39 @@ public class OrderController extends BaseControllerSupport{
 		}
 		return jsonObject.toString();
 	}
+	
+	@RequestMapping(value = "/downFile", method = {RequestMethod.GET})
+	public String downFile(HttpServletRequest request, HttpServletResponse response){
+		String fileUrl = request.getSession().getServletContext().getRealPath("/attachment/cartFile/cartItemList.xlsx");
+		String fileName = StringUtil.getRandStr(10).toString()+"-cart.xlsx";
+	      response.setCharacterEncoding("utf-8");
+			response.setContentType("multipart/form-data");
+			response.setHeader("Content-Disposition", "attachment;fileName="
+					+ fileName);
+			try {
+				InputStream inputStream = new FileInputStream(new File(fileUrl));
+				OutputStream os = response.getOutputStream();
+				byte[] b = new byte[2048];
+				int length;
+				while ((length = inputStream.read(b)) > 0) {
+					os.write(b, 0, length);
+				}
+				 // 这里主要关闭。
+				os.close();
+				inputStream.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+			} 
+	            //  返回值要注意，要不然就出现下面这句错误！
+	            //java+getOutputStream() has already been called for this response
+			return null;
+	}
+	
 	@Resource
 	private IBaseService<Publish> basePublishService;
+	
 	@RequestMapping(value = "/orderExport", method = {RequestMethod.POST})
-	public void orderExport(HttpServletRequest request,String orderArray){
+	public @ResponseBody String orderExport(HttpServletRequest request, HttpServletResponse response,String orderArray){
 		FileOutputStream output = null;
 		 try{
 			 String fileUrl = request.getSession().getServletContext().getRealPath("/attachment/cartFile/cartItemList.xlsx");
@@ -129,13 +180,12 @@ public class OrderController extends BaseControllerSupport{
 					long publishId = Long.parseLong(obj.getString("publishId"));
 					String priceStr = obj.getString("priceStr");
 					String price = obj.getString("price");
-					String publishType = obj.getString("publishType");
 					Publish publish = basePublishService.getById(Publish.class, publishId);
 		    	    XSSFRow xssfRow = xssfSheet.createRow(rowNum);
 			        XSSFCell c = xssfRow.createCell(0);
 					c.setCellValue(publish.getPublishName());
 					XSSFCell c1 = xssfRow.createCell(1);
-					c1.setCellValue(publishType);
+					c1.setCellValue(publish.getPublishTypeObj().getPublishFieldName());
 					XSSFCell c2 = xssfRow.createCell(2);
 					c2.setCellValue(priceStr);
 					XSSFCell c3 = xssfRow.createCell(3);
@@ -145,11 +195,12 @@ public class OrderController extends BaseControllerSupport{
 		      }
 	      xssfWorkbook.write(output);
 	      output.close();
+	      jsonObject.put("result", "yes");
 		}catch(Exception e){
 			System.out.println("读取失败！");
+			jsonObject.put("result", "no");
 			e.printStackTrace();
-		}finally{
-			
 		}
+		 return jsonObject.toString();
 	}
 }

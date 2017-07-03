@@ -11,6 +11,7 @@ import com.gh.model.Case;
 import com.gh.model.CaseDetails;
 import com.gh.model.Media;
 import com.gh.model.Publish;
+import com.gh.model.PublishArea;
 import com.gh.util.PageList;
 
 import net.sf.json.JSONObject;
@@ -55,6 +56,8 @@ public interface IPublishService {
 	List<Publish> getCartList(String ids) throws Exception;
 
 	Publish getpublishDetails(String publishghid) throws Exception;
+
+	List<PublishArea> getPublishAreaList() throws Exception;
 	
 
 }

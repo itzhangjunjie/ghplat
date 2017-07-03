@@ -30,14 +30,14 @@
 					<div style="float:left;width:210px;height:280px;position: relative;background: white;margin-left:4px;<c:if test="${stt.index!=0 }">margin-left:36px;</c:if>margin-top:4px;">
 						<div style="position: absolute;top:-4px;left:-4px;width:76px;text-align: center;height:22px;line-height: 22px;font-size:12px;color:#ffffff;background: rgb(37,202,154);">${publish.publishTypeObj.publishFieldName }</div>
 						<div style="margin:0 auto;padding-top:30px;padding-left:25px;padding-right:25px;width:160px;height:180px;">
-							<a href="../getPublishDetails?pghid=${publish.ghid }"><img src="http://61.129.51.62:8080/GhWemediaWar/${publish.image }" width="160px" height="180px" /></a>
+							<a href="../getPublishDetails?pghid=${publish.ghid }"><img src="/ghplat/attachment${publish.image }" width="160px" height="180px" /></a>
 						</div>
 						<div style="width:160px;margin:0 auto;font-size:14px;color:#333333;margin-top:10px;">${publish.publishName }</div>
 						<div style="width:160px;margin:0 auto;margin-top:10px;color:#333333;">
 							<div style="width:18px;height:18px;float:left;"><img src="images/fans.png" width="18px" /></div>
 							<div style="float:left;margin-left:8px;font-size:13px;line-height: 18px;">${publish.platformFans }</div>
 							<c:if test="${publish.platformIcon!=null }">
-								<div style="width:18px;height:18px;float:right;"><img src="http://61.129.51.62:8080/GhWemediaWar/${publish.platformIcon }" width="18px" /></div>
+								<div style="width:18px;height:18px;float:right;"><img src="${publish.platformIcon }" width="18px" /></div>
 							</c:if>
 						</div>
 					</div>

@@ -12,6 +12,10 @@ $(document).ready(function(){
 	if($('#userflag').val()==''){
 		changeDiv('passwordDiv',$('#passwdbtn'));
 	}
+	var uesFlag = $('#uesFlag').val(); var flag2 = uesFlag.substring(1,2);
+	if(flag2=='1'){
+		$('.imprtDataDiv').show();
+	}
 })
 function gostep2(){
 	var pcode = $('.pcode').val();
@@ -103,6 +107,57 @@ function sendCodeMsgPwd(tt,type){
 		   }
 	});
 }
+function removeOrder(tt,orderid){
+	if(confirm("确定删除订单吗?")){
+		$.ajax({
+			   type: "POST",
+			   url: "../deleteOrder",
+			   data:{
+				   'orderId'  :orderid
+			   }, 
+			   dataType:"json",
+			   success: function(msg){
+				   if(msg.result=='yes'){
+					   $(tt).parent().parent().remove();
+				   }
+			   }
+		});
+	}
+}
+function dataExport(tt){
+	var user= $('#userType').val();
+	if(user==null||user==''){
+		$('#qiyeloginA').click();
+	}else{
+		var totalPrice = 0;
+		var orderArray = new Array();
+		for(var i=0;i<$(tt).parent().parent().find('.publishTr').length;i++){
+			var orderObj = {};
+			orderObj.publishId = $($(tt).parent().parent().find('.publishTr')[i]).attr('attrPid');
+			orderObj.priceStr = $($(tt).parent().parent().find('.publishTr')[i]).attr('attrPriceStr');
+			orderObj.price = $($(tt).parent().parent().find('.publishTr')[i]).attr('attrPrice');
+			orderObj.publishType = $($(tt).parent().parent().find('.publishTr')[i]).attr('attrPtype');
+			totalPrice = totalPrice+parseInt(orderObj.price);
+			orderArray.push(orderObj);
+		}
+		$.ajax({
+			   type: "POST",
+			   url: "../orderExport",
+			   data:{
+				   'totalPrice'  :totalPrice,
+				   'orderArray':JSON.stringify(orderArray)
+			   }, 
+			   dataType:"json",
+			   success: function(msg){
+				   if(msg.result=='yes'){
+					   window.open("../downFile")
+				   }else{
+					   $('#qiyeloginA').click();
+				   }
+			   }
+		});
+	}
+}
 function changeDiv(cls,tt){
 	$('.divsh').hide();
 	$('.'+cls).show();
@@ -113,7 +168,9 @@ function changeDiv(cls,tt){
 </head>
 <body style="padding:0px;margin:0px;">
 <%@include file="header.jsp" %>
+<input type="hidden" value="${sessionScope.user.id}" id="userType" />
 <input type="hidden" value="${sessionScope.type}" id="userflag" />
+<input type="hidden" value="${sessionScope.user.userFlag }" id="uesFlag"/>
 	<div style="width:100%;background:rgb(242,242,242);height:auto;overflow: hidden; ">
 		<div style="width:1140px;padding:20px 30px 40px 30px;background: white;margin:0 auto;margin-top:15px;margin-bottom:20px;border:1px #eeeeee solid;overflow: hidden;">
 			<div style="width:100%;height:36px;border-bottom: 1px #707070 solid;">
@@ -129,11 +186,13 @@ function changeDiv(cls,tt){
 					<c:forEach items="${orderlist.list }" var="order">
 				<div style="width:100%;overflow: hidden;">
 						<div style="width:1138px;height:40px;background: #f8f8f8;margin-top:20px;line-height: 40px;border:1px #dfdfdf solid;border-bottom: 0px;font-size:14px;">
-							<span style="margin-left:20px;float:left;">2017-04-12</span><span style="float:left;margin-left:20px;">订单编号：234234235234234</span>
+							<span style="margin-left:20px;float:left;">${order.order_createtime }</span><span style="float:left;margin-left:20px;">订单编号：${order.ghid }</span>
+							<span onclick="removeOrder(this,${order.order_id})" class="hoverFont" style="float:right;margin-right:10px;">删除订单</span>
+							<div class="imprtDataDiv" onclick="dataExport(this)" style="display:none;width:70px;height:22px;border:1px #333333 solid;text-align: center;line-height: 22px;float: right;font-size:14px;cursor:pointer;margin-top:8px;margin-right:10px;">导出方案</div>
 						</div>
 						<table cellspacing="0px" class="plisDiv" style="font-size:14px;border:1px #dfdfdf solid;float:left;width:1140px;">
 						<c:forEach items="${order.orderDetailsList }" var="orderDetails"  varStatus="stt">
-								<tr valign="middle" height="60px" class="publishTr600 publishTr" >
+								<tr valign="middle" height="60px" class="publishTr" attrPid="${orderDetails.publish.id }" attrPriceStr="${orderDetails.publish_pricestr }" attrPrice="${orderDetails.publish_price }" attrPtype="${orderDetails.publish.publishTypeObj.publishFieldName }">
 									 <td width="150px" style="border-top:1px #dfdfdf solid;<c:if test="${stt.index==0 }">border:0px;</c:if> " align="center"><img width="48px" height="48px" src="/attachment${orderDetails.publish.image }"></td>
 									 <td width="150px" style="border-top:1px #dfdfdf solid;<c:if test="${stt.index==0 }">border:0px;</c:if> " align="center"><div style="margin-top:1px;" >${orderDetails.publish.publishTypeObj.publishFieldName }</div></td>
 									 <td class="fansTd" style="border-top:1px #dfdfdf solid;<c:if test="${stt.index==0 }">border:0px;</c:if> " width="150px" align="center">${orderDetails.publish.platformFans }</td>
@@ -174,12 +233,12 @@ function changeDiv(cls,tt){
 				</div>
 				<div  class="step02 step" style="margin-top:50px;padding-bottom: 20px;display:none;">
 					<div style="width:320px;margin:0 auto;position: relative;">
-						<input class="ppassword" style="margin:0px;width:300px;height:44px;padding:6px;color:#333333;text-align:left;background: rgb(249,249,249);" type="text" placeholder="密码" />
+						<input class="ppassword" type="password" style="margin:0px;width:300px;height:44px;padding:6px;color:#333333;text-align:left;background: rgb(249,249,249);" type="text" placeholder="密码" />
 						<span style="height:44px;margin-left:10px;line-height: 48px;width:5px;text-align:left;color:red;font-size:14px; ">*</span>
 						<div class="ppasswordMsg errormsg" style="display:none;color:red;top:14px;right:32px;position: absolute;font-size:12px;">密码不对</div>
 					</div>
 					<div style="width:320px;margin:0 auto;margin-top:20px;position: relative;overflow: hidden;">
-						<input class="rppassword" style="margin:0px;width:300px;height:44px;padding:6px;color:#333333;text-align:left;background: rgb(249,249,249);" type="text" placeholder="再次输入密码" />
+						<input type="password" class="rppassword" style="margin:0px;width:300px;height:44px;padding:6px;color:#333333;text-align:left;background: rgb(249,249,249);" type="text" placeholder="再次输入密码" />
 						<span style="height:44px;margin-left:10px;line-height: 48px;width:5px;text-align:left;color:red;font-size:14px; ">*</span>
 						<div class="prpasswordMsg errormsg" style="display:none;color:red;top:14px;right:32px;position: absolute;font-size:12px;">密码不一致</div>
 					</div>

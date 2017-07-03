@@ -21,6 +21,7 @@ import com.gh.model.CaseDetails;
 import com.gh.model.CaseImage;
 import com.gh.model.Media;
 import com.gh.model.Publish;
+import com.gh.model.PublishArea;
 import com.gh.service.IBaseService;
 import com.gh.service.IPublishService;
 import com.gh.util.FileUtil;
@@ -63,6 +64,8 @@ public class PublishController extends BaseControllerSupport{
 		try {
 			List<PublishTypeDTO> ptdto = publishService.getPublishType();
 			request.setAttribute("ptdto", ptdto);
+			List<PublishArea> publishAreaList = publishService.getPublishAreaList();
+			request.setAttribute("publishArea", publishAreaList);
 		}catch(Exception e){
 			e.printStackTrace();
 		}
@@ -78,7 +81,9 @@ public class PublishController extends BaseControllerSupport{
 				return "redirect:/index";
 			}else{
 				List<PublishTypeDTO> ptdto = publishService.getPublishAdd();
+				List<PublishArea> publishAreaList = publishService.getPublishAreaList();
 				request.setAttribute("ptdto", ptdto);
+				request.setAttribute("publishArea", publishAreaList);
 			}
 		}catch(Exception e){
 			e.printStackTrace();
@@ -186,13 +191,14 @@ public class PublishController extends BaseControllerSupport{
 			}else{
 				
 				publish.setMediaId(media.getId());
-				//publish.setPublishTime(new Date());
+				publish.setLastViewedTime(new Date());
+				publish.setPublishTime(new Date());
 				publish.setGhid(UUID.randomUUID().toString().replace("-", ""));
 				if(publish.getImage()==null){
 					jsonObject.put("result", "no");
 					jsonObject.put("reason", "noImage");
 				}else{
-					String srcImage = publish.getImage().replace("/ghplat/attachment/temp", "");
+					String srcImage = publish.getImage().replace("/ghplat/attachment/temp", "").replace("/ghplat/attachment/publish", "");
 					String beforeUrl = request.getSession().getServletContext().getRealPath("/attachment");
 					FileUtil.copyFile(beforeUrl+"/temp"+srcImage, beforeUrl+"/publish"+srcImage);
 					FileUtil.delete(beforeUrl+"/temp"+srcImage);
