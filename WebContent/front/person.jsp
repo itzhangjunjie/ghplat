@@ -5,7 +5,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>个人主页</title>
-<base href="/ghplat/front/">
+<base href="front/">
 <script src="js/jquery-1.8.2.min.js" type="text/javascript"></script>
 <script type="text/javascript">
 $(document).ready(function(){
@@ -19,6 +19,12 @@ $(document).ready(function(){
 })
 function gostep2(){
 	var pcode = $('.pcode').val();
+	var mobile = $('.pmobile').val();
+	if(mobile!=mobileStr){
+		$('.pmobileMsg').html('手机号不对');
+		$('.pmobileMsg').show();
+		return;
+	}
 	if(regCode==pcode){
 		$('.stepImage').attr('src','images/step02.png');
 		$('.step').hide();
@@ -59,6 +65,7 @@ function gostep3(){
 	}
 }
 var regCode = 01;
+var mobileStr = null;
 function sendCodeMsgPwd(tt,type){
 	var mobile = $('.pmobile').val();
 	console.log(mobile);
@@ -83,6 +90,7 @@ function sendCodeMsgPwd(tt,type){
 		   dataType:"json",
 		   success: function(msg){
 			   if(msg.result=='yes'){
+				   mobileStr = mobile;
 				   regCode = msg.code;
 					$('.ptimeCount').show();
 					$('.ptimeFont').html('获取验证码');
@@ -179,7 +187,7 @@ function changeDiv(cls,tt){
 			</div>
 			<div style="width:100%;margin-top:20px;" class="orderDiv divsh">
 					<table cellspacing="0px" class="plisDiv" style="width:100%;font-size:14px;border:1px #dfdfdf solid;">
-					<tbody><tr valign="middle" height="40px" style="background: #f8f8f8;"><td width="150px" align="center">广告主题</td><td width="150px" align="center">广告类型</td>
+					<tbody><tr valign="middle" height="40px" style="background: #f8f8f8;"><td width="150px" align="center">广告主题</td><td width="170px" align="center">投放主体</td><td width="150px" align="center">广告类型</td>
 					<td width="150px" align="center">阅读量</td><td width="150px" align="center">位置</td><td width="150px" align="center">报价</td><td width="250px" align="center">订单状态</td><td width="200px" align="center">总金额</td></tr>
 		<!-- 			<div style="float:left;"><img src="images/weixin.png" /></div> -->
 				</tbody></table>
@@ -194,13 +202,14 @@ function changeDiv(cls,tt){
 						<c:forEach items="${order.orderDetailsList }" var="orderDetails"  varStatus="stt">
 								<tr valign="middle" height="60px" class="publishTr" attrPid="${orderDetails.publish.id }" attrPriceStr="${orderDetails.publish_pricestr }" attrPrice="${orderDetails.publish_price }" attrPtype="${orderDetails.publish.publishTypeObj.publishFieldName }">
 									 <td width="150px" style="border-top:1px #dfdfdf solid;<c:if test="${stt.index==0 }">border:0px;</c:if> " align="center"><img width="48px" height="48px" src="/attachment${orderDetails.publish.image }"></td>
+									 <td width="150px" style="border-top:1px #dfdfdf solid;<c:if test="${stt.index==0 }">border:0px;</c:if> " align="center"><div style="margin-top:1px;" >${orderDetails.publish.publishName }</div></td>
 									 <td width="150px" style="border-top:1px #dfdfdf solid;<c:if test="${stt.index==0 }">border:0px;</c:if> " align="center"><div style="margin-top:1px;" >${orderDetails.publish.publishTypeObj.publishFieldName }</div></td>
 									 <td class="fansTd" style="border-top:1px #dfdfdf solid;<c:if test="${stt.index==0 }">border:0px;</c:if> " width="150px" align="center">${orderDetails.publish.platformFans }</td>
 									 <td width="150px" style="border-top:1px #dfdfdf solid;<c:if test="${stt.index==0 }">border:0px;</c:if> " align="center">${orderDetails.publish_pricestr }</td>
 									 <td width="150px" style="border-top:1px #dfdfdf solid;<c:if test="${stt.index==0 }">border:0px;</c:if> " align="center"><span class="priceclass">${orderDetails.publish_price }</span></td>
 							    	 <c:if test="${stt.index==0 }">
 								    	 <td width="250px" style="border-left:1px #dfdfdf solid;" align="center" rowspan="${order.orderDetailsList.size()}">
-								    	 	<c:if test="${order.order_status==0 }">待付款</c:if><c:if test="${order.order_status==1 }">已完成</c:if><c:if test="${order.order_status==-1 }">已取消</c:if>
+								    	 	<c:if test="${order.order_status==0 }">待付款</c:if><c:if test="${order.order_status==1 }">已完成</c:if><c:if test="${order.order_status==2 }">已取消</c:if>
 								    	 </td>
 								    	 <td width="150px" style="border-left:1px #dfdfdf solid;" align="center" rowspan="${order.orderDetailsList.size()}">${order.order_contentbudget }</td>
 							    	 </c:if>

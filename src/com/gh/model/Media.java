@@ -11,6 +11,7 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 
 @Entity
 @Table(name="GH_MEDIA")
@@ -67,7 +68,17 @@ public class Media {
     @Temporal(TemporalType.DATE)
     private Date column4;
     
+    @Transient
+    private long publishCount;
     
+    
+    
+	public long getPublishCount() {
+		return publishCount;
+	}
+	public void setPublishCount(long publishCount) {
+		this.publishCount = publishCount;
+	}
 	public String getGhid() {
 		return ghid;
 	}

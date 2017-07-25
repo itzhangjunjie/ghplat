@@ -12,26 +12,45 @@
 <link rel="stylesheet" href="css/global.css" media="all">
 <link rel="stylesheet" type="text/css" href="http://www.jq22.com/jquery/font-awesome.4.6.0.css">
 <link rel="stylesheet" href="css/table.css" />
+<script src="../js/jquery-1.8.2.min.js" type="text/javascript"></script>
+<script type="text/javascript">
+function delePlatform(pid,tt){
+	if(confirm("确定删除订单吗?")){
+		$.ajax({
+			   type: "POST",
+			   url: "../delPlatformDetails",
+			   data:{
+				   'pfid'  :pid
+			   }, 
+			   dataType:"json",
+			   success: function(msg){
+				   if(msg.result=='yes'){
+					   $(tt).parent().parent().remove();
+				   }
+			   }
+		});
+	}
+}
+</script>
 </head>
 <body>
-		<form class="layui-form" method="post" action="/ghplat/admin/meitiList">
+		<form class="layui-form" method="post" action="/ghplat/admin/platformlist">
 			<blockquote class="layui-elem-quote" style="height: 40px;">
 					<div class="layui-form-item" style="position: absolute;right: 100px;top: 17px;">
-							<c:set value="${publishForm.publishType}" var="ptype"></c:set>
+							<c:set value="000${publishForm.publishType}" var="ptype"></c:set>
 							<label class="layui-form-label">类型：</label>
 							<div class="layui-input-inline">
 								<select name="publishType">
-									<option value="0" <c:if test="${ptype==0 }">selected="selected"</c:if>>全部</option>
+									<option value="0">全部</option>
 									<c:forEach var="publish" items="${ptdto }"  varStatus="st" >
 										<option value="${publish.publishType}" <c:if test="${publish.publishType==ptype }">selected="selected"</c:if>>${publish.publishName }</option>
 									</c:forEach>
 								</select>
 							</div>
-							<label class="layui-form-label">标题：</label>
+							<label class="layui-form-label">名字：</label>
 							<div class="layui-input-inline">
-								<input type="text" name="publishName" value="${publishName }" lay-verify="title" autocomplete="off" placeholder="请输入媒体的标题" class="layui-input">
+								<input type="text" name="searchStr" value="${publishForm.searchStr }" lay-verify="title" autocomplete="off" placeholder="请输入媒体的标题" class="layui-input">
 							</div>
-							<input type="hidden" value="1" name="publishStatus"/>
 							<button lay-filter="demo1" lay-submit="" class="layui-btn">搜索</button>
 					</div>
 			</blockquote>
@@ -40,40 +59,25 @@
 		<fieldset class="layui-elem-field">
 				<legend>数据列表</legend>
 				<div class="layui-field-box">
-					<table class="site-table table-hover">
-						<thead>
-							<tr>
-								<th><input type="checkbox" id="selected-all"></th>
-								<th>图片</th>
-								<th>标题</th>
-								<th>类型</th>
-								<th>领域</th>
-								<th>平台</th>
-								<th>QQ</th>
-								<th>创建时间</th>
-								<th>操作</th>
-							</tr>
-						</thead>
-						<tbody>
-							<c:forEach items="${publishListPage.list }" var="publishObj">
-								<tr>
-									<td><input type="checkbox"></td>
-									<td><img src="/ghplat/attachment/banner/${publishObj.image }" width="80px" height="80px" /></td>
-									<td>
-										${publishObj.publishName }
-									</td>
-									<td>${publishObj.publishTypeObj.publishFieldName }</td><td>${publishObj.publishField }</td>
-									<td>${publishObj.platformName }</td>
-									<td>${publishObj.qq }</td>
-									<td><fmt:formatDate value="${publishObj.publishTime }" pattern="yyyy-MM-dd HH:mm" /></td>
-									<td>
-										<a href="/ghplat/admin/meitiupdate?pghid=${publishObj.ghid }" class="layui-btn layui-btn-mini">编辑</a>
-										<a  href="javascript:;" data-id="${banner.indexBannerId }" data-opt="del" class="layui-btn layui-btn-danger layui-btn-mini">删除</a>
-									</td>
-								</tr>
+					<div style="width:100%;margin-top:20px;" class="orderDiv divsh">
+					<table cellspacing="0px" class="plisDiv" style="width:100%;font-size:14px;border:1px #dfdfdf solid;">
+					<tbody><tr valign="middle" height="40px" style="background: #f8f8f8;"><td width="150px" align="center">id</td><td width="170px" align="center">类型</td><td width="150px" align="center">名字</td>
+					<td width="150px" align="center">图标</td><td width="150px" align="center">操作</td></tr>
+		<!-- 			<div style="float:left;"><img src="images/weixin.png" /></div> -->
+				</tbody></table>
+				<div style="width:100%;overflow: hidden;padding-bottom: 30px;">
+						<table cellspacing="0px" class="plisDiv" style="font-size:14px;border:1px #dfdfdf solid;float:left;width:100%;padding-bottom: 20px;">
+							<c:forEach items="${platformList }" var="platform">
+								<tr valign="middle" height="40px" style="background: #f8f8f8;"><td width="150px" align="center">${platform.platformId }</td><td width="170px" align="center">${platform.publishType }</td><td width="150px" align="center">${platform.platformName }</td>
+								<td width="150px" align="center"><img src="/ghplat/attachment/platform/${platform.platformIcon }" style="width:80px;height:80px;"/></td>
+								<td width="150px" align="center">
+								<a href="/ghplat/admin/getPlatformDetails?pfid=${platform.platformId }" style="cursor: pointer;">编辑</a>
+								<a href="javascript:;" onclick="delePlatform(${platform.platformId },this)" style="cursor: pointer;margin-left:20px;">删除</a>
+								</td></tr>						
 							</c:forEach>
-						</tbody>
-					</table>
+					    </table>
+				</div>
+			</div>
 				</div>
 		</fieldset>
 		<div class="admin-table-page">
@@ -92,17 +96,19 @@
 				$('input').iCheck({
 					checkboxClass: 'icheckbox_flat-green'
 				});
+				var total = '${adlist.total}';
+				total = (total%15==0)?total/15:(parseInt(total/15)+1);
 				//page
 				laypage({
 					cont: 'page',
-					pages: parseInt('${publishListPage.total }') ,//总页数
+					pages: total ,//总页数
 					groups: 5 ,//连续显示分页数
-					 curr: '${publishListPage.page}',
+					 curr: '${adlist.page}',
 					jump: function(obj, first) {
 						//得到了当前页，用于向服务端请求对应数据
 						var curr = obj.curr;
 						if(!first) {
-							location.href='/ghplat/admin/meitiList?pageSize='+curr;
+							location.href='/ghplat/admin/useradlist?pageSize='+curr;
 							//layer.msg('第 '+ obj.curr +' 页');
 						}
 					}

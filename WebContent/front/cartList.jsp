@@ -5,32 +5,39 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>购物车</title>
-<base href="/ghplat/front/">
+<base href="">
 <script src="js/jquery-1.8.2.min.js" type="text/javascript"></script>
 <script src="js/main.js" type="text/javascript"></script>
 <script type="text/javascript">
+var userflagv = 0;
 $(document).ready(function(){
 	var cartIds = getCookie("cartIds");
+	console.log(cartIds+".....");
 	getCartList(cartIds);
 	var uesFlag = $('#uesFlag').val(); var flag2 = uesFlag.substring(1,2);
+	userflagv = flag2;
 	if(flag2=='1'){
 		$('#imprtDataDiv').show();
+	}else{
+		$('.moneytotal').html('**');
 	}
 })
 function getCartList(ids){
-	$.ajax({
-		   type: "POST",
-		   url: "../getCartList",
-		   data:{
-			   'pIds'  :ids
-		   }, 
-		   dataType:"json",
-		   success: function(msg){
-			   var htmla =  doT.template($("#publishlistTmpDiv").text());
-				$('.plisDiv').append(htmla(msg));
-				selecttotal();
-		   }
-	});
+	if(ids!=null&&ids!=''){
+		$.ajax({
+			   type: "POST",
+			   url: "../getCartList",
+			   data:{
+				   'pIds'  :ids
+			   }, 
+			   dataType:"json",
+			   success: function(msg){
+				   var htmla =  doT.template($("#publishlistTmpDiv").text());
+					$('.plisDiv').append(htmla(msg));
+					selecttotal();
+			   }
+		});
+	}
 }
 function selectPrice(tt,pid){
 	$(tt).parent().parent().find('.priceclass').hide();
@@ -48,13 +55,17 @@ function selecttotal(){
 	}
 	$('.cartPersonCount').html(totalFans);
 	$('.cartViewCount').html(parseInt(totalFans*0.6));
-	var totalPrice =0;
-	for(var i=0;i<$('tr[attrflag="1"]').find('.priceclass').length;i++){
-		if($($('tr[attrflag="1"]').find('.priceclass')[i]).css('display')!='none'){
-			totalPrice= totalPrice+parseInt($($('tr[attrflag="1"]').find('.priceclass')[i]).html());
+	if(userflagv==1){
+		var totalPrice =0;
+		for(var i=0;i<$('tr[attrflag="1"]').find('.priceclass').length;i++){
+			if($($('tr[attrflag="1"]').find('.priceclass')[i]).css('display')!='none'){
+				totalPrice= totalPrice+parseInt($($('tr[attrflag="1"]').find('.priceclass')[i]).html());
+			}
 		}
+		$('.moneytotal').html(totalPrice);
+	}else{
+		$('.moneytotal').html('**');
 	}
-	$('.moneytotal').html(totalPrice);
 }
 function selectAddCart(tt){
 	if($(tt).find('.selectedPublish').css('display')=='none'){
@@ -84,7 +95,8 @@ function allSelectAddCart(tt){
 }
 function deleteAll(){
 	if(confirm("确定要全部删除吗？")){
-		delCookie('cartIds');
+		//delCookie('cartIds');
+		SetCookie("cartIds","",15);
 		$('.publishTr').remove();
 		selecttotal();
 	}
@@ -107,7 +119,8 @@ function saveOrder(){
 			var orderObj = {};
 			orderObj.publishId = $($('tr[attrflag="1"]')[i]).attr('attrPid');
 			orderObj.priceStr = $($('tr[attrflag="1"]')[i]).find('.priceStrSel').val();
-			orderObj.price = $($('tr[attrflag="1"]')[i]).find('span[attrStr="'+orderObj.priceStr+'-'+orderObj.publishId+'"]').html();
+			var attrStr = orderObj.priceStr+'-'+orderObj.publishId;
+			orderObj.price = $($($('tr[attrflag="1"]')[i]).find('span[attrStr="'+attrStr+'"]')).html();
 			orderObj.publishType = $($('tr[attrflag="1"]')[i]).attr('attrPtype');
 			totalPrice = totalPrice+parseInt(orderObj.price);
 			orderArray.push(orderObj);
@@ -124,6 +137,8 @@ function saveOrder(){
 			   dataType:"json",
 			   success: function(msg){
 				   if(msg.result=='yes'){
+					   //delCookie('cartIds');
+					   SetCookie("cartIds","",15);
 					   location.href="../getOrderList";
 				   }else{
 					   $('#qiyeloginA').click();
@@ -143,7 +158,8 @@ function dataExport(){
 			var orderObj = {};
 			orderObj.publishId = $($('tr[attrflag="1"]')[i]).attr('attrPid');
 			orderObj.priceStr = $($('tr[attrflag="1"]')[i]).find('.priceStrSel').val();
-			orderObj.price = $($('tr[attrflag="1"]')[i]).find('span[attrStr="'+orderObj.priceStr+'"]').html();
+			var attrStr = orderObj.priceStr+'-'+orderObj.publishId;
+			orderObj.price = $($($('tr[attrflag="1"]')[i]).find('span[attrStr="'+attrStr+'"]')).html();
 			orderObj.publishType = $($('tr[attrflag="1"]')[i]).attr('attrPtype');
 			totalPrice = totalPrice+parseInt(orderObj.price);
 			orderArray.push(orderObj);
@@ -218,7 +234,7 @@ function selectWtdl(tt){
 	</div>
 	<div style="width:1198px;border:1px #dfdfdf solid;overflow: hidden;">
 		<table style="width:100%;font-size:14px;" cellspacing="0px" class="plisDiv">
-			<tr valign="middle" height="40px" style="background: #f8f8f8;"><td width="32px" align="center">&nbsp;</td><td width="100px" align="center">广告主题</td><td width="250px" align="center">广告类型</td>
+			<tr valign="middle" height="40px" style="background: #f8f8f8;"><td width="32px" align="center">&nbsp;</td><td width="150px" align="center">广告主题</td><td width="100px" align="center">投放主题</td><td width="250px" align="center">广告类型</td>
 			<td  width="100px" align="center">阅读量</td><td  width="300px" align="center">位置</td><td width="100px" align="center">报价</td><td width="150px" align="center">操作</td></tr>
 			<script id="publishlistTmpDiv" type="text/x-dot-template">
 			{{for(var i=0;i<it.publishList.length;i++){ }} 
@@ -226,6 +242,7 @@ function selectWtdl(tt){
 				<div class="selectedPublish" addflag="1" style="position: absolute;top:0px;left:0px;"><img src="images/check_26.png" width="100%" /></div>	
 			</div></td>
 			<td><img width="48px" height="48px" src="/attachment{{=it.publishList[i].image}}" /></td>
+        <td><div style="margin-top:1px;">{{=it.publishList[i].publishName}}</div></td>
 			<td><div style="margin-top:1px;">{{=it.publishList[i].publishTypeObj.publishFieldName}}</div></td>
 			<td class="fansTd">{{=it.publishList[i].platformFans}}</td>
 			<td>
@@ -235,8 +252,8 @@ function selectWtdl(tt){
 				{{}}}
 			</select>
 			</td><td>
-				{{ var ind = 0; for(var prop in it.publishList[i].priceMap) { ind=ind+1;}}
-				<span attrStr="{{=prop}}-{{=it.publishList[i].id}}" style="{{? ind==2}}display:none;{{?}}" class="priceclass">{{=it.publishList[i].priceMap[prop]}}</span>
+				{{ var ind = 0; for(var prop in it.publishList[i].priceMap) { ind=ind+1;var uesFlag = $('#uesFlag').val(); var flag2 = uesFlag.substring(1,2);}}
+				<span attrStr="{{=prop}}-{{=it.publishList[i].id}}" style="{{? ind!=1}}display:none;{{?}}" class="priceclass">{{? flag2==1}}{{=it.publishList[i].priceMap[prop]}}{{?}}{{? flag2!=1}}**{{?}}</span>
 				{{}}}
 			</td>
 			<td><span onclick="deleteCPublish(this,{{=it.publishList[i].id}})" class="hoverFont">删除</span></td></tr>

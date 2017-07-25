@@ -13,4 +13,6 @@ public interface IIndexBannerService {
 
 	List<Publish> getBannerPublishList(Map<String, Object> map) throws Exception;
 
+	IndexBanner getBannerDetails(Long bannerId) throws Exception;
+
 }

@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import com.gh.dao.IBaseDao;
 import com.gh.dto.PublishForm;
+import com.gh.model.Advertiser;
 import com.gh.model.Order;
 import com.gh.model.OrderDetails;
 import com.gh.model.Publish;
@@ -66,7 +67,7 @@ public class OrderServiceImpl implements IOrderService{
 
 	@Override
 	public PageList<Order> getOrderList(PublishForm publishForm, long userid) throws Exception {
-		String hql ="from Order order where 1=1 and order.order_status != -2"
+		String hql ="from Order order where 1=1 and order.order_status != 2"
 				+ " and order.order_advertiser_id = ? "
 				+ " order by order.order_createtime desc ";
 //		System.out.println(publishForm.getPageSize()+"||"+publishForm.getPageCount());
@@ -98,6 +99,68 @@ public class OrderServiceImpl implements IOrderService{
 	@Override
 	public void deleteOrder(long orderId) throws Exception {
 		String sql="update gh_order god set god.order_status = -2 where god.order_id = "+orderId;
+		this.baseOrderDao.executeSql(sql);
+	}
+
+	@Resource
+	private IBaseDao<Advertiser> baseAdvertiserDao;
+	@Override
+	public PageList<Order> getOrderList(PublishForm publishForm) throws Exception {
+		String hql ="from Order order where 1=1 ";
+				
+		if(publishForm!=null){
+			if(publishForm.getSearchStr()!=null&&!"".equals(publishForm.getSearchStr())){//订单号
+				hql = hql +" and order.ghid = '"+publishForm.getSearchStr()+"'";
+			}
+			if(publishForm.getPublishStatus()!=null&&!"".equals(publishForm.getPublishStatus())&&!"all".equals(publishForm.getPublishStatus())){//订单状态
+				hql = hql +" and order.order_status = '"+publishForm.getPublishStatus()+"'";
+			}
+			if(publishForm.getMediaId()!=0){//用户名  用户的订单
+				hql = hql +" and order.order_advertiser_id = "+publishForm.getMediaId();
+			}
+		}
+		hql = hql + " order by order.order_createtime desc ";
+		PageList<Order> orderlist =  this.baseOrderDao.findPageList(hql, publishForm.getPageSize(),publishForm.getPageCount());
+		String orderids = "";
+		String userids = "";
+		for(Order order:orderlist.getList()){
+			orderids = orderids+order.getOrder_id()+",";
+			userids = userids+order.getOrder_advertiser_id()+",";
+		}
+		if(!"".equals(userids)){
+			userids = userids.substring(0,userids.lastIndexOf(","));
+			String odhql = "from Advertiser ad where ad.id in("+userids+")";
+			List<Advertiser> orderDetailslist = this.baseAdvertiserDao.findList(odhql);
+			for(Order order:orderlist.getList()){
+				for(Advertiser ad:orderDetailslist){
+					if(ad.getId()==order.getOrder_advertiser_id()){
+						order.setAdvertiser(ad);
+						break;
+					}
+				}
+			}
+		}
+		if(!"".equals(orderids)){
+			orderids = orderids.substring(0,orderids.lastIndexOf(","));
+			String odhql = "from OrderDetails god where god.order.order_id in("+orderids+")";
+			List<OrderDetails> orderDetailslist = this.baseOrderDetailsDao.findList(odhql);
+			for(Order order:orderlist.getList()){
+				List<OrderDetails> bods = new ArrayList<OrderDetails>();
+				for(OrderDetails od:orderDetailslist){
+					if(od.getOrder().getOrder_id()==order.getOrder_id()){
+						bods.add(od);
+					}
+				}
+				order.setOrderDetailsList(bods);
+			}
+		}
+		return orderlist;
+	}
+
+
+	@Override
+	public void updateOrder(Long orderid, String status) throws Exception {
+		String sql="update gh_order god set god.order_status = '"+status+"' where god.order_id = "+orderid;
 		this.baseOrderDao.executeSql(sql);
 	}
 

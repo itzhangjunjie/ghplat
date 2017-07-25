@@ -69,7 +69,7 @@
 				<div class="layui-form-item showhide url" style="display:none;">
 					<label class="layui-form-label">链接地</label>
 					<div class="layui-input-block">
-						<input type="text" name="url" lay-verify="url" autocomplete="off" placeholder="请输入URL" class="layui-input">
+						<input type="text" name="url" autocomplete="off" placeholder="请输入URL" class="layui-input url1">
 					</div>
 				</div>
 				<div class="layui-form-item showhide media" style="display:none;">
@@ -77,7 +77,7 @@
 					<div class="layui-input-block">
 <!-- 					<a href="#zimeitiSelectDiv" id="zimeitiId" class="layui-btn layui-btn-small" id="search"> -->
 <!-- 						<i class="layui-icon"></i> 自媒体选择 -->
-							<input type="text" name="pid" lay-verify="title" autocomplete="off" placeholder="请输入媒体的id" class="layui-input">
+							<input type="text" name="pid" autocomplete="off" placeholder="请输入媒体的id" class="layui-input url2">
 <!-- 					</a> -->
 					</div>
 				</div>
@@ -223,14 +223,14 @@
 							return '标题至少得3个字符啊';
 						}
 					},
-					url: function(value){
-						if(value!=null&&value!=''){
-							var re = new RegExp("/(http):\/\/[\w\-_]+(\.[\w\-_]+)+([\w\-\.,@?^=%&:/~\+#]*[\w\-\@?^=%&/~\+#])?/");
-							if(!re.test(value)){
-								return "URL地址不对！";
-							}
-						}
-					},
+// 					url: function(value){
+// 						if(value!=null&&value!=''){
+// 							var re = new RegExp("/(http):\/\/[\w\-_]+(\.[\w\-_]+)+([\w\-\.,@?^=%&:/~\+#]*[\w\-\@?^=%&/~\+#])?/");
+// 							if(!re.test(value)){
+// 								return "URL地址不对！";
+// 							}
+// 						}
+// 					},
 					content: function(value) {
 						value = layedit.getContent(editIndex);
 						if(value!=null&&value!='') {

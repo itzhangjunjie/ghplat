@@ -5,7 +5,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>首页</title>
-<base href="/ghplat/front/">
+<base href="front/">
 <link rel="stylesheet" href="css/menu.css" type="text/css" />
 <link rel="stylesheet" type="text/css" href="css/style.css" />
 
@@ -37,7 +37,7 @@
 							<div style="width:18px;height:18px;float:left;"><img src="images/fans.png" width="18px" /></div>
 							<div style="float:left;margin-left:8px;font-size:13px;line-height: 18px;">${publish.platformFans }</div>
 							<c:if test="${publish.platformIcon!=null }">
-								<div style="width:18px;height:18px;float:right;"><img src="${publish.platformIcon }" width="18px" /></div>
+								<div style="width:18px;height:18px;float:right;"><img src="/ghplat/attachment/platform/${publish.platformIcon }" width="18px" /></div>
 							</c:if>
 						</div>
 					</div>
@@ -49,46 +49,21 @@
 			<div style="width:1200px;height:1px;background:#707070;margin:0 auto;"></div>
 			<c:forEach var="tuiguang" items="${tuiguangs.list }">
 				<div style="width:1200px;height:88px;margin:0 auto;margin-top:20px;">
-					<img src="/ghplat/attachment/banner/${tuiguang.image}" width="100%"/>
+					<c:if test="${tuiguang.type=='内链' }"><a href="../getBannerDetails?bannerId=${tuiguang.indexBannerId }" target="_bank"></c:if>
+						<img src="/ghplat/attachment/banner/${tuiguang.image}" width="100%"/>
+					<c:if test="${tuiguang.type=='内链' }"></a></c:if>
 				</div>
 			</c:forEach>
 		</div>
 		<div style="width:100%;background:rgb(242,242,242);border-bottom: 1px #707070 solid;">
 			<div style="font-size:24px;color:#333333;width:1200px;text-align: left;margin:0 auto;padding-top:30px;padding-bottom: 8px;">我们的合作伙伴</div>
 			<div style="width:1200px;height:1px;background:#707070;margin:0 auto;"></div>
-			<div style="width:1200px;margin:0 auto;margin-top:20px;margin-bottom: 20px;height:220px;">
-				<c:forEach var="hezuo" items="${hezuos.list }">
-					<div style="width:224px;height:88px;float:left;margin-left:0px;">
-						<img src="/ghplat/attachment/banner/${hezuo.image}" height="100%"/>
+			<div style="width:1200px;margin:0 auto;margin-bottom: 20px;height:auto;overflow: hidden;">
+				<c:forEach var="hezuo" items="${hezuos.list }" varStatus="stt">
+					<div style="width:100px;float:left;margin-left:175px;<c:if test="${stt.index%5==0 }">margin-left:0px;</c:if>margin-top:25px;height:100px;overflow: hidden;">
+						<a href="${hezuo.url }" target="_bank"><img src="/ghplat/attachment/banner/${hezuo.image}" width="100%"/></a>
 					</div>
 				</c:forEach>
-				<div style="width:224px;height:88px;float:left;margin-left:20px;">
-					<img src="images/ahezuo1.png" width="100%"/>
-				</div>
-				<div style="width:224px;height:88px;float:left;margin-left:20px;">
-					<img src="images/ahezuo1.png" width="100%"/>
-				</div>
-				<div style="width:224px;height:88px;float:left;margin-left:20px;">
-					<img src="images/ahezuo1.png" width="100%"/>
-				</div>
-				<div style="width:224px;height:88px;float:left;margin-left:20px;">
-					<img src="images/ahezuo1.png" width="100%"/>
-				</div>
-				<div style="width:224px;height:88px;float:left;margin-left:0px;margin-top:20px;">
-					<img src="images/ahezuo1.png" width="100%"/>
-				</div>
-				<div style="width:224px;height:88px;float:left;margin-left:20px;margin-top:20px;">
-					<img src="images/ahezuo1.png" width="100%"/>
-				</div>
-				<div style="width:224px;height:88px;float:left;margin-left:20px;margin-top:20px;">
-					<img src="images/ahezuo1.png" width="100%"/>
-				</div>
-				<div style="width:224px;height:88px;float:left;margin-left:20px;margin-top:20px;">
-					<img src="images/ahezuo1.png" width="100%"/>
-				</div>
-				<div style="width:224px;height:88px;float:left;margin-left:20px;margin-top:20px;">
-					<img src="images/ahezuo1.png" width="100%"/>
-				</div>
 			</div>
 		</div>
 		<%@include file="footer.jsp" %>

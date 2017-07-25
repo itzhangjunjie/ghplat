@@ -12,6 +12,7 @@ import com.gh.model.CaseDetails;
 import com.gh.model.Media;
 import com.gh.model.Publish;
 import com.gh.model.PublishArea;
+import com.gh.model.PublishPlatform;
 import com.gh.util.PageList;
 
 import net.sf.json.JSONObject;
@@ -58,6 +59,22 @@ public interface IPublishService {
 	Publish getpublishDetails(String publishghid) throws Exception;
 
 	List<PublishArea> getPublishAreaList() throws Exception;
-	
+
+	void deletePublish(long id) throws Exception;
+
+	void updateInfoValue(String ckey, String cvalue,long pid,Publish publish) throws Exception;
+
+	void updatePriceValue(String ckey, String cvalue, long id,Publish publish) throws Exception;
+
+	List<PublishPlatform> getPlatFormList(PublishForm publishForm) throws Exception;
+
+	void delPlatformDetails(String pfid) throws Exception;
+
+	PublishPlatform getPlatformDetails(String pfid) throws Exception;
+
+	void updatePlatformDetailss(String pfid, String platformicon, String platformname, String publishtype)throws Exception;
+
+	void addPlatform(String platformicon, String platformname, String publishtype) throws Exception;
+
 
 }

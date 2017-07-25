@@ -171,7 +171,8 @@ public class PublishController extends BaseControllerSupport{
 				jsonObject.put("result", "no");
 				jsonObject.put("reason", "nologin");
 			}else{
-				baseService.delete(Publish.class, publish.getId());
+				publish.setPublishStatus("-1");
+				publishService.deletePublish(publish.getId());
 				jsonObject.put("result", "yes");
 			}
 		}catch(Exception e){

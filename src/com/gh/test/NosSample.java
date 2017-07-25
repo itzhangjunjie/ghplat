@@ -41,7 +41,7 @@ public class NosSample {
 	public static void main(String[] args) {
 		try {
 			String bucketName = "weman";
-	        String anotherKey="20170613.mp4";
+	        String anotherKey="20170711.mp4";
 			/** Another way to use the sdk,upload the file.**/
 			TransferManager tx = new TransferManager(new PropertiesCredentials(
 					NosSample.class.getResourceAsStream("credentials.properties")));
@@ -50,7 +50,7 @@ public class NosSample {
 			@SuppressWarnings("unused")
 			Nos clientFromManager = tx.getNosClient();
 			((WebServiceClient) clientFromManager).setEndpoint("nos-eastchina1.126.net");
-			Upload upload = tx.upload(new PutObjectRequest(bucketName, anotherKey, new File("G:\\tmp\\111.mp4")));
+			Upload upload = tx.upload(new PutObjectRequest(bucketName, anotherKey, new File("G:\\tmp\\222.mp4")));
 			try {
 				UploadResult result = upload.waitForUploadResult();
 				System.out.println(result.getBucketName() + "/" + result.getKey());

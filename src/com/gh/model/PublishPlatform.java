@@ -1,10 +1,23 @@
 package com.gh.model;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+
+@Entity
+@Table(name = "dic_platform")
 public class PublishPlatform {
 
+	@Id
+    @Column(name = "platform_id")
 	private String platformId;
+	@Transient
 	private String publishType;
+	@Column(name = "platform_name")
 	private String platformName;
+	@Column(name = "platform_icon")
 	private String platformIcon;
 	
 	

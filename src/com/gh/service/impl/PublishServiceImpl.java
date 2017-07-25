@@ -1,5 +1,6 @@
 package com.gh.service.impl;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -20,6 +21,8 @@ import com.gh.model.CaseDetails;
 import com.gh.model.CaseImage;
 import com.gh.model.IndexBanner;
 import com.gh.model.Media;
+import com.gh.model.Order;
+import com.gh.model.OrderDetails;
 import com.gh.model.Publish;
 import com.gh.model.PublishArea;
 import com.gh.model.PublishField;
@@ -512,6 +515,11 @@ public class PublishServiceImpl implements IPublishService{
 	public Publish getpublishDetails(String publishghid) throws Exception {
 		String phql = "from Publish p where p.ghid = ?";
 		Publish publish = this.basePublishDao.findObject(phql,publishghid);
+		if(publish.getMediaId()!=0){
+			String msql = "select gm.qq,gm.media_id from gh_media gm where gm.media_id = ?";
+			Object[] results = this.baseDao.findObjectBySql(msql,publish.getMediaId());
+			publish.setQq((String)results[0]);
+		}
 		String infosql = "select cpi.publish_type,cpi.column_name,cpi.column_position from cfg_publish_info cpi order by cpi.column_position desc";
 		List<Object[]> resultsinfo = this.baseDao.findListBySql(infosql);
 		String infolist = StringUtil.getPublishInfo(publish);
@@ -567,6 +575,171 @@ public class PublishServiceImpl implements IPublishService{
 			publishAreaList.add(pa);
 		}
 		return publishAreaList;
+	}
+	@Override
+	public void deletePublish(long id) throws Exception {
+		String updatePublish = "update gh_publish gp set gp.publish_status = '0' where gp.publish_id = ?";
+		this.basePublishDao.executeSql(updatePublish,id);
+	}
+	@Override
+	public void updateInfoValue(String ckey, String cvalue,long pid,Publish publish) throws Exception {
+		String seleSql = " select column_position,publish_type from CFG_PUBLISH_INFO cpi where cpi.column_name = ?";
+		//List<Object[]> results = this.baseDao.findListBySql(seleSql,ckey);
+		Object[] mapObj = this.baseDao.findObjectBySql(seleSql,ckey);
+		//for(Object[] map :results){
+			String infocolumn = "";
+			String cposition = null;
+			Object ob = mapObj[0];
+			if(ob!=null){
+				cposition = String.valueOf(Integer.parseInt(ob.toString()));
+			}
+			//String cposition = (String)mapObj[0];
+			if("1".equals(cposition)){
+				infocolumn = "info_01";
+				publish.setInfo01(cvalue);
+			}else if("2".equals(cposition)){
+				infocolumn = "info_02";
+				publish.setInfo02(cvalue);
+			}else if("3".equals(cposition)){
+				infocolumn = "info_03";
+				publish.setInfo03(cvalue);
+			}else if("4".equals(cposition)){
+				infocolumn = "info_04";
+				publish.setInfo04(cvalue);
+			}else if("5".equals(cposition)){
+				infocolumn = "info_05";
+				publish.setInfo05(cvalue);
+			}else if("6".equals(cposition)){
+				infocolumn = "info_06";
+				publish.setInfo06(cvalue);
+			}else if("7".equals(cposition)){
+				infocolumn = "info_07";
+				publish.setInfo07(cvalue);
+			}else if("8".equals(cposition)){
+				infocolumn = "info_08";
+				publish.setInfo08(cvalue);
+			}
+			//String updateSql = "update gh_publish gp set "+infocolumn+" = ? where gp.publish_id = ?";
+			//this.basePublishDao.executeSql(updateSql,cvalue,pid);
+		//}
+	}
+	@Override
+	public void updatePriceValue(String ckey, String cvalue, long pid,Publish publish) throws Exception {
+		String seleSql = " select column_position,publish_type from CFG_PUBLISH_PRICE cpi where cpi.column_name = ?";
+		//List<Object[]> results = this.baseDao.findListBySql(seleSql,ckey);
+		Object[] mapObj = this.baseDao.findObjectBySql(seleSql,ckey);
+		Object ob = mapObj[0];
+		String cposition = null;
+		if(ob!=null){
+			cposition = String.valueOf(Integer.parseInt(ob.toString()));
+		}
+		//for(Object[] map :results){
+			String infocolumn = "";
+			//String cposition = (String)mapObj[0];
+			if("1".equals(cposition)){
+				infocolumn = "price_01";
+				publish.setPrice01(cvalue);
+			}else if("2".equals(cposition)){
+				infocolumn = "price_02";
+				publish.setPrice02(cvalue);
+			}else if("3".equals(cposition)){
+				infocolumn = "price_03";
+				publish.setPrice03(cvalue);
+			}else if("4".equals(cposition)){
+				infocolumn = "price_04";
+				publish.setPrice04(cvalue);
+			}else if("5".equals(cposition)){
+				infocolumn = "price_05";
+				publish.setPrice05(cvalue);
+			}else if("6".equals(cposition)){
+				infocolumn = "price_06";
+				publish.setPrice06(cvalue);
+			}else if("7".equals(cposition)){
+				infocolumn = "price_07";
+				publish.setPrice07(cvalue);
+			}else if("8".equals(cposition)){
+				infocolumn = "price_08";
+				publish.setPrice08(cvalue);
+			}
+			
+			//String updateSql = "update gh_publish gp set "+infocolumn+" = ? where gp.publish_id = ?";
+			//this.basePublishDao.executeSql(updateSql,cvalue,pid);
+		//}
+	}
+	@Override
+	public List<PublishPlatform> getPlatFormList(PublishForm publishForm) throws Exception {
+		String sql =" select platform_id as platformId,(select publish_type_name from dic_publish_type pt where pt.publish_type_id = dp.publish_type) as publishType,dp.platform_name as platformName,dp.platform_icon as platformIcon from dic_platform dp where 1=1 ";
+		if(publishForm!=null){
+			if(publishForm.getPublishType()!=0){
+				sql = sql +" and dp.publish_type = "+publishForm.getPublishType();
+			}
+			if(publishForm.getSearchStr()!=null&&!"".equals(publishForm.getSearchStr())){
+				sql = sql +" and dp.platform_name like '%"+publishForm.getSearchStr()+"%'";
+			}
+		}
+		sql = sql +" order by platform_id desc ";
+		List<PublishPlatform> ppfs = new ArrayList<PublishPlatform>();
+		List<Object[]> resultPage = this.baseDao.findListBySql(sql);
+		for(Object[] obj :resultPage){
+			PublishPlatform ppf = new PublishPlatform();
+			ppf.setPlatformId((String)obj[0]);
+			ppf.setPublishType((String)obj[1]);
+			ppf.setPlatformName((String)obj[2]);
+			ppf.setPlatformIcon((String)obj[3]);
+			ppfs.add(ppf);
+		}
+		return ppfs;
+	}
+	@Override
+	public void delPlatformDetails(String pfid) throws Exception {
+		String updatePublish = "delete from dic_platform dp where dp.platform_id = ?";
+		this.basePublishDao.executeSql(updatePublish,pfid);
+	}
+	@Override
+	public PublishPlatform getPlatformDetails(String pfid) throws Exception {
+		String sql =" select platform_id as platformId, dp.publish_type as publishType,dp.platform_name as platformName,dp.platform_icon as platformIcon from dic_platform dp "
+				+ "where dp.platform_id = ? ";
+		List<Object[]> resultPage = this.baseDao.findListBySql(sql,pfid);
+		if(resultPage.size()>0){
+			PublishPlatform ppf = new PublishPlatform();
+			ppf.setPlatformId((String)resultPage.get(0)[0]);
+			ppf.setPublishType((String)resultPage.get(0)[1]);
+			ppf.setPlatformName((String)resultPage.get(0)[2]);
+			ppf.setPlatformIcon((String)resultPage.get(0)[3]);
+			return ppf;
+		}
+		return null;
+	}
+	@Override
+	public void updatePlatformDetailss(String pfid, String platformicon, String platformname, String publishtype)
+			throws Exception {
+		if(platformicon!=null){
+			String updatePublishPlatformIcon = "update gh_publish gp set gp.platform_icon = ? where gp.platform_name = ?";
+			this.basePublishDao.executeSql(updatePublishPlatformIcon,platformicon,platformname);
+		}
+		if(platformicon==null||"".equals(platformicon)){
+			String updatePlatform = "update dic_platform dp set dp.platform_name = ? , dp.publish_type = ? where dp.platform_id = ?";
+			this.basePublishDao.executeSql(updatePlatform,platformname,publishtype,pfid);
+		}else{
+			String updatePlatform = "update dic_platform dp set dp.platform_icon = ? , dp.platform_name = ? , dp.publish_type = ? where dp.platform_id = ?";
+			this.basePublishDao.executeSql(updatePlatform,platformicon,platformname,publishtype,pfid);
+		}
+	}
+	@Override
+	public void addPlatform(String platformicon, String platformname, String publishtype) throws Exception {
+		String maxid = "select max(platform_id)+1 as maxid from dic_platform ";
+		List<Object> resultPage = this.baseDao.findListBySql(maxid);
+		System.out.println(resultPage.get(0));
+		String pfid = "";
+		if(resultPage.size()>0){
+			int vv = ((BigDecimal)resultPage.get(0)).intValue();
+			if(vv<10000000){
+				vv = vv+10000000;
+			}
+			pfid = String.valueOf(vv);
+		}
+		String addplatform = "insert into dic_platform (platform_id,platform_name,platform_icon,publish_type) values (?,?,?,?)";
+		this.baseDao.executeSql(addplatform,pfid,platformname,platformicon,publishtype);
 	}
 
 }

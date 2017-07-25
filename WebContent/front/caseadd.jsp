@@ -5,7 +5,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>案例-添加</title>
-<base href="/ghplat/front/">
+<base href="front/">
 <script src="js/jquery-1.8.2.min.js" type="text/javascript"></script>
 <script type="text/javascript">
 function ajaxFileUploadImage(index,type) {
@@ -71,8 +71,22 @@ function changeType(tt){
 	$('.pfieldtr'+pid).show();
 	$('.ppricetr').hide();
 	$('.ppricetr'+pid).show();
+	if(pid=='0001'){
+		$('.pbnameTd').html('公众号名称 :');
+		$('#pbname').attr('placeholder','请输入公众号名称');
+	}else{
+		$('.pbnameTd').html('标题 :');
+		$('#pbname').attr('placeholder','请填写案例标题');
+	}
 }
 function selectPrice(tt){
+	for(var i=0;i<$('.priceDiv').length;i++){
+		var textStr = $('.priceDiv').text();
+		console.log(textStr+"|||"+$(tt).find("option:selected").html());
+		if(textStr.indexOf($(tt).find("option:selected").html())>0){
+			return;
+		}
+	}
 	$(tt).css('color','#333333');
 	var priceDiv = $('.addpriceDiv').clone();
 	var pricevalue = $(tt).find("option:selected").html();
@@ -86,8 +100,37 @@ function selectPrice(tt){
 function colseDiv(tt){
 	$(tt).parent().remove();
 }
-
+function changeArea0(tt){
+	$('.areaSelect2').html('');
+	var val = $(tt).val();
+	$('.attrErCode').hide();
+	$($('option[attrErCode="'+val+'"]')[0]).attr('selected','selected');
+	$('option[attrErCode="'+val+'"]').show();
+	$('.areaSelect2').html($('option[attrErCode="'+val+'"]').clone());
+	changeAreaa1($('.areaSelect2'));
+}
+function changeAreaa1(tt){
+	$('.areaSelect3').html('');
+	var val = $(tt).val();
+	$('.attrSanCode').hide();
+	$('option[attrSanCode="'+val+'"]').show();
+	$($('option[attrSanCode="'+val+'"]')[0]).attr('selected','selected');
+	$('.areaSelect3').html($('option[attrSanCode="'+val+'"]').clone());
+	//$('option[attrSanCode="'+val+'"]').attr('selected','selected');
+}
 $(document).ready(function(){
+	$('.areaSelect2').html('');
+	var val = $('.pbarea').val();
+	$($('option[attrErCode="'+val+'"]')[0]).attr('selected','selected');
+	$('option[attrErCode="'+val+'"]').show();
+	$('.areaSelect2').html($('option[attrErCode="'+val+'"]').clone());
+	
+	$('.areaSelect3').html('');
+	var val = $('.areaSelect2').val();
+	$('option[attrSanCode="'+val+'"]').show();
+	$($('option[attrSanCode="'+val+'"]')[0]).attr('selected','selected');
+	$('.areaSelect3').html($('option[attrSanCode="'+val+'"]').clone());
+	
 	$('.uploadClickClass').click(function(){
 		$(this).parent().find('.uploadClass').click();
 	})
@@ -196,7 +239,6 @@ function sumbitAddPublish(){
 			}
 		}
 		//alert(pbinfoArray[0].columnName+"||"+pbinfoArray[0].columnValue+"||"+pbinfoArray[0].fieldName);
-		
 		var pbpriceArray = new Array();
 		if($('.priceDiv').length==0){
 			alert('价格不能为空');
@@ -428,6 +470,7 @@ var plist = null;
 function getPublishList(gpagesize){
 	var datajson = {};
 	datajson.pageSize = gpagesize;
+	datajson.pageCount = 14;
 	datajson.mediaId = $('#mediaId').val();
 	$.ajax({
 		type: "post",
@@ -444,13 +487,13 @@ function getPublishList(gpagesize){
 				var pagecount = data.pageCount;
 				var pagesize = data.pageSize;
 				 $('.M-box3').pagination(pagecount,{
-					 'items_per_page'      : 15,  
+					 'items_per_page'      : 14,  
 			         'num_display_entries' : 5, 
 			         'ellipse_text'        : "...",
 			         'num_edge_entries'    : 2,  
 			         'prev_text'           : "上一页",  
 			         'next_text'           : "下一页",  
-			         'current_page'        : pagesize,
+			         'current_page'        : pagesize-1,
 			         'callback'            : function(page_id,jq){
 			        	 getPublishList(page_id+1);
 			        	 $("body").scrollTop(0);
@@ -483,6 +526,7 @@ function addBaseAnLiMsgDiv(){
 	//$('.basemsglistDiv').hide();
 }
 function editPublish(spid,index){
+	$('#colseAdd').attr('attrId',"1");
 	$('#uploadImageImg1').attr('src','/ghplat/attachment'+plist[index].image);
 	var pid = plist[index].publishTypeObj.publishFieldId;
 	$("#pbtype").find("option[value='"+pid+"']").attr("selected",true);
@@ -491,11 +535,13 @@ function editPublish(spid,index){
 	$('#pbfancount').val(plist[index].platformFans);
 	$("#pbfield"+pid).find("option[value='"+plist[index].publishField+"']").attr("selected",true);
 	$('.publisharea').find("option[value='"+plist[index].publishRegion+"']").attr("selected",true);
+	$('#pbplatform'+pid).find("option[value='"+plist[index].platformName+"']").attr("selected",true);
 	var info01 = plist[index].info01;
 	var info02 = plist[index].info02;
 	var info03 = plist[index].info03;
 	var info04 = plist[index].info04;
 	var info05 = plist[index].info05;
+	var info06 = plist[index].info06;
 	//console.log(info01+"||"+info02+"||"+info03+"||"+info04+"||"+info05)
 	if(info01!=null&&info01!=''&&info01!='undefined'){
 		$(".select"+pid).find("[columnname='1']").val(info01);
@@ -512,6 +558,9 @@ function editPublish(spid,index){
 	if(info05!=null&&info05!=''&&info05!='undefined'){
 		$(".select"+pid).find("[columnname='5']").val(info05);
 	}
+	if(info06!=null&&info06!=''&&info06!='undefined'){
+		$(".select"+pid).find("[columnname='6']").val(info06);
+	}
 	var price01 = plist[index].price01;
 	var price02 = plist[index].price02;
 	var price03 = plist[index].price03;
@@ -523,7 +572,8 @@ function editPublish(spid,index){
 		$(priceDiv).show();
 		$(priceDiv).removeClass('addpriceDiv').addClass('priceDiv');
 		$($(priceDiv).find('.priceInput')).val(price01);
-		$($(priceDiv).find('.priceFontDiv')).html($('option[attrPriceName="price01"]').html()+":");
+		console.log('testset'+pid);
+		$($(priceDiv).find('.priceFontDiv')).html($('option[attrPriceName="'+pid+'-price01"]').html()+":");
 		$($(priceDiv).find('.priceInput')).attr('columnName',1);
 		$('.ppricetr'+pid).children('td[colspan="2"]').append(priceDiv);
 	}
@@ -532,7 +582,7 @@ function editPublish(spid,index){
 		$(priceDiv).show();
 		$(priceDiv).removeClass('addpriceDiv').addClass('priceDiv');
 		$($(priceDiv).find('.priceInput')).val(price02);
-		$($(priceDiv).find('.priceFontDiv')).html($('option[attrPriceName="price02"]').html()+":");
+		$($(priceDiv).find('.priceFontDiv')).html($('option[attrPriceName="'+pid+'-price02"]').html()+":");
 		$($(priceDiv).find('.priceInput')).attr('columnName',2);
 		$('.ppricetr'+pid).children('td[colspan="2"]').append(priceDiv);
 	}
@@ -542,7 +592,7 @@ function editPublish(spid,index){
 		$(priceDiv).removeClass('addpriceDiv').addClass('priceDiv');
 		$($(priceDiv).find('.priceInput')).val(price03);
 		$($(priceDiv).find('.priceInput')).attr('columnName',3);
-		$($(priceDiv).find('.priceFontDiv')).html($('option[attrPriceName="price03"]').html()+":");
+		$($(priceDiv).find('.priceFontDiv')).html($('option[attrPriceName="'+pid+'-price03"]').html()+":");
 		$('.ppricetr'+pid).children('td[colspan="2"]').append(priceDiv);
 	}
 	if(price04!=null&&price04!=''&&price04!='undefined'){
@@ -551,7 +601,7 @@ function editPublish(spid,index){
 		$(priceDiv).removeClass('addpriceDiv').addClass('priceDiv');
 		$($(priceDiv).find('.priceInput')).val(price04);
 		$($(priceDiv).find('.priceInput')).attr('columnName',4);
-		$($(priceDiv).find('.priceFontDiv')).html($('option[attrPriceName="price04"]').html()+":");
+		$($(priceDiv).find('.priceFontDiv')).html($('option[attrPriceName="'+pid+'-price04"]').html()+":");
 		$('.ppricetr'+pid).children('td[colspan="2"]').append(priceDiv);
 	}
 	if(price05!=null&&price05!=''&&price05!='undefined'){
@@ -559,7 +609,7 @@ function editPublish(spid,index){
 		$(priceDiv).show();
 		$(priceDiv).removeClass('addpriceDiv').addClass('priceDiv');
 		$($(priceDiv).find('.priceInput')).val(price05);
-		$($(priceDiv).find('.priceFontDiv')).html($('option[attrPriceName="price05"]').html()+":");
+		$($(priceDiv).find('.priceFontDiv')).html($('option[attrPriceName="'+pid+'-price05"]').html()+":");
 		$($(priceDiv).find('.priceInput')).attr('columnName',5);
 		$('.ppricetr'+pid).children('td[colspan="2"]').append(priceDiv);
 	}
@@ -692,15 +742,16 @@ function deleteCaseObj(tid){
 		});
 	}
 }
-function changeArea0(tt){
-	var val = $(tt).val();
-	$('.attrErCode').hide();
-	$('option[attrErCode="'+val+'"]').show();
-}
-function changeArea1(tt){
-	var val = $(tt).val();
-	$('.attrSanCode').hide();
-	$('option[attrSanCode="'+val+'"]').show();
+function goPage(){
+	var pageInput = $('.pagesizeInput').val();
+	console.log(pageInput);
+	var reg = new RegExp("^[0-9]*$");
+	if(!reg.test(pageInput)){
+		alert('填写不正确！');
+		return;
+	}else{
+		getPublishList(pageInput);
+	}
 }
 </script>
 </head>
@@ -741,8 +792,15 @@ function changeArea1(tt){
 									{{ } }} 
 								</script>
 								<div style="width:100%;">
-									<div id="pageDiv" style="margin:0 auto;margin-top:20px;margin-bottom:20px;min-width: 385px;max-width: 470px;height:32px;">
-										<div class="M-box3" ></div>
+<!-- 									<div id="pageDiv" style="margin:0 auto;margin-top:20px;margin-bottom:20px;min-width: 385px;max-width: 470px;height:32px;"> -->
+<!-- 										<div class="M-box3" ></div> -->
+<!-- 									</div> -->
+									<div style="margin:0 auto;margin-bottom:20px;overflow: hidden;width:60%;max-width: 60%">
+										<div id="pageDiv" style="float:left;margin-top:20px;margin-bottom:15px;height:32px;overflow: hidden;">
+											<div class="M-box3" >
+											</div>
+										</div>
+										<div style="float:left;margin-left:10px;margin-top:20px;"><input style="width:42px;height:30px;" class="pagesizeInput" /><button onclick="goPage()" style="width:42px;height:30px;font-size:12px;">跳转</button></div>
 									</div>
 								</div>
 								<script> 
@@ -782,25 +840,29 @@ function changeArea1(tt){
 												</c:if>
 											</c:forEach>
 										</select>
-										<select onchange="changeArea1(this)" style="float:left;margin-left:10px;width:120px;color:#333333;height:48px;font-size:14px;padding-left:6px;">
-											<c:forEach var="publisharea" items="${publishArea }"  varStatus="st" >
-												<c:if test="${publisharea.priority=='2' }">
-													<option class="attrErCode" attrErCode="${publisharea.parent_area_code }" <c:if test="${publisharea.area_name=='市辖区' }">selected="selected"</c:if> value="${publisharea.area_code }" style="display:none;padding:6px;font-size:14px;color:#333333;">${publisharea.area_name }</option>
+										<select class="areaSelect2" onchange="changeAreaa1(this)" style="float:left;margin-left:10px;width:120px;color:#333333;height:48px;font-size:14px;padding-left:6px;">
+										</select>
+										<select class="areaSelect3" style="float:left;margin-left:10px;width:120px;color:#333333;height:48px;font-size:14px;padding-left:6px;">
+										</select>
+										<select class="" style="display:none;float:left;margin-left:10px;width:120px;color:#333333;height:48px;font-size:14px;padding-left:6px;">
+											<c:forEach var="publishareaa" items="${publishArea }"  varStatus="st" >
+												<c:if test="${publishareaa.priority=='2' }">
+													<option class="attrErCode" attrErCode="${publishareaa.parent_area_code }" <c:if test="${publishareaa.area_name=='市辖区' }">selected="selected"</c:if> value="${publishareaa.area_code }" style="display:none;padding:6px;font-size:14px;color:#333333;">${publishareaa.area_name }</option>
 												</c:if>
 											</c:forEach>
 										</select>
-										<select class="publisharea" style="float:left;margin-left:10px;width:120px;color:#333333;height:48px;font-size:14px;padding-left:6px;">
-											<c:forEach var="publisharea" items="${publishArea }"  varStatus="st" >
-												<c:if test="${publisharea.priority=='3' }">
-													<option class="attrSanCode" attrSanCode="${publisharea.parent_area_code }" <c:if test="${publisharea.area_name=='奉贤区' }">selected="selected"</c:if> value="${publisharea.area_name }" style="display:none;padding:6px;font-size:14px;color:#333333;">${publisharea.area_name }</option>
+										<select class="publisharea" style="display:none;float:left;margin-left:10px;width:120px;color:#333333;height:48px;font-size:14px;padding-left:6px;">
+											<c:forEach var="publishareaa" items="${publishArea }"  varStatus="st" >
+												<c:if test="${publishareaa.priority=='3' }">
+													<option class="attrSanCode" attrSanCode="${publishareaa.parent_area_code }" value="${publishareaa.area_name }" style="display:none;padding:6px;font-size:14px;color:#333333;">${publishareaa.area_name }</option>
 												</c:if>
 											</c:forEach>
 										</select>
 									</td><td></td></tr>
-									<tr><td>标题&nbsp;:
+									<tr><td class="pbnameTd">公众号名称&nbsp;:
 									</td><td>
-										<input id="pbname" style="width:350px;height:48px;padding:6px;color:#333333;text-align: left;" type="text" placeholder="请填写案例标题" />
-									</td><td><div id="nameMsg" class="wrongClass" style="display:none;font-size:14px;color:#fc6769;height:20px;">填写主题标题不对</div></td></tr>
+										<input id="pbname" style="width:350px;height:48px;padding:6px;color:#333333;text-align: left;" type="text" placeholder="请填写公众号名称" />
+									</td><td><div id="nameMsg" class="wrongClass" style="display:none;font-size:14px;color:#fc6769;height:20px;">填写公众号名称不对</div></td></tr>
 									<tr><td>粉丝数&nbsp;:
 									</td><td>
 										<input id="pbfancount" style="width:350px;height:48px;padding:6px;color:#333333;text-align: left;" type="text" placeholder="请填写粉丝数" />
@@ -830,7 +892,7 @@ function changeArea1(tt){
 												<tr class="allattr select${publisha.publishType }" style="<c:if test='${stt.index!=0 }'>display:none;</c:if>"><td>${publishinfo.columnName }&nbsp;:</td><td>
 													<c:if test="${publishinfo.columnType=='TEXT' }"><input class="pbinfoInput${publisha.publishType }" columnName="${publishinfo.columnPosition }" fieldName="${publishinfo.columnName }" style="width:350px;height:48px;padding:6px;color:#333333;text-align:left;" type="text" placeholder="请填写${publishinfo.columnName }" /></c:if>
 													<c:if test="${publishinfo.columnType=='CHECKBOX'&&publishinfo.columnName=='性别' }">
-														<select style="width:350px;color:#333333;height:48px;font-size:14px;padding-left:6px;">
+														<select style="width:350px;color:#333333;height:48px;font-size:14px;padding-left:6px;" class="pbinfoInput${publisha.publishType }" columnName="${publishinfo.columnPosition }" fieldName="${publishinfo.columnName }">
 															<option style="padding:6px;font-size:14px;color:#333333;" value="女">女</option>
 															<option style="padding:6px;font-size:14px;color:#333333;" value="男">男</option>
 														</select>
@@ -844,7 +906,7 @@ function changeArea1(tt){
 													<select onchange="selectPrice(this)" style="width:140px;color:#999999;height:48px;font-size:14px;padding-left:6px;">
 														<option style="display:none;" value="0">请选择价格类型</option>
 														<c:forEach var="publishprice" items="${publisha.publishPrice }" >
-															<option attrPriceName="price0${publishprice.columnPosition }" style="padding:6px;font-size:14px;color:#333333;" value="${publishprice.columnPosition }">${publishprice.columnName }</option>
+															<option attrPriceName="${publisha.publishType}-price0${publishprice.columnPosition }" style="padding:6px;font-size:14px;color:#333333;" value="${publishprice.columnPosition }">${publishprice.columnName }</option>
 														</c:forEach>
 													</select>
 												</div>

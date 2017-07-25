@@ -20,6 +20,41 @@ var cnavs = [{
 		"icon": "&#62221;",
 		"href": "/ghplat/admin/meitiList"
 	}]
+},{
+	"title": "订单管理",
+	"icon": "fa-cdces",
+	"spread": true,
+	"children": [{
+		"title": "订单列表",
+		"icon": "&#65621;",
+		"href": "/ghplat/admin/orderList"
+	}]
+},{
+	"title": "用户管理",
+	"icon": "fa-cdces",
+	"spread": true,
+	"children": [{
+		"title": "媒体列表",
+		"icon": "&#65621;",
+		"href": "/ghplat/admin/usermedialist"
+	},{
+		"title": "广告主列表",
+		"icon": "&#65621;",
+		"href": "/ghplat/admin/useradlist"
+	}]
+},{
+	"title": "配置管理",
+	"icon": "fa-cdces",
+	"spread": true, 
+	"children": [{
+		"title": "平台列表",
+		"icon": "&#65621;",
+		"href": "/ghplat/admin/platformlist"
+	},{
+		"title": "新增平台",
+		"icon": "&#65621;",
+		"href": "/ghplat/admin/platformadd"
+	}]
 }];
 
 

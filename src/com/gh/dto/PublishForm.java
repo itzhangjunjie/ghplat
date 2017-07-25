@@ -16,8 +16,16 @@ public class PublishForm {
 	private String publishName;//媒体的
 	private long publishId;//媒体id
 	private String publisharea;//区域筛选
+	private String usermobile;//用户手机号
 	
 	
+	
+	public String getUsermobile() {
+		return usermobile;
+	}
+	public void setUsermobile(String usermobile) {
+		this.usermobile = usermobile;
+	}
 	public String getPublisharea() {
 		return publisharea;
 	}

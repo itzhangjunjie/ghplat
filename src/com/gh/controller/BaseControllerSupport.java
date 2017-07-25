@@ -20,7 +20,7 @@ public class BaseControllerSupport{
 	@SuppressWarnings("rawtypes")
 	protected static PageList page=new PageList();
 	protected JSONObject jsonObject = new JSONObject();
-	protected static Log logger=LogFactory.getLog(BaseControllerSupport.class);
+	public static Log logger=LogFactory.getLog(BaseControllerSupport.class);
 
 	protected static JsonConfig jsonConfig = new JsonConfig();
 	static{

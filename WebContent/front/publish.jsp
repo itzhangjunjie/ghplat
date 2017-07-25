@@ -5,7 +5,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>案例</title>
-<base href="/ghplat/front/">
+<base href="front/">
 <script src="js/jquery-1.8.2.min.js" type="text/javascript"></script>
 <script src="js/main.js" type="text/javascript"></script>
 <script type="text/javascript">
@@ -188,16 +188,57 @@ function allSelectAddCart(tt){
 	$('.totalAddCart').html(alen);
 }
 function changeArea0(tt){
+	$('.areaSelect2').html('');
 	var val = $(tt).val();
 	$('.attrErCode').hide();
-	$('option[attrErCode="'+val+'"]').show();
+	if(val==0){
+		$('.areaSelect2').html('<option value="0">--请选择--</option>');
+	}else{
+		$($('option[attrErCode="'+val+'"]')[0]).attr('selected','selected');
+		$('option[attrErCode="'+val+'"]').show();
+		$('.areaSelect2').html($('option[attrErCode="'+val+'"]').clone());
+	}
+	changeAreaa1($('.areaSelect2'));
 }
-function changeArea1(tt){
+function changeAreaa1(tt){
+	$('.areaSelect3').html('');
 	var val = $(tt).val();
 	$('.attrSanCode').hide();
-	$('option[attrSanCode="'+val+'"]').show();
+	if(val==0){
+		$('.areaSelect3').html('<option value="0">--请选择--</option>');
+		$('.publisharea').val(0);
+	}else{
+		$('option[attrSanCode="'+val+'"]').show();
+		$($('option[attrSanCode="'+val+'"]')[0]).attr('selected','selected');
+		$('.areaSelect3').html($('option[attrSanCode="'+val+'"]').clone());
+	}
+	//$('option[attrSanCode="'+val+'"]').attr('selected','selected');
+	getPublishList(1);
 }
 function changeArea2(tt){
+	getPublishList(1);
+}
+function goPage(){
+	var pageInput = $('.pagesizeInput').val();
+	console.log(pageInput);
+	var reg = new RegExp("^[0-9]*$");
+	if(!reg.test(pageInput)){
+		alert('填写不正确！');
+		return;
+	}else{
+		getPublishList(pageInput);
+	}
+}
+function closeOption(){  
+	$('.pbarea').val('0');
+	$('.areaSelect2').val('0');
+	$('.areaSelect3').html('<option value="0">--请选择--</option>');
+	$('.publisharea').val(0);
+	$('.fieldAllDiv').find('.selectRedFont').removeClass('selectClass');
+	$('.platAllDiv').find('.selectRedFont').removeClass('selectClass');
+	$('.cpriceAllDiv').find('.selectRedFont').removeClass('selectClass');
+	$('.priceAllDiv').find('.selectRedFont').removeClass('selectClass');
+	$('.platfanAllDiv').find('.selectRedFont').removeClass('selectClass');
 	getPublishList(1);
 }
 </script>
@@ -296,22 +337,28 @@ function changeArea2(tt){
 					<div>
 						<div style="padding:20px;color:#707070;float:left;width:70px;">区域筛选&nbsp;:</div>
 						<select class="pbarea" onchange="changeArea0(this)" style="float:left;width:130px;color:#333333;height:35px;font-size:14px;padding-left:6px;margin-top:10px;">
-													<option>--请选择--</option>
+													<option value="0">--请选择--</option>
 											<c:forEach var="publisharea" items="${publishArea }"  varStatus="st" >
 												<c:if test="${publisharea.priority=='1' }">
 													<option value="${publisharea.area_code }" style="padding:6px;font-size:14px;color:#333333;">${publisharea.area_name }</option>
 												</c:if>
 											</c:forEach>
 										</select>
-										<select onchange="changeArea1(this)" style="float:left;margin-left:10px;width:130px;color:#333333;height:35px;font-size:14px;padding-left:6px;margin-top:10px;margin-left:10px;">
-											<option>--请选择--</option>
+										<select class="areaSelect2" onchange="changeAreaa1(this)" style="float:left;margin-left:10px;width:130px;color:#333333;height:35px;font-size:14px;padding-left:6px;margin-top:10px;">
+											<option value="0">--请选择--</option>
+										</select>
+										<select class="areaSelect3" style="float:left;margin-left:10px;width:130px;color:#333333;height:35px;font-size:14px;padding-left:6px;margin-top:10px;">
+											<option value="0">--请选择--</option>
+										</select>
+										<select onchange="changeAreaa1(this)" style="display:none;float:left;margin-left:10px;width:130px;color:#333333;height:35px;font-size:14px;padding-left:6px;margin-top:10px;margin-left:10px;">
+											<option value="0">--请选择--</option>
 											<c:forEach var="publisharea" items="${publishArea }"  varStatus="st" >
 												<c:if test="${publisharea.priority=='2' }">
 													<option class="attrErCode" attrErCode="${publisharea.parent_area_code }" value="${publisharea.area_code }" style="display:none;padding:6px;font-size:14px;color:#333333;">${publisharea.area_name }</option>
 												</c:if>
 											</c:forEach>
 										</select>
-										<select onchange="changeArea2(this)" class="publisharea" style="float:left;margin-left:10px;width:130px;color:#333333;height:35px;font-size:14px;padding-left:6px;margin-top:10px;margin-left:10px;">
+										<select onchange="changeArea2(this)" class="publisharea" style="display:none;float:left;margin-left:10px;width:130px;color:#333333;height:35px;font-size:14px;padding-left:6px;margin-top:10px;margin-left:10px;">
 											<option value="0">--请选择--</option>
 											<c:forEach var="publisharea" items="${publishArea }"  varStatus="st" >
 												<c:if test="${publisharea.priority=='3' }">
@@ -319,6 +366,7 @@ function changeArea2(tt){
 												</c:if>
 											</c:forEach>
 										</select>
+								<div style="float:right;margin-right:20px;margin-top:25px;cursor:pointer;" onclick="closeOption()">重置</div>
 					</div>
 				</div>
 			</div>
@@ -351,8 +399,12 @@ function changeArea2(tt){
 			<div style="width:1200px;margin:0 auto;margin-top:30px;">
 				<div id="publishDiv" style="width:100%;overflow: hidden;">
 				</div>
-				<div id="pageDiv" style="margin:0 auto;margin-top:20px;margin-bottom:20px;min-width: 385px;max-width: 470px;height:32px;">
-					<div class="M-box" ></div>
+				<div style="margin:0 auto;margin-bottom:20px;overflow: hidden;width:48%;max-width: 60%">
+					<div id="pageDiv" style="float:left;margin-top:20px;margin-bottom:15px;height:32px;overflow: hidden;">
+						<div class="M-box" >
+						</div>
+					</div>
+					<div style="float:left;margin-left:10px;margin-top:20px;"><input style="width:42px;height:30px;" class="pagesizeInput" /><button onclick="goPage()" style="width:42px;height:30px;font-size:12px;">跳转</button></div>
 				</div>
 				<div style="width:100%;height:80px;">
 					<div style="width:1002px;height:50px;background: white;float:left;line-height: 50px;border:1px #e0dbe0 solid;boder-right:0px;font-size:14px;color:#333333;">
@@ -371,11 +423,11 @@ function changeArea2(tt){
 							<div style="margin:0 auto;padding-top:30px;padding-left:25px;padding-right:25px;width:160px;height:180px;cursor:pointer;">
 								<a target="_bank" href="../getPublishDetails?pghid={{=it[i].ghid}}"><img class="mtimage" src="/ghplat/attachment{{=it[i].image}}" width="160px" height="180px" /></a>
 							</div>
-							{{? flag1=='1'}}
 							<div style="width:160px;margin:0 auto;font-size:14px;color:#333333;margin-top:10px;position: relative;">{{=it[i].publishName}}
+							{{? flag1=='1'}}
 								<div style="width:40px;position:absolute;right:-15px;top:-3px;"><a href="tencent://AddContact/?fromId=45&fromSubId=1&subcmd=all&uin={{=it[i].qq}}&website=www.ghplat.com"><img width="28px" src="images/online.png"/></a></div>
-							</div>
 							{{?}}
+							</div>
 							<div style="width:160px;margin:0 auto;margin-top:10px;color:#333333;height:20px;">
 								<div style="width:18px;height:18px;float:left;"><img src="images/fans.png" width="18px" /></div>
 								<div style="float:left;margin-left:8px;font-size:13px;line-height: 18px;">{{=it[i].platformFans}}</div>

@@ -1,7 +1,5 @@
 package com.gh.service;
 
-import java.util.List;
-
 import com.gh.dto.PublishForm;
 import com.gh.model.Order;
 import com.gh.util.PageList;
@@ -13,5 +11,9 @@ public interface IOrderService {
 	public PageList<Order> getOrderList(PublishForm publishForm, long userid) throws Exception;
 
 	public void deleteOrder(long orderId) throws Exception;
+
+	public PageList<Order> getOrderList(PublishForm publishForm) throws Exception;
+
+	public void updateOrder(Long orderid, String status) throws Exception;
 	
 }

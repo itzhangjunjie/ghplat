@@ -26,7 +26,8 @@
 			<fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
 				<legend>修改banner</legend>
 			</fieldset>
-			<form method="post" enctype="multipart/form-data" class="layui-form" action="/ghplat/admin/addBanner">
+			<form method="post" enctype="multipart/form-data" class="layui-form" action="/ghplat/admin/updateBanner">
+				<input type="hidden" value="${bannerDetails.indexBannerId }" name="indexBannerId"/>
 				<div class="layui-form-item">
 						<label class="layui-form-label">模块</label>
 						<div class="layui-input-inline">
@@ -53,18 +54,25 @@
 						<input type="text" value="${bannerDetails.title }" name="title" lay-verify="title" autocomplete="off" placeholder="请输入标题" class="layui-input">
 					</div>
 				</div>
-				<div class="layui-form-item showhide url" style="display:none;">
-					<label class="layui-form-label">链接地</label>
-					<div class="layui-input-block">
-						<input type="text" value="${bannerDetails.url }" name="url" lay-verify="url" autocomplete="off" placeholder="请输入URL" class="layui-input">
+				<c:if test="${bannerDetails.type!='自媒体展示' }">
+					<div class="layui-form-item showhide url" style="display:none;">
+						<label class="layui-form-label">链接地</label>
+						<div class="layui-input-block">
+							<input type="text" value="${bannerDetails.url }" name="url" autocomplete="off" placeholder="请输入URL" class="layui-input">
+						</div>
 					</div>
-				</div>
-				<div class="layui-form-item showhide media" style="display:none;">
-					<label class="layui-form-label">自媒体</label>
-					<a href="javascript:;" class="layui-btn layui-btn-small" id="search">
-						<i class="layui-icon"></i> 自媒体选择
-					</a>
-				</div>
+				</c:if>
+				<c:if test="${bannerDetails.type=='自媒体展示' }">
+					<div class="layui-form-item showhide media" style="display:none;">
+						<label class="layui-form-label">自媒体</label>
+						<div class="layui-input-block">
+	<!-- 					<a href="#zimeitiSelectDiv" id="zimeitiId" class="layui-btn layui-btn-small" id="search"> -->
+	<!-- 						<i class="layui-icon"></i> 自媒体选择 -->
+								<input type="text" name="url" value="${bannerDetails.url }" autocomplete="off" placeholder="请输入媒体的id" class="layui-input">
+	<!-- 					</a> -->
+						</div>
+					</div>
+				</c:if>
 				<div class="layui-form-item showhide image">
 					<label class="layui-form-label">图片</label>
 					<div class="layui-inline">
@@ -175,14 +183,14 @@
 							return '标题至少得3个字符啊';
 						}
 					},
-					url: function(value){
-						if(value!=null&&value!=''){
-							var re = new RegExp("/(http):\/\/[\w\-_]+(\.[\w\-_]+)+([\w\-\.,@?^=%&:/~\+#]*[\w\-\@?^=%&/~\+#])?/");
-							if(!re.test(value)){
-								return "URL地址不对！";
-							}
-						}
-					},
+// 					url: function(value){
+// 						if(value!=null&&value!=''){
+// 							var re = new RegExp("/(http):\/\/[\w\-_]+(\.[\w\-_]+)+([\w\-\.,@?^=%&:/~\+#]*[\w\-\@?^=%&/~\+#])?/");
+// 							if(!re.test(value)){
+// 								return "URL地址不对！";
+// 							}
+// 						}
+// 					},
 					content: function(value) {
 						value = layedit.getContent(editIndex);
 						if(value!=null&&value!='') {

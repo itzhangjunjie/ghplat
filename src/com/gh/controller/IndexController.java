@@ -42,7 +42,22 @@ public class IndexController extends BaseControllerSupport{
 	@Resource
 	private IBaseService<IndexBanner> baseService;
 	
-	@RequestMapping(value="/index",method=RequestMethod.GET)
+	
+	@RequestMapping(value="/getBannerDetails",method=RequestMethod.GET)
+	public String getBannerDetails(HttpServletRequest request){
+		try {
+			Long bannerId = Long.parseLong(request.getParameter("bannerId"));
+			IndexBanner ib = bannerService.getBannerDetails(bannerId);
+			request.setAttribute("bannerDetails", ib);
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error("获取banner列表失败!");
+		}
+		return "/front/bannerDetails";
+	}
+	
+	
+	@RequestMapping(value="/",method=RequestMethod.GET)
 	public String index(HttpServletRequest request){
 		try {
 			Map<String,Object> map = new HashMap<String,Object>();
@@ -265,6 +280,7 @@ public class IndexController extends BaseControllerSupport{
 			jsonObject.put("result", "no");
 			jsonObject.put("reason", "系统错误");
 			e.printStackTrace();
+			logger.error(e);
 		}
 		return jsonObject.toString();
 	}

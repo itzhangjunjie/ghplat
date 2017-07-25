@@ -2,11 +2,12 @@
     pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
+<link href="/front/favicon.ico" rel="shortcut icon">
 <script src="js/jquery-1.8.2.min.js" type="text/javascript"></script>
 <script src="js/jquery.backgroundpos.js" type="text/javascript"></script>
 <script src="js/menu.js" type="text/javascript"></script>
 <script type="text/javascript" src="js/slider.js"></script> 
-
+<base href="front/">
 <script src="js/jquery.fly.min.js" type="text/javascript"></script>
 
 <link rel="stylesheet" href="css/menu.css" type="text/css" />
@@ -106,7 +107,7 @@ function register(type){
 		$(bname+' .usernameMsg').show();
 		return;
 	}
-	var etest = /^[A-Za-zd]+([-_.][A-Za-zd]+)*@([A-Za-zd]+[-.])+[A-Za-zd]{2,5}$/;
+	var etest = /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/;
 	var email= $(bname+' .email').val();
 	if(type!='自媒体'){
 		if(email==''||!etest.test(email)){
@@ -217,7 +218,7 @@ function exit(){
 		   dataType:"json",
 		   success: function(msg){
 			   if(msg.result=='yes'){
-				   location.href="../index";
+				   location.href="/";
 			   }
 		   }
 	});
@@ -328,7 +329,7 @@ a:link {color: #707070}
 		<div style="float:right;">
 			<c:if test="${sessionScope.type==null||sessionScope.type!='自媒体' }">
 				<div style="float:left;"><img src="images/shopping-cart.png" width="15px"/></div>
-				<div onclick="location.href='/ghplat/front/cartList.jsp'" style="float:left;margin-left:7px;" class="hoverFont"><i id="end"></i>购物车<span class="headCartCount" style="color:#fc6769;margin-left:3px;font-weight: bold;">3</span></div>
+				<div onclick="location.href='/front/cartList.jsp'" style="float:left;margin-left:7px;" class="hoverFont"><i id="end"></i>购物车<span class="headCartCount" style="color:#fc6769;margin-left:3px;font-weight: bold;">3</span></div>
 				<div style="float:left;width:1px;height:11px;background:#707070;margin-left:10px;margin-top:3px;"></div>
 			</c:if>
 			<div style="float:left;margin-left:10px;" class="hoverFont">消息中心</div>
@@ -344,11 +345,11 @@ a:link {color: #707070}
 <div style="width:100%;background:white;height:80px;">
 	<div style="width:1200px;background:white;margin:0 auto;">
 		<div style="float:left;margin-top:25px;">
-			<a href="../index"><img src="images/logo.png" height="40px"/></a>
+			<a href="/"><img src="images/logo.png" height="40px"/></a>
 		</div>
 		<div class="header">
 			<ul class="menu">
-				<li><a href="../index">首页</a></li>
+				<li><a href="/">首页</a></li>
 				<c:if test="${sessionScope.type==null||sessionScope.type!='自媒体' }">
 					<li><a href="../getPublish">媒体推广</a></li>
 				</c:if>
@@ -378,7 +379,7 @@ a:link {color: #707070}
 <div id="rightDiv" style="width:56px;right:0px;background: white;position: fixed;top:335px;right:2px;z-index:999;">
 	<div style="width:100%;position: relative;">
 		<div class="hoverFontb" attrstr="div1" style="cursor:pointer;width: 36px;height:36px;padding:10px;border: 1px rgb(242,242,242) solid;position: relative;">
-			<img src="images/online.png" />
+			<a href="tencent://AddContact/?fromId=45&fromSubId=1&subcmd=all&uin=2997558052&website=www.ghplat.com"><img src="images/online.png" /></a>
 		</div>
 		<div class="div1" style="position: absolute;top:0px;right:55px;width:140px;height:57px;background: white;display:none;">
 			<div style="float:left;padding:15px;margin-left:-3px;margin-top:2px;"><img src="images/smile.png" width="25px" /></div>

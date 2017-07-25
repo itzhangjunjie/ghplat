@@ -34,8 +34,9 @@ function delCookie(name)//删除cookie
     var exp = new Date();
     exp.setTime(exp.getTime() - 1000);
     var cval=getCookie(name);
+   // console.log("...."+cval);
     if(cval!=null)
-    	SetCookie(name,null,exp.toGMTString());
+    	SetCookie(name,",",exp.toGMTString());
        // document.cookie = name + "="+ escape (cval) + ";expires="+exp.toGMTString();
 }
 
@@ -51,6 +52,7 @@ function  deleteCart(id){
 
 function addCart(id){
 	var cartIds = getCookie("cartIds");
+	console.log(cartIds+".....");
 	if(cartIds!=null){
 		if(cartIds.indexOf(id+",")<0){
 			cartIds = cartIds+id+",";

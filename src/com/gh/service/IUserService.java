@@ -1,7 +1,9 @@
 package com.gh.service;
 
+import com.gh.dto.PublishForm;
 import com.gh.model.Advertiser;
 import com.gh.model.Media;
+import com.gh.util.PageList;
 
 public interface IUserService {
 
@@ -26,6 +28,15 @@ public interface IUserService {
 	 * 修改密码
 	 */
 	public void updateUserPassword(String mobile, String password) throws Exception;
+
+
+	public PageList<Media> getUserlist(PublishForm publishForm) throws Exception;
+
+
+	public PageList<Advertiser> getUserAdlist(PublishForm publishForm) throws Exception;
+
+
+	public void updateUserFlag(long userid, String userflag,int type) throws Exception;
 	
 	
 }

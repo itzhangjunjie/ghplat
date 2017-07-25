@@ -12,26 +12,40 @@
 <link rel="stylesheet" href="css/global.css" media="all">
 <link rel="stylesheet" type="text/css" href="http://www.jq22.com/jquery/font-awesome.4.6.0.css">
 <link rel="stylesheet" href="css/table.css" />
+<script src="../js/jquery-1.8.2.min.js" type="text/javascript"></script>
+<script type="text/javascript">
+function updateUserFlag(mediaid,tt){
+	var userflag = $(tt).parent().find('.userflagInput').val();
+	$.ajax({
+		   type: "POST",
+		   url: "../updateUserFlag",
+		   data:{
+			   'mediaid'  :mediaid,
+			   'userflag':userflag,
+			   'type':'0'
+		   }, 
+		   dataType:"json",
+		   success: function(msg){
+			   if(msg.result=='yes'){
+				  alert('修改成功');
+			   }
+		   }
+	});
+}
+</script>
 </head>
 <body>
-		<form class="layui-form" method="post" action="/ghplat/admin/meitiList">
+		<form class="layui-form" method="post" action="/ghplat/admin/usermedialist">
 			<blockquote class="layui-elem-quote" style="height: 40px;">
 					<div class="layui-form-item" style="position: absolute;right: 100px;top: 17px;">
-							<c:set value="${publishForm.publishType}" var="ptype"></c:set>
-							<label class="layui-form-label">类型：</label>
+							<label class="layui-form-label">用户名：</label>
 							<div class="layui-input-inline">
-								<select name="publishType">
-									<option value="0" <c:if test="${ptype==0 }">selected="selected"</c:if>>全部</option>
-									<c:forEach var="publish" items="${ptdto }"  varStatus="st" >
-										<option value="${publish.publishType}" <c:if test="${publish.publishType==ptype }">selected="selected"</c:if>>${publish.publishName }</option>
-									</c:forEach>
-								</select>
+								<input type="text" name="searchStr" value="${publishForm.searchStr }" lay-verify="title" autocomplete="off" placeholder="请输入媒体的名称" class="layui-input">
 							</div>
-							<label class="layui-form-label">标题：</label>
+							<label class="layui-form-label">手机号：</label>
 							<div class="layui-input-inline">
-								<input type="text" name="publishName" value="${publishName }" lay-verify="title" autocomplete="off" placeholder="请输入媒体的标题" class="layui-input">
+								<input type="text" name="usermobile" value="${publishForm.usermobile }" lay-verify="title" autocomplete="off" placeholder="请输入媒体手机号" class="layui-input">
 							</div>
-							<input type="hidden" value="1" name="publishStatus"/>
 							<button lay-filter="demo1" lay-submit="" class="layui-btn">搜索</button>
 					</div>
 			</blockquote>
@@ -40,40 +54,23 @@
 		<fieldset class="layui-elem-field">
 				<legend>数据列表</legend>
 				<div class="layui-field-box">
-					<table class="site-table table-hover">
-						<thead>
-							<tr>
-								<th><input type="checkbox" id="selected-all"></th>
-								<th>图片</th>
-								<th>标题</th>
-								<th>类型</th>
-								<th>领域</th>
-								<th>平台</th>
-								<th>QQ</th>
-								<th>创建时间</th>
-								<th>操作</th>
-							</tr>
-						</thead>
-						<tbody>
-							<c:forEach items="${publishListPage.list }" var="publishObj">
-								<tr>
-									<td><input type="checkbox"></td>
-									<td><img src="/ghplat/attachment/banner/${publishObj.image }" width="80px" height="80px" /></td>
-									<td>
-										${publishObj.publishName }
-									</td>
-									<td>${publishObj.publishTypeObj.publishFieldName }</td><td>${publishObj.publishField }</td>
-									<td>${publishObj.platformName }</td>
-									<td>${publishObj.qq }</td>
-									<td><fmt:formatDate value="${publishObj.publishTime }" pattern="yyyy-MM-dd HH:mm" /></td>
-									<td>
-										<a href="/ghplat/admin/meitiupdate?pghid=${publishObj.ghid }" class="layui-btn layui-btn-mini">编辑</a>
-										<a  href="javascript:;" data-id="${banner.indexBannerId }" data-opt="del" class="layui-btn layui-btn-danger layui-btn-mini">删除</a>
-									</td>
-								</tr>
+					<div style="width:100%;margin-top:20px;" class="orderDiv divsh">
+					<table cellspacing="0px" class="plisDiv" style="width:100%;font-size:14px;border:1px #dfdfdf solid;">
+					<tbody><tr valign="middle" height="40px" style="background: #f8f8f8;"><td width="150px" align="center">用户名</td><td width="170px" align="center">手机号</td><td width="150px" align="center">qq</td>
+					<td width="150px" align="center">注册时间</td><td width="150px" align="center">登陆时间</td><td width="150px" align="center">权限</td></tr>
+		<!-- 			<div style="float:left;"><img src="images/weixin.png" /></div> -->
+				</tbody></table>
+				<div style="width:100%;overflow: hidden;padding-bottom: 30px;">
+						<table cellspacing="0px" class="plisDiv" style="font-size:14px;border:1px #dfdfdf solid;float:left;width:100%;padding-bottom: 20px;">
+							<c:forEach items="${medialist.list }" var="media">
+								<tr valign="middle" height="40px" style="background: #f8f8f8;"><td width="150px" align="center">${media.username }</td><td width="170px" align="center">${media.mobile }</td><td width="150px" align="center">${media.qq }</td>
+									<td width="150px" align="center"><fmt:formatDate value="${media.signUpTime }" pattern="yyyy-MM-dd HH:mm" /></td><td width="150px" align="center"><fmt:formatDate value="${media.lastLoginTime }" pattern="yyyy-MM-dd HH:mm" /></td>
+									<td width="150px" align="center"><input value="${media.userFlag }" class="userflagInput"/><button onclick="updateUserFlag(${media.id},this)">更改</button></td>
+								</tr>						
 							</c:forEach>
-						</tbody>
-					</table>
+					    </table>
+				</div>
+			</div>
 				</div>
 		</fieldset>
 		<div class="admin-table-page">
@@ -92,17 +89,19 @@
 				$('input').iCheck({
 					checkboxClass: 'icheckbox_flat-green'
 				});
+				var total = '${medialist.total}';
+				total = (total%15==0)?total/15:(parseInt(total/15)+1);
 				//page
 				laypage({
 					cont: 'page',
-					pages: parseInt('${publishListPage.total }') ,//总页数
+					pages: total ,//总页数
 					groups: 5 ,//连续显示分页数
-					 curr: '${publishListPage.page}',
+					 curr: '${medialist.page}',
 					jump: function(obj, first) {
 						//得到了当前页，用于向服务端请求对应数据
 						var curr = obj.curr;
 						if(!first) {
-							location.href='/ghplat/admin/meitiList?pageSize='+curr;
+							location.href='/ghplat/admin/usermedialist?pageSize='+curr;
 							//layer.msg('第 '+ obj.curr +' 页');
 						}
 					}

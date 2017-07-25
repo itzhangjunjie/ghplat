@@ -5,7 +5,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>案例-列表</title>
-<base href="/ghplat/front/">
+<base href="front/">
 <script src="js/jquery-1.8.2.min.js" type="text/javascript"></script>
 <script type="text/javascript">
 

@@ -11,6 +11,7 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 @Entity
 @Table(name = "GH_ADVERTISER")
 @SequenceGenerator(name="advertiser_seq",sequenceName="SEQ_ADVERTISER_ID")  
@@ -70,7 +71,17 @@ public class Advertiser {
     @Temporal(TemporalType.DATE)
     private Date column4;
     
+    @Transient
+    private long orderCount;
     
+    
+    
+	public long getOrderCount() {
+		return orderCount;
+	}
+	public void setOrderCount(long orderCount) {
+		this.orderCount = orderCount;
+	}
 	public String getMachineId() {
 		return machineId;
 	}

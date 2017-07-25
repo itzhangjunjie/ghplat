@@ -56,5 +56,9 @@ public class IndexBannerServiceImpl implements IIndexBannerService{
 		}
 		return null;
 	}
+	@Override
+	public IndexBanner getBannerDetails(Long bannerId) throws Exception {
+		return this.baseDao.getById(IndexBanner.class, bannerId);
+	}
 
 }

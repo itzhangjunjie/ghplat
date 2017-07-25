@@ -6,6 +6,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.PushbackInputStream;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -13,6 +14,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.poi.POIXMLDocument;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.openxml4j.opc.OPCPackage;
+import org.apache.poi.poifs.filesystem.POIFSFileSystem;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -117,8 +126,8 @@ public class OrderController extends BaseControllerSupport{
 	
 	@RequestMapping(value = "/downFile", method = {RequestMethod.GET})
 	public String downFile(HttpServletRequest request, HttpServletResponse response){
-		String fileUrl = request.getSession().getServletContext().getRealPath("/attachment/cartFile/cartItemList.xlsx");
-		String fileName = StringUtil.getRandStr(10).toString()+"-cart.xlsx";
+		String fileUrl = request.getSession().getServletContext().getRealPath("/attachment/cartFile/cartItemList.xls");
+		String fileName = StringUtil.getRandStr(10).toString()+"-cart.xls";
 	      response.setCharacterEncoding("utf-8");
 			response.setContentType("multipart/form-data");
 			response.setHeader("Content-Disposition", "attachment;fileName="
@@ -149,29 +158,30 @@ public class OrderController extends BaseControllerSupport{
 	public @ResponseBody String orderExport(HttpServletRequest request, HttpServletResponse response,String orderArray){
 		FileOutputStream output = null;
 		 try{
-			 String fileUrl = request.getSession().getServletContext().getRealPath("/attachment/cartFile/cartItemList.xlsx");
+			 String fileUrl = request.getSession().getServletContext().getRealPath("/attachment/cartFile/cartItemList.xls");
 			 System.out.println(fileUrl);
 			 File file = new File(fileUrl);
-			 if(!file.exists()){
-				 file.createNewFile();
-			 }
+			 Workbook xssfWorkbook = createworkbook(new FileInputStream(fileUrl));
 			JSONArray jaobj = JSONArray.fromObject(orderArray);
-			InputStream stream = new FileInputStream(file);
-		    XSSFWorkbook xssfWorkbook = new XSSFWorkbook(stream);  
+			//InputStream stream = new FileInputStream(file);
+			//HSSFWorkbook hxssWorkbook = new HSSFWorkbook(stream);
+		   // XSSFWorkbook xssfWorkbook = new XSSFWorkbook(stream);  
 		      output = new FileOutputStream(file); 
-		      XSSFSheet xssfSheet = xssfWorkbook.getSheetAt(0);  
+		      Sheet xssfSheet = xssfWorkbook.getSheetAt(0) ;
 		      if(jaobj.size()>0){
-		    	  XSSFRow xssfRow = xssfSheet.createRow(0);
-		    	  XSSFCell c0 = xssfRow.createCell(0);
-		    	  c0.setCellValue("广告主题");
-		    	  XSSFCell c1 = xssfRow.createCell(1);
+		    	  Row xssfRow = xssfSheet.createRow(0);
+		    	  Cell c0 = xssfRow.createCell(0);
+		    	  c0.setCellValue("投放主体");
+		    	  Cell c1 = xssfRow.createCell(1);
 		    	  c1.setCellValue("类型");
-		    	  XSSFCell c2 = xssfRow.createCell(2);
-		    	  c2.setCellValue("投放格式");
-		    	  XSSFCell c3 = xssfRow.createCell(3);
-		    	  c3.setCellValue("价格");
-		    	  XSSFCell c4 = xssfRow.createCell(4);
-		    	  c4.setCellValue("粉丝数");
+		    	  Cell c2 = xssfRow.createCell(2);
+		    	  c2.setCellValue("投放平台");
+		    	  Cell c3 = xssfRow.createCell(3);
+		    	  c3.setCellValue("投放格式");
+		    	  Cell c4 = xssfRow.createCell(4);
+		    	  c4.setCellValue("价格");
+		    	  Cell c5 = xssfRow.createCell(5);
+		    	  c5.setCellValue("粉丝数");
 	//				    	  XSSFCell c5 = xssfRow.createCell(5);
 	//				    	  c5.setCellValue("阅读数");
 		      }
@@ -181,17 +191,19 @@ public class OrderController extends BaseControllerSupport{
 					String priceStr = obj.getString("priceStr");
 					String price = obj.getString("price");
 					Publish publish = basePublishService.getById(Publish.class, publishId);
-		    	    XSSFRow xssfRow = xssfSheet.createRow(rowNum);
-			        XSSFCell c = xssfRow.createCell(0);
+		    	    Row xssfRow = xssfSheet.createRow(rowNum);
+			        Cell c = xssfRow.createCell(0);
 					c.setCellValue(publish.getPublishName());
-					XSSFCell c1 = xssfRow.createCell(1);
+					Cell c1 = xssfRow.createCell(1);
 					c1.setCellValue(publish.getPublishTypeObj().getPublishFieldName());
-					XSSFCell c2 = xssfRow.createCell(2);
-					c2.setCellValue(priceStr);
-					XSSFCell c3 = xssfRow.createCell(3);
-					c3.setCellValue(price);
-					XSSFCell c4 = xssfRow.createCell(4);
-					c4.setCellValue(publish.getPlatformFans());
+					Cell c2 = xssfRow.createCell(2);
+					c2.setCellValue(publish.getPlatformName());
+					Cell c3 = xssfRow.createCell(3);
+					c3.setCellValue(priceStr);
+					Cell c4 = xssfRow.createCell(4);
+					c4.setCellValue(price);
+					Cell c5 = xssfRow.createCell(5);
+					c5.setCellValue(publish.getPlatformFans());
 		      }
 	      xssfWorkbook.write(output);
 	      output.close();
@@ -199,8 +211,22 @@ public class OrderController extends BaseControllerSupport{
 		}catch(Exception e){
 			System.out.println("读取失败！");
 			jsonObject.put("result", "no");
+			logger.error(e);
 			e.printStackTrace();
 		}
 		 return jsonObject.toString();
 	}
+	
+	   public static Workbook createworkbook(InputStream inp) throws Exception {
+	       if (!inp.markSupported()) {
+	           inp = new PushbackInputStream(inp, 8);
+	       }
+	       if (POIFSFileSystem.hasPOIFSHeader(inp)) {
+	           return new HSSFWorkbook(inp);
+	       }
+	       if (POIXMLDocument.hasOOXMLHeader(inp)) {
+	           return new XSSFWorkbook(OPCPackage.open(inp));
+	       }
+	       throw new IllegalArgumentException("你的excel版本目前poi解析不了");
+	   }
 }

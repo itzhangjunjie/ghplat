@@ -893,6 +893,10 @@ public class StringUtil {
             	publish.setInfo05(jsonObject.getString("columnValue"));
             }else if("6".equals(key)){
             	publish.setInfo06(jsonObject.getString("columnValue"));
+            }else if("7".equals(key)){
+            	publish.setInfo07(jsonObject.getString("columnValue"));
+            }else if("8".equals(key)){
+            	publish.setInfo08(jsonObject.getString("columnValue"));
             }
         }	
 	}
@@ -917,6 +921,10 @@ public class StringUtil {
             	publish.setPrice05(jsonObject.getString("columnValue"));
             }else if("6".equals(key)){
             	publish.setPrice06(jsonObject.getString("columnValue"));
+            }else if("7".equals(key)){
+            	publish.setPrice07(jsonObject.getString("columnValue"));
+            }else if("8".equals(key)){
+            	publish.setPrice08(jsonObject.getString("columnValue"));
             }
         }	
 	}
@@ -1023,5 +1031,6 @@ public class StringUtil {
 		}
 		return infoStr;
 	}
-	
+
+
 }
