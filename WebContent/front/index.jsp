@@ -14,6 +14,7 @@
 }
 </style>
 </head>
+
 <body style="padding:0px;margin:0px;">
 <input type="hidden" value="0" id="headType" />
 	<%@include file="header.jsp" %>
