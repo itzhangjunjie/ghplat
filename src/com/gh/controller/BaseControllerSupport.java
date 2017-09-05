@@ -23,6 +23,8 @@ public class BaseControllerSupport{
 	public static Log logger=LogFactory.getLog(BaseControllerSupport.class);
 
 	protected static JsonConfig jsonConfig = new JsonConfig();
+	
+	
 	static{
 		page.setPage(1);
 		page.setRows(20);

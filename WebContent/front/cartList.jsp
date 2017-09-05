@@ -5,9 +5,9 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>购物车</title>
-<base href="">
-<script src="js/jquery-1.8.2.min.js" type="text/javascript"></script>
-<script src="js/main.js" type="text/javascript"></script>
+<base href="/">
+<script src="front/js/jquery-1.8.2.min.js" type="text/javascript"></script>
+<script src="front/js/main.js" type="text/javascript"></script>
 <script type="text/javascript">
 var userflagv = 0;
 $(document).ready(function(){
@@ -217,7 +217,7 @@ function selectWtdl(tt){
 	<div style="width:100%;overflow: hidden;">
 		<div style="width:150px;height:42px;background: white;float:left;line-height: 42px;">
 			<div onclick="allSelectAddCart(this)" style="cursor:pointer;width:16px;height:16px;border:1px #333333 solid;float:left;position: relative;">
-				<div style="position: absolute;top:0px;left:0px;"><img src="images/check_26.png" width="100%" /></div>	
+				<div style="position: absolute;top:0px;left:0px;"><img src="front/images/check_26.png" width="100%" /></div>	
 			</div>
 			<div style="cursor:pointer;float:left;margin-left:10px;color:#333333;font-size:12px;line-height: 20px;">全选</div>
 			<div onclick="deleteAll()" style="cursor:pointer;float:left;margin-left:30px;font-size:14px;line-height: 19px;" class="hoverFont">全部删除</div>
@@ -226,7 +226,7 @@ function selectWtdl(tt){
 		<div style="width:110px;margin-top:2px;height:22px;text-align: center;line-height: 22px;float: right;font-size:14px;cursor:pointer;margin-right:20px;">
 			<div style="cursor:pointer;width:16px;height:16px;border:1px #333333 solid;position: relative;float:left;" onclick="selectWtdl(this)">
 				<div wdtlflag="-1" class="wdtlSelectDiv" style="position: absolute;top:0px;left:0px;display:none;">
-					<img width="100%" src="images/check_26.png">
+					<img width="100%" src="front/images/check_26.png">
 				</div>
 			</div>
 			<div style="float:left;margin-left:5px;line-height: 19px;">委托平台代理</div>
@@ -239,7 +239,7 @@ function selectWtdl(tt){
 			<script id="publishlistTmpDiv" type="text/x-dot-template">
 			{{for(var i=0;i<it.publishList.length;i++){ }} 
 			<tr valign="middle" attrPtype="{{=it.publishList[i].publishTypeObj.publishFieldId}}" attrPid="{{=it.publishList[i].id}}" class="publishTr{{=it.publishList[i].id}} publishTr" attrflag="1" height="80px"><td align="center"><div onclick="selectAddCart(this)" style="cursor:pointer;width:16px;height:16px;border:1px #333333 solid;position: relative;float:right;">
-				<div class="selectedPublish" addflag="1" style="position: absolute;top:0px;left:0px;"><img src="images/check_26.png" width="100%" /></div>	
+				<div class="selectedPublish" addflag="1" style="position: absolute;top:0px;left:0px;"><img src="front/images/check_26.png" width="100%" /></div>	
 			</div></td>
 			<td><img width="48px" height="48px" src="/attachment{{=it.publishList[i].image}}" /></td>
         <td><div style="margin-top:1px;">{{=it.publishList[i].publishName}}</div></td>
@@ -259,7 +259,7 @@ function selectWtdl(tt){
 			<td><span onclick="deleteCPublish(this,{{=it.publishList[i].id}})" class="hoverFont">删除</span></td></tr>
 			{{}}}
 			</script>
-<!-- 			<div style="float:left;"><img src="images/weixin.png" /></div> -->
+<!-- 			<div style="float:left;"><img src="front/images/weixin.png" /></div> -->
 		</table>
 	</div>
 	<div style="width:1200px;height:52px;margin-top:50px;">

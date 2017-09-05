@@ -13,6 +13,7 @@ import com.gh.model.Media;
 import com.gh.model.Publish;
 import com.gh.model.PublishArea;
 import com.gh.model.PublishPlatform;
+import com.gh.model.WeiXinDetails;
 import com.gh.util.PageList;
 
 import net.sf.json.JSONObject;
@@ -76,5 +77,10 @@ public interface IPublishService {
 
 	void addPlatform(String platformicon, String platformname, String publishtype) throws Exception;
 
+	PublishPlatform getPlatformDetailsByName(String pname) throws Exception;
+
+	void updatePublish(long parseLong) throws Exception;
+
+	WeiXinDetails getWxDetails(String info01) throws Exception;
 
 }

@@ -5,8 +5,8 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>个人主页</title>
-<base href="front/">
-<script src="js/jquery-1.8.2.min.js" type="text/javascript"></script>
+<base href="/">
+<script src="front/js/jquery-1.8.2.min.js" type="text/javascript"></script>
 <script type="text/javascript">
 $(document).ready(function(){
 	if($('#userflag').val()==''){
@@ -26,7 +26,7 @@ function gostep2(){
 		return;
 	}
 	if(regCode==pcode){
-		$('.stepImage').attr('src','images/step02.png');
+		$('.stepImage').attr('src','front/images/step02.png');
 		$('.step').hide();
 		$('.step02').show();
 	}else{
@@ -53,7 +53,7 @@ function gostep3(){
 			   dataType:"json",
 			   success: function(msg){
 				   if(msg.result=='yes'){
-						$('.stepImage').attr('src','images/step03.png');
+						$('.stepImage').attr('src','front/images/step03.png');
 						$('.step').hide();
 						$('.step03').show();
 				   }else{
@@ -189,7 +189,7 @@ function changeDiv(cls,tt){
 					<table cellspacing="0px" class="plisDiv" style="width:100%;font-size:14px;border:1px #dfdfdf solid;">
 					<tbody><tr valign="middle" height="40px" style="background: #f8f8f8;"><td width="150px" align="center">广告主题</td><td width="170px" align="center">投放主体</td><td width="150px" align="center">广告类型</td>
 					<td width="150px" align="center">阅读量</td><td width="150px" align="center">位置</td><td width="150px" align="center">报价</td><td width="250px" align="center">订单状态</td><td width="200px" align="center">总金额</td></tr>
-		<!-- 			<div style="float:left;"><img src="images/weixin.png" /></div> -->
+		<!-- 			<div style="float:left;"><img src="front/images/weixin.png" /></div> -->
 				</tbody></table>
 					<c:forEach items="${orderlist.list }" var="order">
 				<div style="width:100%;overflow: hidden;">
@@ -221,7 +221,7 @@ function changeDiv(cls,tt){
 			</div>
 			<div class="passwordDiv divsh" style="display:none;">
 				<div style="width:100%;height:auto;overflow: hidden;">
-					<div style="width:868px;height:90px;margin:40px auto 0px;"><img class="stepImage" src="images/step01.png"/></div>
+					<div style="width:868px;height:90px;margin:40px auto 0px;"><img class="stepImage" src="front/images/step01.png"/></div>
 				</div>
 				<div class="step01 step" style="margin-top:50px;padding-bottom: 20px;">
 					<div style="width:320px;margin:0 auto;position: relative;">

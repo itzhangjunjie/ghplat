@@ -3,6 +3,7 @@ package com.gh.service.impl;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -30,6 +31,7 @@ import com.gh.model.PublishInfo;
 import com.gh.model.PublishPlatform;
 import com.gh.model.PublishPrice;
 import com.gh.model.PublishType;
+import com.gh.model.WeiXinDetails;
 import com.gh.service.IPublishService;
 import com.gh.util.FileUtil;
 import com.gh.util.PageList;
@@ -135,6 +137,12 @@ public class PublishServiceImpl implements IPublishService{
 			if(publishForm.getPublisharea()!=null&&!"0".equals(publishForm.getPublisharea())){
 				hql = hql + " and gp.publishRegion = '"+publishForm.getPublisharea()+"'";
 			}
+			if(publishForm.getPublisharea2()!=null&&!"0".equals(publishForm.getPublisharea2())){
+				hql = hql + " and gp.publishRegion2 = '"+publishForm.getPublisharea2()+"'";
+			}
+			if(publishForm.getPublisharea3()!=null&&!"0".equals(publishForm.getPublisharea3())){
+				hql = hql + " and gp.publishRegion3 = '"+publishForm.getPublisharea3()+"'";
+			}
 			if(publishForm.getFanCount() !=null){
 				if("1".equals(publishForm.getFanCount())){
 					hql = hql +" and gp.platformFans < 50000";
@@ -146,8 +154,10 @@ public class PublishServiceImpl implements IPublishService{
 			}
 			if(publishForm.getPublishStatus()!=null){
 				hql = hql +" and gp.publishStatus = '"+publishForm.getPublishStatus()+"'";
+			}else{
+				hql = hql +" and gp.publishStatus != '0'";
 			}
-			if(publishForm.getPricePosition()!=0){
+			if(publishForm.getPricePosition()!=0){                             
 				String columnname ="price";
 				if(publishForm.getPricePosition()<=9){
 					columnname = columnname+"0"+publishForm.getPricePosition();
@@ -421,10 +431,10 @@ public class PublishServiceImpl implements IPublishService{
 	public void updateCase(Case caseObj, String imageArray, String publishArray,String beforeUrl) throws Exception {
 		Case currentCase = this.baseCaseDao.getById(Case.class, caseObj.getCase_id());
 		if(caseObj.getImage().contains("/temp")){
-			String srcImage = caseObj.getImage().replace("/ghplat/attachment/temp", "").replace("/ghplat/attachment/case", "");
-			FileUtil.copyFile(beforeUrl+"/temp"+srcImage, beforeUrl+"/case"+srcImage);
+			String srcImage = caseObj.getImage().replace("/ghplat/attachment/temp", "").replace("/ghplat/attachment/caseImage", "");
+			FileUtil.copyFile(beforeUrl+"/temp"+srcImage, beforeUrl+"/caseImage"+srcImage);
 			FileUtil.delete(beforeUrl+"/temp"+srcImage);
-			currentCase.setImage("/case"+srcImage);
+			currentCase.setImage("/caseImage"+srcImage);
 		}
 		currentCase.setCase_title(caseObj.getCase_title());
 		currentCase.setCase_brand(caseObj.getCase_brand());
@@ -441,11 +451,11 @@ public class PublishServiceImpl implements IPublishService{
 				CaseImage ci = new CaseImage();
 				if(image.contains("/temp")){
 					String srcImage = jsonObject.getString("url").replace("/ghplat/attachment/temp", "");
-					FileUtil.copyFile(beforeUrl+"/temp"+srcImage, beforeUrl+"/case"+srcImage);
+					FileUtil.copyFile(beforeUrl+"/temp"+srcImage, beforeUrl+"/caseImage"+srcImage);
 					FileUtil.delete(beforeUrl+"/temp"+srcImage);
 					ci.setImageUrl("/caseImage"+srcImage);
 				}else{
-					ci.setImageUrl(jsonObject.getString("url").substring(jsonObject.getString("url").indexOf("/case")));
+					ci.setImageUrl(jsonObject.getString("url").substring(jsonObject.getString("url").indexOf("/caseImage")));
 				}
 				ci.setImageTitle(jsonObject.getString("title"));
 				ci.setImageDesc(jsonObject.getString("details"));
@@ -520,10 +530,10 @@ public class PublishServiceImpl implements IPublishService{
 			Object[] results = this.baseDao.findObjectBySql(msql,publish.getMediaId());
 			publish.setQq((String)results[0]);
 		}
-		String infosql = "select cpi.publish_type,cpi.column_name,cpi.column_position from cfg_publish_info cpi order by cpi.column_position desc";
+		String infosql = "select cpi.publish_type,cpi.column_name,cpi.column_position from cfg_publish_info cpi order by cpi.column_position";
 		List<Object[]> resultsinfo = this.baseDao.findListBySql(infosql);
 		String infolist = StringUtil.getPublishInfo(publish);
-		Map<String,String> infoMap = new HashMap<String,String>();
+		Map<String,String> infoMap = new LinkedHashMap<String,String>();
 		for(Object[] objj :resultsinfo){
 			String ptype = (String)objj[0];
 			Object ob = objj[2];
@@ -536,10 +546,10 @@ public class PublishServiceImpl implements IPublishService{
 			}
 		}
 		publish.setInfoMap(infoMap);
-		String psql ="select cpp.column_name,cpp.publish_type,cpp.column_position from cfg_publish_price cpp order by cpp.column_position desc";
+		String psql ="select cpp.column_name,cpp.publish_type,cpp.column_position from cfg_publish_price cpp order by cpp.column_position";
 		List<Object[]> results = this.baseDao.findListBySql(psql);
 		String pricelist = StringUtil.getPublishPrice(publish);
-		Map<String,String> priceMap = new HashMap<String,String>();
+		Map<String,String> priceMap = new LinkedHashMap<String,String>();
 		for(Object[] objj :results){
 			String ptype = (String)objj[1];
 			Object ob = objj[2];
@@ -740,6 +750,34 @@ public class PublishServiceImpl implements IPublishService{
 		}
 		String addplatform = "insert into dic_platform (platform_id,platform_name,platform_icon,publish_type) values (?,?,?,?)";
 		this.baseDao.executeSql(addplatform,pfid,platformname,platformicon,publishtype);
+	}
+	@Override
+	public PublishPlatform getPlatformDetailsByName(String pname) throws Exception {
+		String sql =" select platform_id as platformId, dp.publish_type as publishType,dp.platform_name as platformName,dp.platform_icon as platformIcon from dic_platform dp "
+				+ "where dp.platform_name = ? ";
+		List<Object[]> resultPage = this.baseDao.findListBySql(sql,pname);
+		if(resultPage.size()>0){
+			PublishPlatform ppf = new PublishPlatform();
+			ppf.setPlatformId((String)resultPage.get(0)[0]);
+			ppf.setPublishType((String)resultPage.get(0)[1]);
+			ppf.setPlatformName((String)resultPage.get(0)[2]);
+			ppf.setPlatformIcon((String)resultPage.get(0)[3]);
+			return ppf;
+		}
+		return null;
+	}
+	@Override
+	public void updatePublish(long parseLong) throws Exception {
+		String updatepsql="update ";
+		
+	}
+	@Resource
+	private IBaseDao<WeiXinDetails> wxdetailsDao;
+	@Override
+	public WeiXinDetails getWxDetails(String info01) throws Exception {
+		String hql ="from WeiXinDetails wxdetails where wxdetails.col1 = ?";
+		WeiXinDetails wx = wxdetailsDao.findObject(hql,info01.trim());
+		return wx;
 	}
 
 }

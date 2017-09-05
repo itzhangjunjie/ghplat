@@ -158,11 +158,11 @@ public class AdminPublishController extends BaseControllerSupport{
 	public String meitidelete(HttpServletRequest request){
 		try {
 			String publishghid = request.getParameter("pid");
-			baseService.delete(Publish.class, Long.parseLong(publishghid));
+			publishService.deletePublish(Long.parseLong(publishghid));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return "/admin/meitiupdate";
+		return "redirect:meitiList";
 	}
 	
 	@RequestMapping(value = "/updatePublish", method = {RequestMethod.POST})

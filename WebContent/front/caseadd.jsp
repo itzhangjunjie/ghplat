@@ -5,9 +5,17 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>案例-添加</title>
-<base href="front/">
-<script src="js/jquery-1.8.2.min.js" type="text/javascript"></script>
+<script src="front/js/jquery.min.js" type="text/javascript"></script>
 <script type="text/javascript">
+ var jcrop_api ;
+ var article_MyPhoto={};
+ function showCoords(coords)
+ {
+ 			article_MyPhoto.x = coords.x;
+ 			article_MyPhoto.y = coords.y;
+ 			article_MyPhoto.width = coords.w;
+ 			article_MyPhoto.height = coords.h;
+ };
 function ajaxFileUploadImage(index,type) {
 	$('#cimageMsg').hide();
     $.ajaxFileUpload
@@ -28,7 +36,59 @@ function ajaxFileUploadImage(index,type) {
 	            			$(anliImageDiv).find('.imageShowDiv').attr('src',data.imageList[0]);
 	            			$('.addImageDiv'+index).before($(anliImageDiv));
             			}else{
-		            		$('#uploadImageImg'+index).attr('src',data.imageList[0]);
+            				if(index==1){
+            					
+	            				if(jcrop_api!=null){
+		            				jcrop_api.destroy();
+	            				}
+			            		$('#uploadImageImg'+index).parent().parent().removeClass('uploadClickClass').addClass('noclickClass');
+	            				$('#uploadImageImg'+index).hide();
+			            		$('#uploadImageImg'+index).attr('src',data.imageList[0]);
+			            		var imagenew = new Image();
+			            		imagenew.src=data.imageList[0];
+			            		imagenew.onload = function(){
+				            		var width = imagenew.width;
+				            		var height = imagenew.height;
+				            		var sx=0,sy=0,ex=0,ey=0;
+				            		if((width/height)>(180/155)){
+				            			var hh = height*180/width;
+				            			$('#uploadImageImg'+index).css('width','180px');
+				            			$('#uploadImageImg'+index).css('height',hh+'px');
+				            			$('#uploadImageImg'+index).parent('div').css('padding-left','0')
+				            			$('#uploadImageImg'+index).parent('div').css('padding-top',(155-(hh))/2+'px');
+				            			var jcropHeight = hh;
+				            			sx = (180-jcropHeight)/2;
+				            			sy = 0;
+	    								ex = sx+jcropHeight;
+	    								ey = sy+jcropHeight;
+	    								article_MyPhoto.showWidth = 210;
+	    								//alert(hh+'||'+sx+'||'+sy+'||'+ex+"||"+ey);
+				            		}else{
+				            			var ww = width*155/height;
+				            			$('#uploadImageImg'+index).css('height','155px');
+				            			$('#uploadImageImg'+index).css('width',ww+'px');
+				            			$('#uploadImageImg'+index).parent('div').css('padding-left',(180-(ww))/2+'px');
+				            			$('#uploadImageImg'+index).parent('div').css('padding-top',0);
+				            			var jcropWidth = ww;
+				            			sx = 0;
+				            			sy = (155-jcropWidth)/2;
+	    								ex = sx+jcropWidth;
+	    								ey = sy+jcropWidth;
+	    								article_MyPhoto.showWidth = ww;
+				            		}
+				            		$('#uploadImageImg'+index).Jcrop({
+				            		      onChange:   showCoords,
+				            		      allowSelect: false,
+				            		      aspectRatio: 1,
+				            		      setSelect: [ sx, sy, ex, ey],
+				            		      onSelect:   showCoords
+			            		    },function(){
+			            		      	jcrop_api = this;
+			            		    });
+		            			};
+            				}else{
+            					$('#uploadImageImg'+index).attr('src',data.imageList[0]);
+            				}
             			}
             		}else{
             			for(var i=0;i<data.length;i++){
@@ -74,6 +134,9 @@ function changeType(tt){
 	if(pid=='0001'){
 		$('.pbnameTd').html('公众号名称 :');
 		$('#pbname').attr('placeholder','请输入公众号名称');
+	}else if(pid=='0004'){
+		$('.pbnameTd').html('博主昵称 :');
+		$('#pbname').attr('placeholder','请填写博主昵称');
 	}else{
 		$('.pbnameTd').html('标题 :');
 		$('#pbname').attr('placeholder','请填写案例标题');
@@ -103,35 +166,35 @@ function colseDiv(tt){
 function changeArea0(tt){
 	$('.areaSelect2').html('');
 	var val = $(tt).val();
+	console.log(val);
 	$('.attrErCode').hide();
-	$($('option[attrErCode="'+val+'"]')[0]).attr('selected','selected');
-	$('option[attrErCode="'+val+'"]').show();
-	$('.areaSelect2').html($('option[attrErCode="'+val+'"]').clone());
+	if(val==0){
+		$('.areaSelect2').html('<option value="0">--全市--</option>');
+	}else{
+		$('option[attrErCode="'+val+'"]').show();
+		$('.areaSelect2').html($('option[attrErCode="'+val+'"]').clone());
+		$('.areaSelect2').prepend('<option attrErCode="'+val+'" value="0">--全市--</option>');
+		$($('option[attrErCode="'+val+'"]')[0]).attr('selected','selected');
+	}
 	changeAreaa1($('.areaSelect2'));
 }
 function changeAreaa1(tt){
 	$('.areaSelect3').html('');
 	var val = $(tt).val();
 	$('.attrSanCode').hide();
-	$('option[attrSanCode="'+val+'"]').show();
-	$($('option[attrSanCode="'+val+'"]')[0]).attr('selected','selected');
-	$('.areaSelect3').html($('option[attrSanCode="'+val+'"]').clone());
-	//$('option[attrSanCode="'+val+'"]').attr('selected','selected');
+	if(val==0){
+		$('.areaSelect3').html('<option value="0">--全区--</option>');
+		$('.publisharea').val(0);
+	}else{
+		$('option[attrSanCode="'+val+'"]').show();
+		$('.areaSelect3').html($('option[attrSanCode="'+val+'"]').clone());
+		$('.areaSelect3').prepend('<option attrSanCode="'+val+'" value="0" >--全区--</option>');
+		$($('option[attrSanCode="'+val+'"]')[0]).attr('selected','selected');
+	}
 }
 $(document).ready(function(){
-	$('.areaSelect2').html('');
-	var val = $('.pbarea').val();
-	$($('option[attrErCode="'+val+'"]')[0]).attr('selected','selected');
-	$('option[attrErCode="'+val+'"]').show();
-	$('.areaSelect2').html($('option[attrErCode="'+val+'"]').clone());
 	
-	$('.areaSelect3').html('');
-	var val = $('.areaSelect2').val();
-	$('option[attrSanCode="'+val+'"]').show();
-	$($('option[attrSanCode="'+val+'"]')[0]).attr('selected','selected');
-	$('.areaSelect3').html($('option[attrSanCode="'+val+'"]').clone());
-	
-	$('.uploadClickClass').click(function(){
+	$(document).delegate('.uploadClickClass','click',function(){
 		$(this).parent().find('.uploadClass').click();
 	})
 	$(document).delegate('.addMeiTi','click',function(e){
@@ -258,7 +321,9 @@ function sumbitAddPublish(){
 				pbpriceArray.push(pbpriceobj);
 			}
 		}
-		var publisharea = $('.publisharea').val();
+		var publisharea = $('.pbarea').val();
+		var publisharea2= $('.areaSelect2').val();
+		var publisharea3= $('.areaSelect3').val();
 		//alert(pbpriceArray[0].columnName+"||"+pbpriceArray[0].columnValue+"||"+pbpriceArray[0].fieldName);
 		if(statusflag==2){//attrId = 2 编辑Publish
 			var spid = $('#submitAdd').attr('attrPid');
@@ -276,6 +341,9 @@ function sumbitAddPublish(){
 					'publishField':pbfield,
 					'platformName':pbplatform,
 					'publishRegion':publisharea,
+					'publishRegion2':publisharea2,
+					'publishRegion3':publisharea3,
+					'article_MyPhoto':JSON.stringify(article_MyPhoto),
 					'platformFans':pbfancount,
 					'infoArray':JSON.stringify(pbinfoArray),
 					'priceArray':JSON.stringify(pbpriceArray)
@@ -301,6 +369,9 @@ function sumbitAddPublish(){
 					'platformName':pbplatform,
 					'platformFans':pbfancount,
 					'publishRegion':publisharea,
+					'publishRegion2':publisharea2,
+					'publishRegion3':publisharea3,
+					'article_MyPhoto':JSON.stringify(article_MyPhoto),
 					'infoArray':JSON.stringify(pbinfoArray),
 					'priceArray':JSON.stringify(pbpriceArray)
 				},
@@ -482,6 +553,11 @@ function getPublishList(gpagesize){
 			if(data.result=="yes"){
 				plist = data.datas;
 				$('.basemsglisttemDiv').html("");
+				if(plist.length<10){
+					$('.pageSizeDiv').hide();
+				}else{
+					$('.pageSizeDiv').show();
+				}
 				var htmla =  doT.template($("#publishTmpDiv").text());
 				$('.basemsglisttemDiv').html(htmla(plist));
 				var pagecount = data.pageCount;
@@ -528,13 +604,61 @@ function addBaseAnLiMsgDiv(){
 function editPublish(spid,index){
 	$('#colseAdd').attr('attrId',"1");
 	$('#uploadImageImg1').attr('src','/ghplat/attachment'+plist[index].image);
+	$('#uploadImageImg1').parent().parent().removeClass('uploadClickClass').addClass('noclickClass');
+	var imagenew = new Image();
+	imagenew.src = '/ghplat/attachment'+plist[index].image;
+	imagenew.onload = function(){
+		var width = imagenew.width;
+		var height = imagenew.height;
+		var sx=0,sy=0,ex=0,ey=0;
+		if((width/height)>(180/155)){
+			var hh = height*180/width;
+			$('#uploadImageImg1').css('width','180px');
+			$('#uploadImageImg1').css('height',hh+'px');
+			$('#uploadImageImg1').parent('div').css('padding-left','0')
+			$('#uploadImageImg1').parent('div').css('padding-top',(155-(hh))/2+'px');
+			var jcropWidth = 160*hh/180;
+			var jcropHeight = hh;
+			sx = (180-jcropWidth)/2;
+			sy = 0;
+			ex = sx+jcropWidth;
+			ey = sy+jcropHeight;
+			article_MyPhoto.showWidth = 180;
+		}else{
+			var ww = width*155/height;
+			$('#uploadImageImg1').css('height','155px');
+			$('#uploadImageImg1').css('width',ww+'px');
+			$('#uploadImageImg1').parent('div').css('padding-left',(180-(ww))/2+'px');
+			$('#uploadImageImg1').parent('div').css('padding-top',0);
+			var jcropWidth = ww;
+			var jcropHeight = 155;
+			sx = 0;
+			sy = 0;
+			ex = sx+jcropWidth;
+			ey = sy+jcropHeight;
+			article_MyPhoto.showWidth = ww;
+		}
+		$('#uploadImageImg1').Jcrop({
+		      onChange:   showCoords,
+		      allowSelect: false,
+		      aspectRatio: 16/18,
+		      setSelect: [ sx, sy, ex, ey],
+		      onSelect:   showCoords
+	    },function(){
+	      	jcrop_api = this;
+	    });
+	};
 	var pid = plist[index].publishTypeObj.publishFieldId;
 	$("#pbtype").find("option[value='"+pid+"']").attr("selected",true);
 	changeType($("#pbtype"));
 	$('#pbname').val(plist[index].publishName);
 	$('#pbfancount').val(plist[index].platformFans);
 	$("#pbfield"+pid).find("option[value='"+plist[index].publishField+"']").attr("selected",true);
-	$('.publisharea').find("option[value='"+plist[index].publishRegion+"']").attr("selected",true);
+	$('.pbarea').find("option[value='"+plist[index].publishRegion+"']").attr("selected",true);
+	changeArea0($('.pbarea'));
+	$('.areaSelect2').find("option[value='"+plist[index].publishRegion2+"']").attr("selected",true);
+	changeAreaa1($('.areaSelect2'));
+	$('.areaSelect3').find("option[value='"+plist[index].publishRegion3+"']").attr("selected",true);
 	$('#pbplatform'+pid).find("option[value='"+plist[index].platformName+"']").attr("selected",true);
 	var info01 = plist[index].info01;
 	var info02 = plist[index].info02;
@@ -618,6 +742,7 @@ function editPublish(spid,index){
 	$('.basemsglistDiv').hide();
 	$('#submitAdd').attr('attrId',2);
 	$('#submitAdd').attr('attrPid',spid);
+	
 }
 function deletePublish(pid,tt){
 	if(confirm("确定要删除吗？")){
@@ -791,7 +916,7 @@ function goPage(){
 										</div>
 									{{ } }} 
 								</script>
-								<div style="width:100%;">
+								<div class="pageSizeDiv" style="width:100%;">
 <!-- 									<div id="pageDiv" style="margin:0 auto;margin-top:20px;margin-bottom:20px;min-width: 385px;max-width: 470px;height:32px;"> -->
 <!-- 										<div class="M-box3" ></div> -->
 <!-- 									</div> -->
@@ -812,10 +937,10 @@ function goPage(){
 									<tr><td width="130px" style="vertical-align:top;">上传头像&nbsp;:</td>
 										<td width="450px"><div style="width:180px;height:200px;border: 1px #707070 dotted;">
 												<div class="uploadClickClass" style="width:180px;height:155px;cursor: pointer;">
-													<div style="width:100%;height:100%;"><img id="uploadImageImg1" style="width:180px;height:155px;" src="images/addImage.png" /></div>
+													<div style="width:100%;height:100%;"><img id="uploadImageImg1" style="width:180px;height:155px;" src="front/images/addImage.png" /></div>
 												</div>
 												<input id="uploadImageInput1" onchange="ajaxFileUploadImage(1,1)" name="files" class="uploadClass" accept="image/*" type="file" style="display:none;"/>
-												<div style="width:180px;height:45px;background: #ededed;">
+												<div class="uploadClickClass" style="width:180px;height:45px;background: #ededed;">
 													<div style="width:100%;height:21px;text-align: center;padding-top:4px;">头像上传（只能上传一张）</div>
 													<div style="font-size:12px;text-align: center;">大小不能超过1024kb</div>
 												</div>
@@ -832,29 +957,33 @@ function goPage(){
 									</td><td></td></tr>
 									<tr><td>区域&nbsp;:
 									</td><td>
-										
 										<select class="pbarea" onchange="changeArea0(this)" style="float:left;width:120px;color:#333333;height:48px;font-size:14px;padding-left:6px;">
+											<option value="0">--全国--</option>
 											<c:forEach var="publisharea" items="${publishArea }"  varStatus="st" >
 												<c:if test="${publisharea.priority=='1' }">
-													<option value="${publisharea.area_code }" <c:if test="${publisharea.area_name=='上海市' }">selected="selected"</c:if> style="padding:6px;font-size:14px;color:#333333;">${publisharea.area_name }</option>
+													<option value="${publisharea.area_code }" style="padding:6px;font-size:14px;color:#333333;">${publisharea.area_name }</option>
 												</c:if>
 											</c:forEach>
 										</select>
 										<select class="areaSelect2" onchange="changeAreaa1(this)" style="float:left;margin-left:10px;width:120px;color:#333333;height:48px;font-size:14px;padding-left:6px;">
+											<option value="0">--全市--</option>
 										</select>
 										<select class="areaSelect3" style="float:left;margin-left:10px;width:120px;color:#333333;height:48px;font-size:14px;padding-left:6px;">
+											<option value="0">--全区--</option>
 										</select>
 										<select class="" style="display:none;float:left;margin-left:10px;width:120px;color:#333333;height:48px;font-size:14px;padding-left:6px;">
+											<option value="0">--全市--</option>
 											<c:forEach var="publishareaa" items="${publishArea }"  varStatus="st" >
 												<c:if test="${publishareaa.priority=='2' }">
-													<option class="attrErCode" attrErCode="${publishareaa.parent_area_code }" <c:if test="${publishareaa.area_name=='市辖区' }">selected="selected"</c:if> value="${publishareaa.area_code }" style="display:none;padding:6px;font-size:14px;color:#333333;">${publishareaa.area_name }</option>
+													<option class="attrErCode" attrErCode="${publishareaa.parent_area_code }" value="${publishareaa.area_code }" style="display:none;padding:6px;font-size:14px;color:#333333;">${publishareaa.area_name }</option>
 												</c:if>
 											</c:forEach>
 										</select>
 										<select class="publisharea" style="display:none;float:left;margin-left:10px;width:120px;color:#333333;height:48px;font-size:14px;padding-left:6px;">
+											<option value="0">--全区--</option>
 											<c:forEach var="publishareaa" items="${publishArea }"  varStatus="st" >
 												<c:if test="${publishareaa.priority=='3' }">
-													<option class="attrSanCode" attrSanCode="${publishareaa.parent_area_code }" value="${publishareaa.area_name }" style="display:none;padding:6px;font-size:14px;color:#333333;">${publishareaa.area_name }</option>
+													<option class="attrSanCode" attrSanCode="${publishareaa.parent_area_code }" value="${publishareaa.area_code }" style="display:none;padding:6px;font-size:14px;color:#333333;">${publishareaa.area_name }</option>
 												</c:if>
 											</c:forEach>
 										</select>
@@ -878,7 +1007,7 @@ function goPage(){
 												</select>
 											</td><td></td></tr>
 										</c:if>
-										<c:if test="${publisha.publishPlatform.size()>1 }">
+<%-- 										<c:if test="${publisha.publishPlatform.size()>1 }"> --%>
 											<tr class="pplatformtr pplatformtr${publisha.publishType }" style="<c:if test='${stt.index!=0 }'>display:none;</c:if>"><td>平台类型&nbsp;:</td><td>
 												<select id="pbplatform${publisha.publishType }" style="width:350px;color:#333333;height:48px;font-size:14px;padding-left:6px;">
 													<c:forEach var="publishplatform" items="${publisha.publishPlatform }" >
@@ -886,7 +1015,7 @@ function goPage(){
 													</c:forEach>
 												</select>
 											</td><td></td></tr>
-										</c:if>
+<%-- 										</c:if> --%>
 										<c:forEach var="publishinfo" items="${publisha.publishInfo }" >
 											<c:if test="${publishinfo.columnName!=null }">
 												<tr class="allattr select${publisha.publishType }" style="<c:if test='${stt.index!=0 }'>display:none;</c:if>"><td>${publishinfo.columnName }&nbsp;:</td><td>
@@ -956,7 +1085,7 @@ function goPage(){
 									<div style="width:100px;height:96px;line-height: 18px;float:left;line-height: 96px;">案例置顶图&nbsp;:</div>
 									<div style="float:left;width:96px;height:96px;border:1px #dfdfdf solid;">
 										<div class="uploadClickClass" style="width:100%;height:100%;cursor: pointer;">
-											<div style="width:100%;height:100%;position: relative;"><img id="uploadImageImg2" style="width:96px;height:96px;" src="images/addImage.png" />
+											<div style="width:100%;height:100%;position: relative;"><img id="uploadImageImg2" style="width:96px;height:96px;" src="front/images/addImage.png" />
 												<div id="cimageMsg" class="wrongClass" style="display:none;font-size:12px;color:#fc6769;height:20px;position: absolute;bottom: 3px;left:12px;">上传主图错误</div>
 											</div>
 										</div>
@@ -964,7 +1093,7 @@ function goPage(){
 									</div>
 									<div style="width:100px;height:96px;line-height: 18px;float:left;line-height: 96px;margin-left:24px;">自媒体弹窗&nbsp;:</div>
 									<div  class="addZiMeiTi" style="width:200px;float:left;height:96px;position: relative;display:none;">
-										<div style="width:96px;height:96px;float:left;"><img id="mtImage" style="width:96px;height:96px;" src="/ghplat/attachment//images/2300/201612021204profilePhoto陈翔六点半.jpg" /></div>
+										<div style="width:96px;height:96px;float:left;"><img id="mtImage" style="width:96px;height:96px;" src="/ghplat/attachment/images/2300/201612021204profilePhoto陈翔六点半.jpg" /></div>
 										<div style="float:left;width:100px;height:96px;">
 											<div id="mtName" style="margin-top:12px;margin-left:15px;width:90px;height:16px;overflow: hidden;line-height:16px;color:black;font-weight: bold;font-size:14px;">陈翔</div>
 											<div id="mtPlatform" style="margin-top:6px;margin-left:15px;width:70px;height:18px;overflow: hidden;color:#333333;font-size:12px;">秒拍</div>
@@ -973,7 +1102,7 @@ function goPage(){
 									</div>
 									<div id="wrap2" class="wrap" attrCount="3" style="display:none;">
 										<div class="article_pic_left_btn">
-										     <img src="images/space_16_23.png" id="cardArrowLeft" class="live_card_arrow_left_physical" />
+										     <img src="front/images/space_16_23.png" id="cardArrowLeft" class="live_card_arrow_left_physical" />
 										 </div>
 										<div class="puzzle_card" id="puzzle_card2">
 											<div class="showbox" id="showbox2">
@@ -982,13 +1111,13 @@ function goPage(){
 											</div>
 										</div>
 								        <div class="article_pic_right_btn">
-								          <img src="images/space_16_23.png" id="cardArrowRight" class="live_card_arrow_right_physical" />
+								          <img src="front/images/space_16_23.png" id="cardArrowRight" class="live_card_arrow_right_physical" />
 								        </div>
 									</div>
 									<div class="addPublishMT" style="float:left;width:96px;height:96px;border:1px #dfdfdf solid;">
 										<a id="addPublishA" onclick="jiluid(3)" href="#addPublishDiv" style="text-decoration: none;">
 											<div class="fbClickClass" style="width:100%;height:100%;cursor: pointer;">
-												<div style="width:100%;height:100%;"><img style="width:96px;height:96px;" src="images/addImage.png" /></div>
+												<div style="width:100%;height:100%;"><img style="width:96px;height:96px;" src="front/images/addImage.png" /></div>
 											</div>
 										</a>
 									</div>
@@ -998,7 +1127,7 @@ function goPage(){
 										<div style="width:100px;min-height:110px;line-height: 18px;float:left;"><div style="width:100%;margin-top:25px;">案例照片&nbsp;:</div><div style="font-size:12px;">(可上传多张)</div></div>
 										<div class="addImageDiv3" style="float:left;width:96px;height:96px;border:1px #dfdfdf solid;">
 											<div class="uploadClickClass" style="width:100%;height:100%;cursor: pointer;">
-												<div style="width:100%;height:100%;"><img id="uploadImageImg3" style="width:96px;height:96px;" src="images/addImage.png" />
+												<div style="width:100%;height:100%;"><img id="uploadImageImg3" style="width:96px;height:96px;" src="front/images/addImage.png" />
 													<div id="cimage2Msg" class="wrongClass" style="display:none;font-size:12px;color:#fc6769;height:20px;position: absolute;bottom: 3px;left:12px;">至少上传一张</div>
 												</div>
 											</div>
@@ -1060,7 +1189,7 @@ function goPage(){
 									</div>
 									<div style="width:100px;height:96px;line-height: 18px;float:left;line-height: 96px;margin-left:24px;">自媒体弹窗&nbsp;:</div>
 									<div  class="addZiMeiTi" style="width:200px;float:left;height:96px;position: relative;display:none;">
-										<div style="width:96px;height:96px;float:left;"><img id="mtImage" style="width:96px;height:96px;" src="/ghplat/attachment//images/2300/201612021204profilePhoto陈翔六点半.jpg" /></div>
+										<div style="width:96px;height:96px;float:left;"><img id="mtImage" style="width:96px;height:96px;" src="/ghplat/attachment//front/images/2300/201612021204profilePhoto陈翔六点半.jpg" /></div>
 										<div style="float:left;width:100px;height:96px;">
 											<div id="mtName" style="margin-top:12px;margin-left:15px;width:90px;height:16px;overflow: hidden;line-height:16px;color:black;font-weight: bold;font-size:14px;">陈翔</div>
 											<div id="mtPlatform" style="margin-top:6px;margin-left:15px;width:70px;height:18px;overflow: hidden;color:#333333;font-size:12px;">秒拍</div>
@@ -1069,7 +1198,7 @@ function goPage(){
 									</div>
 									<div id="wrap2" class="wrap" attrCount="3" style="{{? it[i].childPublish.length==0}}display:none;{{?}}">
 										<div class="article_pic_left_btn">
-										     <img src="images/space_16_23.png" id="cardArrowLeft" class="live_card_arrow_left_physical" />
+										     <img src="front/images/space_16_23.png" id="cardArrowLeft" class="live_card_arrow_left_physical" />
 										 </div>
 										<div class="puzzle_card" id="puzzle_card2">
 											<div class="showbox" id="showbox2">
@@ -1083,13 +1212,13 @@ function goPage(){
 											</div>
 										</div>
 								        <div class="article_pic_right_btn">
-								          <img src="images/space_16_23.png" id="cardArrowRight" class="live_card_arrow_right_physical" />
+								          <img src="front/images/space_16_23.png" id="cardArrowRight" class="live_card_arrow_right_physical" />
 								        </div>
 									</div>
 									<div class="addPublishMT" style="float:left;width:96px;height:96px;border:1px #dfdfdf solid;">
 										<a onclick="jiluid({{=it[i].case_id}})" id="addPublishA" href="#addPublishDiv" style="text-decoration: none;">
 											<div class="fbClickClass" style="width:100%;height:100%;cursor: pointer;">
-												<div style="width:100%;height:100%;"><img style="width:96px;height:96px;" src="images/addImage.png" /></div>
+												<div style="width:100%;height:100%;"><img style="width:96px;height:96px;" src="front/images/addImage.png" /></div>
 											</div>
 										</a>
 									</div>
@@ -1108,12 +1237,12 @@ function goPage(){
 			<textarea cols="3" rows="20" style="font-size:14px;padding:2px;color:#333333;text-align: left;width:110px;height:50px;" class="cimageDetails" placeholder="填写图片的描述" >{{=it[i].caseImageList[k].imageDesc}}</textarea>
 		</div>
 	</div>
-	<div style="float:left;cursor:pointer;width:22px;position: absolute;top:-15px;right:-10px;" onclick="colseDiv(this)" class="colseImageDiv"><img style="height:22px;" src="images/colse.jpg"></div>
+	<div style="float:left;cursor:pointer;width:22px;position: absolute;top:-15px;right:-10px;" onclick="colseDiv(this)" class="colseImageDiv"><img style="height:22px;" src="front/images/colse.jpg"></div>
 </div>
 {{} }}
 										<div class="addImageDiv{{=it[i].case_id}}2" style="float:left;width:96px;height:96px;border:1px #dfdfdf solid;">
 											<div class="uploadClickClass" style="width:100%;height:100%;cursor: pointer;">
-												<div style="width:100%;height:100%;"><img id="uploadImageImg{{=it[i].case_id}}2" style="width:96px;height:96px;" src="images/addImage.png" />
+												<div style="width:100%;height:100%;"><img id="uploadImageImg{{=it[i].case_id}}2" style="width:96px;height:96px;" src="front/images/addImage.png" />
 													<div id="cimage2Msg" class="wrongClass" style="display:none;font-size:12px;color:#fc6769;height:20px;position: absolute;bottom: 3px;left:12px;">至少上传一张</div>
 												</div>
 											</div>
@@ -1153,7 +1282,7 @@ function goPage(){
 				<input class="searchStrClass" type="text" placeholder="突然想起某位达人" style="border:0px;text-align:left;margin:0px;padding: 10px 10px 10px 20px;width:265px;height:40px;color:#999999;font-size:14px;"/>
 			</div>
 			<div onclick="searchPublish()" style="cursor:pointer;background: #333333;width:60px;height:42px;float:left;text-align: center;">
-				<img src="images/search_white.png" style="height:24px;margin-top:9px;" />
+				<img src="front/images/search_white.png" style="height:24px;margin-top:9px;" />
 			</div>
 		</div>
 		<div style="width:100%;margin-top:10px;" id="publishDiv">
@@ -1171,7 +1300,7 @@ function goPage(){
 				</div>
 				<div class="addMeiTi" style="position:absolute ;bottom: -1px; right:-1px;cursor:pointer;width:16px;height:16px;border:1px #333333 solid;z-index:2;"></div>
 				<div class="addMeiTiImage" style="display:none;position:absolute ;bottom: 0px; right:0px;cursor:pointer;width:16px;height:16px;border:1px #333333 solid;z-index:3;">
-					<img src="images/check_26.png" width="16px"/>
+					<img src="front/images/check_26.png" width="16px"/>
 				</div>
 			</div>
 		{{ } }} 
@@ -1180,7 +1309,7 @@ function goPage(){
 </div>
 <div style="float:left;width:215px;height:96px;border:1px #dfdfdf solid;margin-right:20px;position: relative;display:none;" class="anliImageDiv">
 	<div class="uploadClickClass" style="width:96px;height:96px;cursor: pointer;float:left;">
-		<div style="width:100%;height:100%;"><img class="imageShowDiv" style="width:96px;height:96px;" src="images/addImage.png" /></div>
+		<div style="width:100%;height:100%;"><img class="imageShowDiv" style="width:96px;height:96px;" src="front/images/addImage.png" /></div>
 	</div>
 	<div style="width:114px;height:96px;float:left;">
 		<div style="margin-top:6px;height:24px;"><input class="cimageTitle" placeholder="填写图片的标题" style="padding:2px;color:#333333;text-align: left;width:110px;height:24px;" /></div>
@@ -1188,14 +1317,14 @@ function goPage(){
 			<textarea placeholder="填写图片的描述" class="cimageDetails" style="font-size:14px;padding:2px;color:#333333;text-align: left;width:110px;height:50px;" rows="20" cols="3"></textarea>
 		</div>
 	</div>
-	<div class="colseImageDiv" onclick="colseDiv(this)" style="float:left;cursor:pointer;width:22px;position: absolute;top:-15px;right:-10px;"><img src="images/colse.jpg" style="height:22px;"/></div>
+	<div class="colseImageDiv" onclick="colseDiv(this)" style="float:left;cursor:pointer;width:22px;position: absolute;top:-15px;right:-10px;"><img src="front/images/colse.jpg" style="height:22px;"/></div>
 </div>
 <div class="addpriceDiv" style="height:48px;float:left;position: relative;margin-left:20px;display:none;">
 	<div class="priceFontDiv" style="float:left;overflow: hidden;height:48px;line-height: 48px;">多大的的：</div>
 	<div style="float:left;width:98px;">
 		<input class="priceInput" style="width:90px;height:48px;padding:6px;color:#333333;" placeholder="请填写案例主题" type="text" />
 	</div>
-	<div onclick="colseDiv(this)" style="float:left;cursor:pointer;width:22px;position: absolute;top:-5px;right:-5px;"><img src="images/colse.jpg" style="height:22px;"/></div>
+	<div onclick="colseDiv(this)" style="float:left;cursor:pointer;width:22px;position: absolute;top:-5px;right:-5px;"><img src="front/images/colse.jpg" style="height:22px;"/></div>
 </div>
 
 <div class="alldiv2 anliDiv2" style="display:none;border:1px #999999 solid;height:auto;background: #fbfbfb;margin-top:30px;margin-bottom: 30px;overflow: hidden;">
@@ -1221,13 +1350,13 @@ function goPage(){
 			<div style="width:100px;height:96px;line-height: 18px;float:left;line-height: 96px;">案例置顶图&nbsp;:</div>
 			<div style="float:left;width:96px;height:96px;border:1px #dfdfdf solid;">
 				<div class="uploadClickClass" style="width:100%;height:100%;cursor: pointer;">
-					<div style="width:100%;height:100%;"><img class="uploadImageImg2" style="width:96px;height:96px;" src="images/addImage.png" /></div>
+					<div style="width:100%;height:100%;"><img class="uploadImageImg2" style="width:96px;height:96px;" src="front/images/addImage.png" /></div>
 				</div>
 			</div>
 			<div style="width:100px;height:96px;line-height: 18px;float:left;line-height: 96px;margin-left:25px;">自媒体弹窗&nbsp;:</div>
 			<div id="wrap2" class="wrap2" attrCount="3">
 				<div class="article_pic_left_btn">
-				     <img src="images/space_16_23.png" id="cardArrowLeft" class="live_card_arrow_left_physical" />
+				     <img src="front/images/space_16_23.png" id="cardArrowLeft" class="live_card_arrow_left_physical" />
 				 </div>
 				<div class="puzzle_card" id="puzzle_card2">
 					<div class="showbox" id="showbox2">
@@ -1236,7 +1365,7 @@ function goPage(){
 					</div>
 				</div>
 		        <div class="article_pic_right_btn">
-		          <img src="images/space_16_23.png" id="cardArrowRight" class="live_card_arrow_right_physical" />
+		          <img src="front/images/space_16_23.png" id="cardArrowRight" class="live_card_arrow_right_physical" />
 		        </div>
 			</div>
 		</div>

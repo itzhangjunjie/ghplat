@@ -3,23 +3,27 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
 <link href="/front/favicon.ico" rel="shortcut icon">
-<script src="js/jquery-1.8.2.min.js" type="text/javascript"></script>
-<script src="js/jquery.backgroundpos.js" type="text/javascript"></script>
-<script src="js/menu.js" type="text/javascript"></script>
-<script type="text/javascript" src="js/slider.js"></script> 
-<base href="front/">
-<script src="js/jquery.fly.min.js" type="text/javascript"></script>
-
-<link rel="stylesheet" href="css/menu.css" type="text/css" />
-<script src="js/ajaxfileupload.js" type="text/javascript"></script>
-<script src="js/menu.js" type="text/javascript"></script>
-<script src="js/doT.min.js" type="text/javascript"></script>
-<link rel="stylesheet" type="text/css" href="js/fancybox/jquery.fancybox.css" media="screen" />
-<script type="text/javascript" src="js/fancybox/jquery.fancybox.js"></script>
-<script type="text/javascript" src="js/mySlider.js"></script>
-<link rel="stylesheet" href="css/pagination.css" type="text/css" />
-<script src="js/jquery.pagination.js" type="text/javascript"></script>
-<script src="js/main.js" type="text/javascript"></script>
+<script src="front/js/jquery-1.8.2.min.js" type="text/javascript"></script>
+<script src="front/js/jquery.backgroundpos.js" type="text/javascript"></script>
+<script src="front/js/menu.js" type="text/javascript"></script>
+<script type="text/javascript" src="front/js/slider.js"></script> 
+<script src="front/js/jquery.fly.min.js" type="text/javascript"></script>
+<link rel="stylesheet" href="front/css/menu.css" type="text/css" />
+<script src="front/js/ajaxfileupload.js" type="text/javascript"></script>
+<script src="front/js/menu.js" type="text/javascript"></script>
+<script src="front/js/doT.min.js" type="text/javascript"></script>
+<link rel="stylesheet" type="text/css" href="front/js/fancybox/jquery.fancybox.css" media="screen" />
+<script type="text/javascript" src="front/js/fancybox/jquery.fancybox.js"></script>
+<script type="text/javascript" src="front/js/mySlider.js"></script>
+<link rel="stylesheet" href="front/css/pagination.css" type="text/css" />
+<script src="front/js/jquery.pagination.js" type="text/javascript"></script>
+<script src="front/js/main.js" type="text/javascript"></script>
+<script src="front/js/jquery.Jcrop.js" type="text/javascript"></script>
+<link rel="stylesheet" href="front/css/jquery.Jcrop.css">
+<!-- 页面关键词 -->
+<meta name="keywords" content="勾画,自媒体,新媒体,mcn,mpn"/>
+<!-- 搜索引擎抓取 -->
+<meta name="robots" content="勾画,自媒体,新媒体,mcn,mpn"/>
 <script type="text/javascript">
 $(function(){
 	var cartIds = getCookie("cartIds");
@@ -203,7 +207,11 @@ function login(type){
 		   dataType:"json",
 		   success: function(msg){
 			   if(msg.result=='yes'){
-				   location.reload();
+				   if(type=='自媒体'){
+						location.href='../addCase';					   
+				   }else{
+					   location.reload();
+				   }
 			   }else{
 				   $(bname+' .loginMsg').html(msg.reason);
 				   $(bname+' .loginMsg').show();
@@ -328,7 +336,7 @@ a:link {color: #707070}
 		</div>
 		<div style="float:right;">
 			<c:if test="${sessionScope.type==null||sessionScope.type!='自媒体' }">
-				<div style="float:left;"><img src="images/shopping-cart.png" width="15px"/></div>
+				<div style="float:left;"><img src="front/images/shopping-cart.png" width="15px"/></div>
 				<div onclick="location.href='/front/cartList.jsp'" style="float:left;margin-left:7px;" class="hoverFont"><i id="end"></i>购物车<span class="headCartCount" style="color:#fc6769;margin-left:3px;font-weight: bold;">3</span></div>
 				<div style="float:left;width:1px;height:11px;background:#707070;margin-left:10px;margin-top:3px;"></div>
 			</c:if>
@@ -337,7 +345,9 @@ a:link {color: #707070}
 			<div style="float:left;margin-left:10px;" class="hoverFont">帮助中心</div>
 			<div style="float:left;width:1px;height:11px;background:#707070;margin-left:10px;margin-top:3px;"></div>
 			<div style="float:left;margin-left:10px;" class="hoverFont">新媒体中心</div>
-			<div style="float:left;margin-left:25px;"><img src="images/tel_small.png" width="16px"/></div>
+			<div style="float:left;width:1px;height:11px;background:#707070;margin-left:10px;margin-top:3px;"></div>
+			<div style="float:left;margin-left:10px;" class="hoverFont"><a target="_blank" href="http://61.129.51.62:8099/ipcity/">IP·City</a></div>
+			<div style="float:left;margin-left:25px;"><img src="front/images/tel_small.png" width="16px"/></div>
 			<div style="float:left;margin-left:5px;">18616878426</div>
 		</div>
 	</div>
@@ -345,31 +355,31 @@ a:link {color: #707070}
 <div style="width:100%;background:white;height:80px;">
 	<div style="width:1200px;background:white;margin:0 auto;">
 		<div style="float:left;margin-top:25px;">
-			<a href="/"><img src="images/logo.png" height="40px"/></a>
+			<a href="/"><img src="front/images/logo.png" height="40px"/></a>
 		</div>
 		<div class="header">
 			<ul class="menu">
 				<li><a href="/">首页</a></li>
 				<c:if test="${sessionScope.type==null||sessionScope.type!='自媒体' }">
-					<li><a href="../getPublish">媒体推广</a></li>
+					<li><a href="getPublish">媒体推广</a></li>
 				</c:if>
 <!-- 				<li><a href="http://www.17sucai.com/">媒介合作</a></li> -->
-				<li><a class="noclick" href="#">关于我们</a></li>
+				<li><a href="abortUs">关于我们</a></li>
 			</ul>
 		</div>
 		<c:if test="${sessionScope.type==null }">
 			<div style="float:right;margin-right:0px;margin-top:36px;">
-				<div style="float:left;"><img src="images/login.png" style="width:25px;" /></div>
+				<div style="float:left;"><img src="front/images/login.png" style="width:25px;" /></div>
 				<a id="qiyeloginA" href="#qiyeloginDiv" style="text-decoration: none;"><div class="hoverFont" style="float:left;margin-left:10px;color:#333333;font-size:14px;line-height: 25px;">企业主登录</div></a>
 				<a id="qiyeregA" href="#qiyeregDiv" style="text-decoration: none;"><div class="hoverFont" style="float:left;margin-left:10px;color:#333333;font-size:14px;line-height: 25px;">注册</div></a>
 			</div>
 		</c:if>
 		<c:if test="${sessionScope.type!=null }">
 			<div style="float:right;margin-right:0px;margin-top:36px;">
-				<div style="float:left;"><img src="images/login.png" style="width:25px;" /></div>
-				<a href="../getOrderList"><div class="hoverFont" style="float:left;margin-left:10px;color:#333333;font-size:14px;line-height: 25px;">${sessionScope.user.username}</div></a>
+				<div style="float:left;"><img src="front/images/login.png" style="width:25px;" /></div>
+				<a href="getOrderList"><div class="hoverFont" style="float:left;margin-left:10px;color:#333333;font-size:14px;line-height: 25px;">${sessionScope.user.username}</div></a>
 				<c:if test="${sessionScope.type=='自媒体' }">
-					<a href="../addCase"><div class="hoverFont" style="float:left;margin-left:15px;color:#333333;font-size:16px;line-height: 23px;">管理发布</div></a>
+					<a href="addCase"><div class="hoverFont" style="float:left;margin-left:15px;color:#333333;font-size:16px;line-height: 23px;">管理发布</div></a>
 				</c:if>
 				<div onclick="exit()" class="hoverFont" style="float:left;margin-left:15px;color:#333333;font-size:14px;line-height: 25px;">退出</div>
 			</div>
@@ -379,29 +389,29 @@ a:link {color: #707070}
 <div id="rightDiv" style="width:56px;right:0px;background: white;position: fixed;top:335px;right:2px;z-index:999;">
 	<div style="width:100%;position: relative;">
 		<div class="hoverFontb" attrstr="div1" style="cursor:pointer;width: 36px;height:36px;padding:10px;border: 1px rgb(242,242,242) solid;position: relative;">
-			<a href="tencent://AddContact/?fromId=45&fromSubId=1&subcmd=all&uin=2997558052&website=www.ghplat.com"><img src="images/online.png" /></a>
+			<a href="tencent://AddContact/?fromId=45&fromSubId=1&subcmd=all&uin=2997558052&website=www.ghplat.com"><img src="front/images/online.png" /></a>
 		</div>
 		<div class="div1" style="position: absolute;top:0px;right:55px;width:140px;height:57px;background: white;display:none;">
-			<div style="float:left;padding:15px;margin-left:-3px;margin-top:2px;"><img src="images/smile.png" width="25px" /></div>
+			<div style="float:left;padding:15px;margin-left:-3px;margin-top:2px;"><img src="front/images/smile.png" width="25px" /></div>
 			<div style="float:left;color:#333333;font-size:14px;line-height: 56px;margin-left:-4px;">点击我咨询哦</div>
 			<div class="div" style="float:left;  font-size: 0;line-height: 0;border-width: 10px;border-color: white;border-right-width: 0; border-style: dashed;border-left-style: solid;border-top-color: transparent;border-bottom-color: transparent;position: absolute;top:19px;right:-10px;  "></div>
 		</div>
-		<div class="hoverFontb" attrstr="div2" style="cursor:pointer;width: 36px;height:36px;padding:10px;border: 1px rgb(242,242,242) solid;border-top:0px;border-bottom: 0px;"><img src="images/tel.png" /></div>
+		<div class="hoverFontb" attrstr="div2" style="cursor:pointer;width: 36px;height:36px;padding:10px;border: 1px rgb(242,242,242) solid;border-top:0px;border-bottom: 0px;"><img src="front/images/tel.png" /></div>
 		<div class="div2" style="position: absolute;top:58px;right:55px;width:140px;height:57px;background: white;display:none;">
 			<div style="width:100%;line-height: 57px;">
-				<img src="images/number.png" style="margin-top:15px;width:93%;margin-left:4%;" />
+				<img src="front/images/number.png" style="margin-top:15px;width:93%;margin-left:4%;" />
 			</div>
 			<div class="div" style="float:left;  font-size: 0;line-height: 0;border-width: 10px;border-color: white;border-right-width: 0; border-style: dashed;border-left-style: solid;border-top-color: transparent;border-bottom-color: transparent;position: absolute;top:19px;right:-10px;  "></div>
 		</div>
-		<div class="hoverFontb" attrstr="div3" style="cursor:pointer;width: 36px;height:36px;padding:10px;border: 1px rgb(242,242,242) solid;"><img src="images/QR-Code.png" /></div>
+		<div class="hoverFontb" attrstr="div3" style="cursor:pointer;width: 36px;height:36px;padding:10px;border: 1px rgb(242,242,242) solid;"><img src="front/images/QR-Code.png" /></div>
 		<div class="div3" style="position: absolute;top:116px;right:55px;width:140px;height:160px;background: white;display:none;">
 			<div style="width:100%;padding:10px;padding-bottom: 0px;">
-				<img src="images/erweima.jpg" style="width:120px;" />
+				<img src="front/images/erweima.jpg" style="width:120px;" />
 			</div>
 			<div style="width:100%;color:#333333;font-size:14px;text-align: center;padding-bottom: 15px;">扫一扫关注官方微信</div>
 			<div class="div" style="float:left;  font-size: 0;line-height: 0;border-width: 10px;border-color: white;border-right-width: 0; border-style: dashed;border-left-style: solid;border-top-color: transparent;border-bottom-color: transparent;position: absolute;top:19px;right:-10px;  "></div>
 		</div>
-		<div onclick="$('body').scrollTop(0)" style="cursor:pointer;width: 16px;height:16px;padding:20px;border: 1px rgb(242,242,242) solid;border-top:0px;"><img src="images/top.png" /></div>
+		<div onclick="$('body').scrollTop(0)" style="cursor:pointer;width: 16px;height:16px;padding:20px;border: 1px rgb(242,242,242) solid;border-top:0px;"><img src="front/images/top.png" /></div>
 	</div>
 </div>
 
@@ -567,7 +577,7 @@ a:link {color: #707070}
 			<div style="width:320px;margin:0 auto;margin-top:12px;">
 				<div onclick="login('广告主')" style="cursor:pointer;width:300px;hegiht:48px;background:#fc6769;color:white; text-align: center;line-height: 48px;">登录</div>
 				<div class="loginMsg" class="errormsg" style="display:none;color:red;font-size:12px;float:left;margin-left:5px;margin-top:10px;">用户名和密码不对</div>
-				<div style="float:right;font-size:12px;margin:10px 20px 10px 0px;"><a href="person.jsp" style="color:#23527c;">忘记密码</a></div>
+				<div style="float:right;font-size:12px;margin:10px 20px 10px 0px;"><a href="front/person.jsp" style="color:#23527c;">忘记密码</a></div>
 			</div>
 		</div>
 	</div>

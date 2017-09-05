@@ -5,9 +5,14 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>案例</title>
-<base href="front/">
-<script src="js/jquery-1.8.2.min.js" type="text/javascript"></script>
-<script src="js/main.js" type="text/javascript"></script>
+<script src="front/js/jquery-1.8.2.min.js" type="text/javascript"></script>
+<script src="front/js/main.js" type="text/javascript"></script>
+<style type="text/css">
+.publishAClass:hover img {
+    opacity: 0.8;
+    transition: all 0.4s ease-out 0s;
+}
+</style>
 <script type="text/javascript">
 $(function(){
 	var offset = $("#end").offset();
@@ -104,11 +109,19 @@ function getPublishList(gpagesize){
 	var cpricevalue = $('.cpriceAllDiv').find('.selectClass').attr('attrId');
 	var pricevalue = $('.priceAllDiv').find('.selectClass').attr('attrId');
 	var publishnameInput = $('.publishnameInput').val();
-	var publisharea = $('.publisharea').val();
+	var publisharea = $('.pbarea').val();
+	var publisharea2= $('.areaSelect2').val();
+	var publisharea3= $('.areaSelect3').val();
 	var datajson = {};
 	datajson.pageSize = gpagesize;
 	if(publisharea!=0){
 		datajson.publisharea = publisharea;
+	}
+	if(publisharea2!=0){
+		datajson.publisharea2 = publisharea2;
+	}
+	if(publisharea3!=0){
+		datajson.publisharea3 = publisharea3;
 	}
 	if(fieldvalue!=0){
 		datajson.publishType = typevalue;
@@ -133,7 +146,7 @@ function getPublishList(gpagesize){
 	}
 	$.ajax({
 		type: "post",
-		url: "../getPublishStr",
+		url: "getPublishStr",
 		async: false, //_config.async,
 		dataType: 'json',
 		data:datajson,
@@ -192,11 +205,12 @@ function changeArea0(tt){
 	var val = $(tt).val();
 	$('.attrErCode').hide();
 	if(val==0){
-		$('.areaSelect2').html('<option value="0">--请选择--</option>');
+		$('.areaSelect2').html('<option value="0">--全市--</option>');
 	}else{
-		$($('option[attrErCode="'+val+'"]')[0]).attr('selected','selected');
 		$('option[attrErCode="'+val+'"]').show();
 		$('.areaSelect2').html($('option[attrErCode="'+val+'"]').clone());
+		$('.areaSelect2').prepend('<option attrErCode="'+val+'" value="0">--全市--</option>');
+		$($('option[attrErCode="'+val+'"]')[0]).attr('selected','selected');
 	}
 	changeAreaa1($('.areaSelect2'));
 }
@@ -205,12 +219,13 @@ function changeAreaa1(tt){
 	var val = $(tt).val();
 	$('.attrSanCode').hide();
 	if(val==0){
-		$('.areaSelect3').html('<option value="0">--请选择--</option>');
+		$('.areaSelect3').html('<option value="0">--全区--</option>');
 		$('.publisharea').val(0);
 	}else{
 		$('option[attrSanCode="'+val+'"]').show();
-		$($('option[attrSanCode="'+val+'"]')[0]).attr('selected','selected');
 		$('.areaSelect3').html($('option[attrSanCode="'+val+'"]').clone());
+		$('.areaSelect3').prepend('<option attrSanCode="'+val+'" value="0" >--全区--</option>');
+		$($('option[attrSanCode="'+val+'"]')[0]).attr('selected','selected');
 	}
 	//$('option[attrSanCode="'+val+'"]').attr('selected','selected');
 	getPublishList(1);
@@ -337,7 +352,7 @@ function closeOption(){
 					<div>
 						<div style="padding:20px;color:#707070;float:left;width:70px;">区域筛选&nbsp;:</div>
 						<select class="pbarea" onchange="changeArea0(this)" style="float:left;width:130px;color:#333333;height:35px;font-size:14px;padding-left:6px;margin-top:10px;">
-													<option value="0">--请选择--</option>
+													<option value="0">--全国--</option>
 											<c:forEach var="publisharea" items="${publishArea }"  varStatus="st" >
 												<c:if test="${publisharea.priority=='1' }">
 													<option value="${publisharea.area_code }" style="padding:6px;font-size:14px;color:#333333;">${publisharea.area_name }</option>
@@ -345,13 +360,13 @@ function closeOption(){
 											</c:forEach>
 										</select>
 										<select class="areaSelect2" onchange="changeAreaa1(this)" style="float:left;margin-left:10px;width:130px;color:#333333;height:35px;font-size:14px;padding-left:6px;margin-top:10px;">
-											<option value="0">--请选择--</option>
+											<option value="0">--全市--</option>
 										</select>
-										<select class="areaSelect3" style="float:left;margin-left:10px;width:130px;color:#333333;height:35px;font-size:14px;padding-left:6px;margin-top:10px;">
-											<option value="0">--请选择--</option>
+										<select class="areaSelect3" onchange="getPublishList(1)" style="float:left;margin-left:10px;width:130px;color:#333333;height:35px;font-size:14px;padding-left:6px;margin-top:10px;">
+											<option value="0">--全区--</option>
 										</select>
 										<select onchange="changeAreaa1(this)" style="display:none;float:left;margin-left:10px;width:130px;color:#333333;height:35px;font-size:14px;padding-left:6px;margin-top:10px;margin-left:10px;">
-											<option value="0">--请选择--</option>
+											<option value="0">--全市--</option>
 											<c:forEach var="publisharea" items="${publishArea }"  varStatus="st" >
 												<c:if test="${publisharea.priority=='2' }">
 													<option class="attrErCode" attrErCode="${publisharea.parent_area_code }" value="${publisharea.area_code }" style="display:none;padding:6px;font-size:14px;color:#333333;">${publisharea.area_name }</option>
@@ -359,10 +374,10 @@ function closeOption(){
 											</c:forEach>
 										</select>
 										<select onchange="changeArea2(this)" class="publisharea" style="display:none;float:left;margin-left:10px;width:130px;color:#333333;height:35px;font-size:14px;padding-left:6px;margin-top:10px;margin-left:10px;">
-											<option value="0">--请选择--</option>
+											<option value="0">--全区--</option>
 											<c:forEach var="publisharea" items="${publishArea }"  varStatus="st" >
 												<c:if test="${publisharea.priority=='3' }">
-													<option class="attrSanCode" attrSanCode="${publisharea.parent_area_code }" value="${publisharea.area_name }" style="display:none;padding:6px;font-size:14px;color:#333333;">${publisharea.area_name }</option>
+													<option class="attrSanCode" attrSanCode="${publisharea.parent_area_code }" value="${publisharea.area_code }" style="display:none;padding:6px;font-size:14px;color:#333333;">${publisharea.area_name }</option>
 												</c:if>
 											</c:forEach>
 										</select>
@@ -381,13 +396,13 @@ function closeOption(){
 						<input type="text" class="publishnameInput" placeholder="突然想起某位达人" style="border:0px;text-align:left;margin:0px;padding: 10px 10px 10px 20px;width:365px;height:40px;color:#666666;font-size:14px;"/>
 					</div>
 					<div onclick="searchStr()" style="background: #fc6769;width:95px;height:42px;float:left;text-align: center;cursor:pointer;">
-						<img src="images/search_white.png" style="height:24px;margin-top:9px;" />
+						<img src="front/images/search_white.png" style="height:24px;margin-top:9px;" />
 					</div>
 				</div>
 				<div style="width:235px;height:38px;float: right;">
 					<div style="width:100px;height:42px;background: white;float:left;line-height: 42px;">
 						<div onclick="allSelectAddCart(this)" style="cursor:pointer;width:16px;height:16px;border:1px #333333 solid;float:left;margin-top:12px;margin-left:25px;position: relative;">
-							<div style="position: absolute;top:0px;left:0px;display:none;"><img src="images/check_26.png" width="100%" /></div>	
+							<div style="position: absolute;top:0px;left:0px;display:none;"><img src="front/images/check_26.png" width="100%" /></div>	
 						</div>
 						<div style="cursor:pointer;float:left;margin-left:10px;color:#333333;font-size:12px;">全选</div>
 					</div>
@@ -399,7 +414,7 @@ function closeOption(){
 			<div style="width:1200px;margin:0 auto;margin-top:30px;">
 				<div id="publishDiv" style="width:100%;overflow: hidden;">
 				</div>
-				<div style="margin:0 auto;margin-bottom:20px;overflow: hidden;width:48%;max-width: 60%">
+				<div style="margin:0 auto;margin-bottom:20px;overflow: hidden;width:60%;max-width: 60%">
 					<div id="pageDiv" style="float:left;margin-top:20px;margin-bottom:15px;height:32px;overflow: hidden;">
 						<div class="M-box" >
 						</div>
@@ -411,7 +426,7 @@ function closeOption(){
 						<div style="margin-left:14px;">已选择了<span class="totalAddCart" style="color:#fc6769;padding-left:2px;padding-right:2px;">0</span>个项目</div>
 					</div>
 					<div style="width:196px;height:52px;background: #fc6769;float:left;cursor:pointer;">
-						<div style="float:left;width:30px;padding-top:17px;margin-left:30px;"><img src="images/shopping-cart.png" style="width:20px;"/></div>
+						<div style="float:left;width:30px;padding-top:17px;margin-left:30px;"><img src="front/images/shopping-cart.png" style="width:20px;"/></div>
 						<div style="float:left;width:108px;color:#ffffff;font-size:18px;line-height: 52px;position: relative;">去购物车结算</div>
 					</div>
 				</div>
@@ -420,24 +435,24 @@ function closeOption(){
 				<script id="publishTmp" type="text/x-dot-template">
 					{{ var uesFlag = $('#uesFlag').val(); var flag1 = uesFlag.substring(0,1); for(var i=0;i<it.length;i++){ }} 
 						<div style="float:left;{{? (i+6)%5!=0}} margin-right:37px;{{?}}width:210px;height:330px;position: relative;background: white;margin-top:4px;{{? i>4}} margin-top:25px; {{?}}">
-							<div style="margin:0 auto;padding-top:30px;padding-left:25px;padding-right:25px;width:160px;height:180px;cursor:pointer;">
-								<a target="_bank" href="../getPublishDetails?pghid={{=it[i].ghid}}"><img class="mtimage" src="/ghplat/attachment{{=it[i].image}}" width="160px" height="180px" /></a>
+							<div style="margin:0 auto;width:100%;height:210px;overflow: hidden;">
+								<a class="publishAClass" style="background: black;width:100%;height:210px;display:block;" href="../getPublishDetails?pghid={{=it[i].ghid}}"><img src="/ghplat/attachment{{=it[i].image}}" style="width:100%;height: 210px;" /></a>
 							</div>
-							<div style="width:160px;margin:0 auto;font-size:14px;color:#333333;margin-top:10px;position: relative;">{{=it[i].publishName}}
+							<div style="width:160px;margin:0 auto;font-size:14px;color:#333333;margin-top:10px;position: relative; overflow: hidden;height:22px;">{{=it[i].publishName}}
 							{{? flag1=='1'}}
-								<div style="width:40px;position:absolute;right:-15px;top:-3px;"><a href="tencent://AddContact/?fromId=45&fromSubId=1&subcmd=all&uin={{=it[i].qq}}&website=www.ghplat.com"><img width="28px" src="images/online.png"/></a></div>
+								<div style="width:40px;position:absolute;right:-15px;top:-3px;"><a href="tencent://AddContact/?fromId=45&fromSubId=1&subcmd=all&uin={{=it[i].qq}}&website=www.ghplat.com"><img width="28px" src="front/images/online.png"/></a></div>
 							{{?}}
 							</div>
-							<div style="width:160px;margin:0 auto;margin-top:10px;color:#333333;height:20px;">
-								<div style="width:18px;height:18px;float:left;"><img src="images/fans.png" width="18px" /></div>
+							<div style="width:160px;margin:0 auto;margin-top:8px;color:#333333;height:20px;">
+								<div style="width:18px;height:18px;float:left;"><img src="front/images/fans.png" width="18px" /></div>
 								<div style="float:left;margin-left:8px;font-size:13px;line-height: 18px;">{{=it[i].platformFans}}</div>
-								<div style="width:18px;height:18px;float:right;">{{? it[i].platformIcon!=null}}<img alt="{{=it[i].platformName}}" src="{{=it[i].platformIcon}}" width="18px" />{{?}}</div>
+								<div style="width:18px;height:18px;float:right;">{{? it[i].platformIcon!=null}}<img alt="{{=it[i].platformName}}" src="/ghplat/attachment/platform/{{=it[i].platformIcon}}" width="18px" />{{?}}</div>
 							</div>
 							<div style="width:160px;height:1px;border-top:1px dotted #707070;margin:0 auto;margin-top:8px;"></div>
 							<div style="width:160px;margin:0 auto;height:24px;margin-top:10px;">
 								<div onclick="selectAddCart(this)" style="float:left;margin-top:4px;position: relative;cursor:pointer;">
 									<div style="cursor:pointer;width:16px;height:16px;border:1px #333333 solid;"></div>
-									<div class="selectAddCart" attrId="{{=it[i].id}}" style="position: absolute;top:0px;left:0px;display:none;"><img src="images/check_26.png" width="100%" /></div>								
+									<div class="selectAddCart" attrId="{{=it[i].id}}" style="position: absolute;top:0px;left:0px;display:none;"><img src="front/images/check_26.png" width="100%" /></div>								
 								</div>
 								<div style="float:right;">
 									<div class="addCart" attrId="{{=it[i].id}}" style="width:82px;height:24px;font-size:12px;color:#333333;line-height:23px;text-align:center;border-radius:3px;border:1px #333333 solid;cursor:pointer;">+&nbsp;加入购物车</div>
@@ -455,24 +470,24 @@ function closeOption(){
 <!-- <div id="rightDiv" style="width:56px;right:0px;background: white;position: fixed;top:335px;right:2px;"> -->
 <!-- 	<div style="width:100%;position: relative;"> -->
 <!-- 		<div class="hoverFontb" attrstr="div1" style="cursor:pointer;width: 36px;height:36px;padding:10px;border: 1px rgb(242,242,242) solid;position: relative;"> -->
-<!-- 			<img src="images/online.png" /> -->
+<!-- 			<img src="front/images/online.png" /> -->
 <!-- 		</div> -->
 <!-- 		<div class="div1" style="position: absolute;top:0px;right:55px;width:140px;height:57px;background: white;display:none;"> -->
-<!-- 			<div style="float:left;padding:15px;margin-left:-3px;margin-top:2px;"><img src="images/smile.png" width="25px" /></div> -->
+<!-- 			<div style="float:left;padding:15px;margin-left:-3px;margin-top:2px;"><img src="front/images/smile.png" width="25px" /></div> -->
 <!-- 			<div style="float:left;color:#333333;font-size:14px;line-height: 56px;margin-left:-4px;">点击我咨询哦</div> -->
 <!-- 			<div class="div" style="float:left;  font-size: 0;line-height: 0;border-width: 10px;border-color: white;border-right-width: 0; border-style: dashed;border-left-style: solid;border-top-color: transparent;border-bottom-color: transparent;position: absolute;top:19px;right:-10px;  "></div> -->
 <!-- 		</div> -->
-<!-- 		<div class="hoverFontb" attrstr="div2" style="cursor:pointer;width: 36px;height:36px;padding:10px;border: 1px rgb(242,242,242) solid;border-top:0px;border-bottom: 0px;"><img src="images/tel.png" /></div> -->
+<!-- 		<div class="hoverFontb" attrstr="div2" style="cursor:pointer;width: 36px;height:36px;padding:10px;border: 1px rgb(242,242,242) solid;border-top:0px;border-bottom: 0px;"><img src="front/images/tel.png" /></div> -->
 <!-- 		<div class="div2" style="position: absolute;top:58px;right:55px;width:140px;height:57px;background: white;display:none;"> -->
 <!-- 			<div style="width:100%;line-height: 57px;"> -->
-<!-- 				<img src="images/number.png" style="margin-top:15px;width:93%;margin-left:4%;" /> -->
+<!-- 				<img src="front/images/number.png" style="margin-top:15px;width:93%;margin-left:4%;" /> -->
 <!-- 			</div> -->
 <!-- 			<div class="div" style="float:left;  font-size: 0;line-height: 0;border-width: 10px;border-color: white;border-right-width: 0; border-style: dashed;border-left-style: solid;border-top-color: transparent;border-bottom-color: transparent;position: absolute;top:19px;right:-10px;  "></div> -->
 <!-- 		</div> -->
-<!-- 		<div class="hoverFontb" attrstr="div3" style="cursor:pointer;width: 36px;height:36px;padding:10px;border: 1px rgb(242,242,242) solid;"><img src="images/QR-Code.png" /></div> -->
+<!-- 		<div class="hoverFontb" attrstr="div3" style="cursor:pointer;width: 36px;height:36px;padding:10px;border: 1px rgb(242,242,242) solid;"><img src="front/images/QR-Code.png" /></div> -->
 <!-- 		<div class="div3" style="position: absolute;top:116px;right:55px;width:140px;height:160px;background: white;display:none;"> -->
 <!-- 			<div style="width:100%;padding:10px;padding-bottom: 0px;"> -->
-<!-- 				<img src="images/erweima.jpg" style="width:120px;" /> -->
+<!-- 				<img src="front/images/erweima.jpg" style="width:120px;" /> -->
 <!-- 			</div> -->
 <!-- 			<div style="width:100%;color:#333333;font-size:14px;text-align: center;padding-bottom: 15px;">扫一扫关注官方微信</div> -->
 <!-- 			<div class="div" style="float:left;  font-size: 0;line-height: 0;border-width: 10px;border-color: white;border-right-width: 0; border-style: dashed;border-left-style: solid;border-top-color: transparent;border-bottom-color: transparent;position: absolute;top:19px;right:-10px;  "></div> -->

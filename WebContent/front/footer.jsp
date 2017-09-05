@@ -3,7 +3,7 @@
 <div style="width:100%;height:110px;background: white;">
 	<div style="width:275px;margin:0 auto;padding-top:20px;font-size:12px;color:#707070">
 		<div style="width:100%;text-align:center;height: 15px;">
-			<div style="float:left;margin-left:10px;" class="hoverFont">关于我们</div>
+			<div style="float:left;margin-left:10px;" class="hoverFont"><a href="abortUs">关于我们</a></div>
 			<div style="float:left;width:1px;height:11px;background:#707070;margin-left:10px;margin-top:3px;"></div>
 			<div style="float:left;margin-left:10px;" class="hoverFont">联系我们</div>
 			<div style="float:left;width:1px;height:11px;background:#707070;margin-left:10px;margin-top:3px;"></div>

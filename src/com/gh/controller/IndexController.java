@@ -29,6 +29,7 @@ import com.gh.model.Publish;
 import com.gh.service.IBaseService;
 import com.gh.service.IIndexBannerService;
 import com.gh.service.IUserService;
+import com.gh.util.EmailSend;
 import com.gh.util.PageList;
 import com.gh.util.SendMessageUtil;
 import com.gh.util.StringUtil;
@@ -42,6 +43,16 @@ public class IndexController extends BaseControllerSupport{
 	@Resource
 	private IBaseService<IndexBanner> baseService;
 	
+	@RequestMapping(value="/abortUs",method=RequestMethod.GET)
+	public String abortUs(HttpServletRequest request){
+		try {
+			String type = request.getParameter("type");
+			request.setAttribute("type", type);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return "/front/abortUs";
+	}
 	
 	@RequestMapping(value="/getBannerDetails",method=RequestMethod.GET)
 	public String getBannerDetails(HttpServletRequest request){
@@ -68,7 +79,7 @@ public class IndexController extends BaseControllerSupport{
 			System.out.println("banners:"+banners.getList().size());
 			request.setAttribute("bannerlist", banners);
 			map.put("module", "联合推广资源");// 联合推广资源 
-			page.setRows(5);
+			page.setRows(20);
 			PageList<IndexBanner> tuiguangs = bannerService.getBannerList(map,page);
 			request.setAttribute("tuiguangs", tuiguangs);
 			System.out.println("tuiguangs:"+tuiguangs.getList().size());
@@ -191,6 +202,7 @@ public class IndexController extends BaseControllerSupport{
 				 media.setGhid(UUID.randomUUID().toString().replace("-", ""));
 				 media.setSignUpTime(new Date());
 				 baseMediaService.save(media);
+				 EmailSend.sendMail("新用户注册-自媒体", "用户名："+username+"|手机号："+mobile+"|qq:"+qqweixin+"|weixin:"+qqweixin);
 			 }else if("广告主".equals(type)){
 				 Advertiser ad = new Advertiser();
 				 ad.setMobile(mobile);
@@ -205,6 +217,7 @@ public class IndexController extends BaseControllerSupport{
 				 ad.setGhid(UUID.randomUUID().toString().replace("-", ""));
 				 ad.setSignUpTime(new Date());
 				 baseAdvertiserService.save(ad);
+				 EmailSend.sendMail("新用户注册-广告主", "用户名："+username+"|手机号："+mobile+"|qq:"+qqweixin+"|weixin:"+qqweixin);
 			 }
 			 jsonObject.put("result", "yes");
 		} catch (Exception e) {

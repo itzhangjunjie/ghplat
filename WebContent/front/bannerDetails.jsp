@@ -5,7 +5,6 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>${bannerDetails.title }</title>
-<base href="front/">
 </head>
 <body style="padding:0px;margin:0px;">
 <%@include file="header.jsp" %>

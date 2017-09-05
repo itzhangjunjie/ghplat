@@ -60,7 +60,11 @@ public class Publish {
 	@Column(name="PUBLISH_FIELD")
 	private String publishField;//领域
 	@Column(name="PUBLISH_REGION")
-	private String publishRegion;//区域
+	private String publishRegion;//区域  省份
+	@Column(name="PUBLISH_REGION_2")
+	private String publishRegion2;//区域   市
+	@Column(name="PUBLISH_REGION_3")
+	private String publishRegion3;//区域  区
 	@Column(name="PUBLISH_TIME")
 	private Date publishTime;//发布时间
 	@Column(name="LAST_VIEWED_TIME")
@@ -524,6 +528,19 @@ public class Publish {
 	}
 	public void setPlatformIcon(String platformIcon) {
 		this.platformIcon = platformIcon;
+	}
+	
+	public String getPublishRegion2() {
+		return publishRegion2;
+	}
+	public void setPublishRegion2(String publishRegion2) {
+		this.publishRegion2 = publishRegion2;
+	}
+	public String getPublishRegion3() {
+		return publishRegion3;
+	}
+	public void setPublishRegion3(String publishRegion3) {
+		this.publishRegion3 = publishRegion3;
 	}
 	@Override
 	public String toString() {

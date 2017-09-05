@@ -58,7 +58,7 @@
 							<c:forEach items="${publishListPage.list }" var="publishObj">
 								<tr>
 									<td><input type="checkbox"></td>
-									<td><img src="/ghplat/attachment/banner/${publishObj.image }" width="80px" height="80px" /></td>
+									<td><img src="/ghplat/attachment/${publishObj.image }" width="80px" height="80px" /></td>
 									<td>
 										${publishObj.publishName }
 									</td>
@@ -68,7 +68,7 @@
 									<td><fmt:formatDate value="${publishObj.publishTime }" pattern="yyyy-MM-dd HH:mm" /></td>
 									<td>
 										<a href="/ghplat/admin/meitiupdate?pghid=${publishObj.ghid }" class="layui-btn layui-btn-mini">编辑</a>
-										<a  href="javascript:;" data-id="${banner.indexBannerId }" data-opt="del" class="layui-btn layui-btn-danger layui-btn-mini">删除</a>
+										<a  href="javascript:;" data-id="${publishObj.id }" data-opt="del" class="layui-btn layui-btn-danger layui-btn-mini">删除</a>
 									</td>
 								</tr>
 							</c:forEach>
@@ -112,7 +112,7 @@
 					var bid = $(this).attr('data-id');
 					layer.confirm('确定删除?', function(){ 
 						layer.closeAll('dialog');
-						location.href='/ghplat/admin/deleteBanner?bannerid='+bid;
+						location.href='/ghplat/admin/meitidelete?pid='+bid;
 					});
 				});
 				

@@ -48,6 +48,8 @@
 								<option value="自媒体展示" >自媒体展示</option>
 								<option value="联合推广资源" >联合推广资源</option>
 								<option value="我们的合作伙伴" >我们的合作伙伴</option>
+								<option value="帮助中心" >帮助中心</option>
+								<option value="新媒体中心" >新媒体中心</option>
 							</select>
 						</div>
 						<label class="layui-form-label">类型</label>
@@ -179,7 +181,7 @@
 					  $('.typeSel option').removeAttr('selected');
 					  if(moduleVal=='首页banner'){
 						  moduleVal = '静态图';
-					  }else if(moduleVal=='联合推广资源'){
+					  }else if(moduleVal=='联合推广资源'||moduleVal=='新媒体中心'||moduleVal=='帮助中心'){
 						  moduleVal = '内链';
 					  }else if(moduleVal=='自媒体展示'){
 						  moduleVal = '自媒体展示';
@@ -190,7 +192,7 @@
 					  $('[name="type"]').val(moduleVal);
 					  if(moduleVal=='首页banner'){
 						  $('.typeSel [value="静态图"]').attr("selected","selected");
-					  }else if(moduleVal=='联合推广资源'){
+					  }else if(moduleVal=='联合推广资源'||moduleVal=='新媒体中心'||moduleVal=='帮助中心'){
 						  $('.typeSel [value="内链"]').attr("selected","selected");
 					  }else if(moduleVal=='自媒体展示'){
 						  $('.typeSel [value="自媒体展示"]').attr("selected","selected");
@@ -204,7 +206,7 @@
 					  $('.showhide').hide();
 					  if(moduleVal=='首页banner'||moduleVal=='静态图'){
 						  $('.image').show();
-					  }else if(moduleVal=='联合推广资源'||moduleVal=='内链'){
+					  }else if(moduleVal=='联合推广资源'||moduleVal=='内链'||moduleVal=='新媒体中心'||moduleVal=='帮助中心'){
 						  $('.image').show();
 						  $('.content').show();
 					  }else if(moduleVal=='自媒体展示'||moduleVal=='自媒体展示'){

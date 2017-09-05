@@ -5,8 +5,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>案例-列表</title>
-<base href="front/">
-<script src="js/jquery-1.8.2.min.js" type="text/javascript"></script>
+<script src="front/js/jquery-1.8.2.min.js" type="text/javascript"></script>
 <script type="text/javascript">
 
 
@@ -66,7 +65,7 @@
 					<div style="width:100%;height:96px;margin-top:20px;">
 						<div id="wrap2" style="width:1130px;" attrCount="5">
 							<div class="article_pic_left_btn">
-							     <img src="images/space_16_23.png" id="cardArrowLeft" class="live_card_arrow_left_physical" />
+							     <img src="front/images/space_16_23.png" id="cardArrowLeft" class="live_card_arrow_left_physical" />
 							 </div>
 							<div class="puzzle_card" id="puzzle_card2" style="width:1085px;background: white;margin-left:40px;">
 								<div class="showbox" id="showbox2">
@@ -86,7 +85,7 @@
 								</div>
 							</div>
 					        <div class="article_pic_right_btn">
-					          <img src="images/space_16_23.png" id="cardArrowRight" class="live_card_arrow_right_physical" />
+					          <img src="front/images/space_16_23.png" id="cardArrowRight" class="live_card_arrow_right_physical" />
 					        </div>
 						</div>
 					</div>
@@ -101,7 +100,7 @@
 						<div style="width:100%;margin-top:15px;">
 							<div id="wrap2" attrCount="6" style="width:1130px;height:96px;">
 								<div class="article_pic_left_btn">
-								     <img src="images/space_16_23.png" id="cardArrowLeft" class="live_card_arrow_left_physical" />
+								     <img src="front/images/space_16_23.png" id="cardArrowLeft" class="live_card_arrow_left_physical" />
 								 </div>
 								<div class="puzzle_card" id="puzzle_card2" style="width:1085px;background: white;margin-left:40px;">
 									<div class="showbox" id="showbox2">
@@ -115,7 +114,7 @@
 									</div>
 								</div>
 						        <div class="article_pic_right_btn">
-						          <img src="images/space_16_23.png" id="cardArrowRight" class="live_card_arrow_right_physical" />
+						          <img src="front/images/space_16_23.png" id="cardArrowRight" class="live_card_arrow_right_physical" />
 						        </div>
 							</div>
 						</div>

@@ -67,7 +67,7 @@ public class OrderServiceImpl implements IOrderService{
 
 	@Override
 	public PageList<Order> getOrderList(PublishForm publishForm, long userid) throws Exception {
-		String hql ="from Order order where 1=1 and order.order_status != 2"
+		String hql ="from Order order where 1=1 and order.order_status != 3"
 				+ " and order.order_advertiser_id = ? "
 				+ " order by order.order_createtime desc ";
 //		System.out.println(publishForm.getPageSize()+"||"+publishForm.getPageCount());

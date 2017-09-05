@@ -1,5 +1,7 @@
 package com.gh.controller;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -16,15 +18,19 @@ import com.gh.dto.CartListDTO;
 import com.gh.dto.CaseDTO;
 import com.gh.dto.PublishForm;
 import com.gh.dto.PublishTypeDTO;
+import com.gh.dto.Top10;
 import com.gh.model.Case;
 import com.gh.model.CaseDetails;
 import com.gh.model.CaseImage;
 import com.gh.model.Media;
 import com.gh.model.Publish;
 import com.gh.model.PublishArea;
+import com.gh.model.WeiXinDetails;
 import com.gh.service.IBaseService;
 import com.gh.service.IPublishService;
+import com.gh.util.DateUtil;
 import com.gh.util.FileUtil;
+import com.gh.util.ImageMagicTools;
 import com.gh.util.PageList;
 import com.gh.util.StringUtil;
 
@@ -106,10 +112,10 @@ public class PublishController extends BaseControllerSupport{
 					jsonObject.put("result", "no");
 					jsonObject.put("reason", "noImage");
 				}else{
-					String srcImage = caseObj.getImage().replace("/ghplat/attachment/temp", "");
-					FileUtil.copyFile(beforeUrl+"/temp"+srcImage, beforeUrl+"/case"+srcImage);
+					String srcImage = caseObj.getImage().replace("/ghplat/attachment/temp", "").replace("/ghplat/attachment/caseImage", "");
+					FileUtil.copyFile(beforeUrl+"/temp"+srcImage, beforeUrl+"/caseImage"+srcImage);
 					FileUtil.delete(beforeUrl+"/temp"+srcImage);
-					caseObj.setImage("/case"+srcImage);
+					caseObj.setImage("/caseImage"+srcImage);
 				}
 				caseObj.setCase_publish_time(new Date());
 				caseObj.setFollow_count(0);
@@ -182,7 +188,7 @@ public class PublishController extends BaseControllerSupport{
 	}
 	
 	@RequestMapping(value = "/updatePublish", method = {RequestMethod.POST})
-	public @ResponseBody String updatePublish(HttpServletRequest request,Publish publish,String infoArray,String priceArray){
+	public @ResponseBody String updatePublish(HttpServletRequest request,Publish publish,String infoArray,String priceArray,String article_MyPhoto){
 		try {
 			jsonObject.clear();
 			Media media = (Media)request.getSession().getAttribute("user");
@@ -201,8 +207,14 @@ public class PublishController extends BaseControllerSupport{
 				}else{
 					String srcImage = publish.getImage().replace("/ghplat/attachment/temp", "").replace("/ghplat/attachment/publish", "");
 					String beforeUrl = request.getSession().getServletContext().getRealPath("/attachment");
-					FileUtil.copyFile(beforeUrl+"/temp"+srcImage, beforeUrl+"/publish"+srcImage);
-					FileUtil.delete(beforeUrl+"/temp"+srcImage);
+					//FileUtil.copyFile(beforeUrl+"/temp"+srcImage, beforeUrl+"/publish"+srcImage);
+					//FileUtil.delete(beforeUrl+"/temp"+srcImage);
+					//publish.setImage("/publish"+srcImage);
+					if(publish.getImage().indexOf("/temp")>=0){
+						cutImage(article_MyPhoto,beforeUrl+"/temp"+srcImage,beforeUrl+"/publish"+srcImage);
+					}else{
+						cutImage(article_MyPhoto,beforeUrl+"/publish"+srcImage,beforeUrl+"/publish"+srcImage);
+					}
 					publish.setImage("/publish"+srcImage);
 				}
 				publish.setPublishStatus("1");
@@ -218,7 +230,7 @@ public class PublishController extends BaseControllerSupport{
 	}
 	
 	@RequestMapping(value = "/savePublish", method = {RequestMethod.POST})
-	public @ResponseBody String savePublish(HttpServletRequest request,Publish publish,String infoArray,String priceArray){
+	public @ResponseBody String savePublish(HttpServletRequest request,Publish publish,String infoArray,String priceArray,String article_MyPhoto){
 		try {
 			jsonObject.clear();
 			Media media = (Media)request.getSession().getAttribute("user");
@@ -235,13 +247,16 @@ public class PublishController extends BaseControllerSupport{
 				}else{
 					String srcImage = publish.getImage().replace("/ghplat/attachment/temp", "");
 					String beforeUrl = request.getSession().getServletContext().getRealPath("/attachment");
-					FileUtil.copyFile(beforeUrl+"/temp"+srcImage, beforeUrl+"/publish"+srcImage);
-					FileUtil.delete(beforeUrl+"/temp"+srcImage);
+					//FileUtil.copyFile(beforeUrl+"/temp"+srcImage, beforeUrl+"/publish"+srcImage);
+					//FileUtil.delete(beforeUrl+"/temp"+srcImage);
+					cutImage(article_MyPhoto,beforeUrl+"/temp"+srcImage,beforeUrl+"/publish"+srcImage);
 					publish.setImage("/publish"+srcImage);
 				}
 				publish.setPublishStatus("1");
 				StringUtil.setPublishInfo(publish, infoArray);
 				StringUtil.setPublishPrice(publish, priceArray);
+				String picon = publishService.getPlatformDetailsByName(publish.getPlatformName()).getPlatformIcon();
+				publish.setPlatformIcon(picon);
 				baseService.save(publish);
 				jsonObject.put("result", "yes");
 			}
@@ -249,6 +264,27 @@ public class PublishController extends BaseControllerSupport{
 			e.printStackTrace();
 		}
 		return jsonObject.toString();
+	}
+	public static void cutImage(String article_MyPhoto,String oldImage,String newImage){
+		JSONObject obj = JSONObject.fromObject(article_MyPhoto);
+		int top = 0;
+		int left = 0;
+		int width = 300;
+		int height = 300;
+		int showWidth = 300;
+		if(obj.containsKey("y")&&obj.containsKey("x")&&obj.containsKey("width")
+				&&obj.containsKey("height")&&obj.containsKey("showWidth")){
+			 top = (int) Double.parseDouble(obj.getString("y"));
+			 left = (int) Double.parseDouble(obj.getString("x"));
+			 width = (int) Double.parseDouble(obj.getString("width"));
+			 height = (int) Double.parseDouble(obj.getString("height"));
+			 showWidth = (int) Double.parseDouble(obj.getString("showWidth"));
+			 try {
+				ImageMagicTools.saveImage(new java.io.File(oldImage), newImage, top, left, width, height, showWidth,160);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
 	}
 	
 	@RequestMapping(value = "/caselist", method = {RequestMethod.GET})
@@ -312,10 +348,34 @@ public class PublishController extends BaseControllerSupport{
 		try {
 			String publishghid = request.getParameter("pghid");
 			Publish pdetails = publishService.getpublishDetails(publishghid);
+			if("0001".equals(pdetails.getPublishTypeObj().getPublishFieldId())){
+				WeiXinDetails wxdetails = publishService.getWxDetails(pdetails.getInfo01());
+				setTop10ByWxDetails(wxdetails,pdetails.getPublishName());
+				request.setAttribute("wxdetails", wxdetails);
+			}
 			request.setAttribute("pdetails", pdetails);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return "/front/publishDetails";
+	}
+	
+	public static void setTop10ByWxDetails(WeiXinDetails wxdetails,String name){
+		if(wxdetails==null||wxdetails.getCol8()==null||wxdetails.getCol9()==null||wxdetails.getCol10()==null){
+			return ;
+		}
+		String[] titles = wxdetails.getCol8().split(";");
+		String[] urls = wxdetails.getCol9().split(";");
+		String[] createTime = wxdetails.getCol10().split(";");
+		List<Top10> top10List = new ArrayList<Top10>();
+		for(int i=0;i<titles.length;i++){
+			Top10 top = new Top10();
+			top.setTitle(titles[i]);
+			top.setName(name);
+			top.setUrl(urls[i].replace("\\", ""));
+			top.setCreateTime(DateUtil.getShowDate(new Date(Long.parseLong(createTime[i])*1000L)));
+			top10List.add(top);
+		}
+		wxdetails.setTop10list(top10List);
 	}
 }

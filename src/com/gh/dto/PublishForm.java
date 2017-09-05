@@ -15,11 +15,25 @@ public class PublishForm {
 	private long mediaId;//媒体id
 	private String publishName;//媒体的
 	private long publishId;//媒体id
-	private String publisharea;//区域筛选
+	private String publisharea;//区域筛选 省
+	private String publisharea2;//区域筛选  市
+	private String publisharea3;//区域筛选  区
 	private String usermobile;//用户手机号
 	
 	
 	
+	public String getPublisharea2() {
+		return publisharea2;
+	}
+	public void setPublisharea2(String publisharea2) {
+		this.publisharea2 = publisharea2;
+	}
+	public String getPublisharea3() {
+		return publisharea3;
+	}
+	public void setPublisharea3(String publisharea3) {
+		this.publisharea3 = publisharea3;
+	}
 	public String getUsermobile() {
 		return usermobile;
 	}

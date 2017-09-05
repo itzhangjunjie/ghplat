@@ -43,6 +43,7 @@ import com.gh.model.Publish;
 import com.gh.service.IBaseService;
 import com.gh.service.IOrderService;
 import com.gh.service.IPublishService;
+import com.gh.util.EmailSend;
 import com.gh.util.PageList;
 import com.gh.util.StringUtil;
 
@@ -107,10 +108,12 @@ public class OrderController extends BaseControllerSupport{
 					Media media = (Media)request.getSession().getAttribute("user");
 					typeint = 1;//自媒体
 					userid = media.getId();
+					EmailSend.sendMail("新订单生成-自媒体", "手机号："+media.getMobile());
 				}else{
 					Advertiser adver = (Advertiser)request.getSession().getAttribute("user");
 					typeint = 2;//广告主
 					userid = adver.getId();
+					EmailSend.sendMail("新订单生成-广告主", "手机号："+adver.getMobile());
 				}
 				String totalPrice = request.getParameter("totalPrice");
 				String flag = request.getParameter("wtdlfalge");
