@@ -24,6 +24,7 @@
 <meta name="keywords" content="勾画,自媒体,新媒体,mcn,mpn"/>
 <!-- 搜索引擎抓取 -->
 <meta name="robots" content="勾画,自媒体,新媒体,mcn,mpn"/>
+<meta name="baidu-site-verification" content="Q70aYGh0aa" />
 <script type="text/javascript">
 $(function(){
 	var cartIds = getCookie("cartIds");
@@ -346,7 +347,7 @@ a:link {color: #707070}
 			<div style="float:left;width:1px;height:11px;background:#707070;margin-left:10px;margin-top:3px;"></div>
 			<div style="float:left;margin-left:10px;" class="hoverFont">新媒体中心</div>
 			<div style="float:left;width:1px;height:11px;background:#707070;margin-left:10px;margin-top:3px;"></div>
-			<div style="float:left;margin-left:10px;" class="hoverFont"><a target="_blank" href="http://61.129.51.62:8099/ipcity/">IP·City</a></div>
+			<div style="float:left;margin-left:10px;" class="hoverFont"><a target="_blank" href="http://www.ghplat.com:8099/ipcity/">IP·City</a></div>
 			<div style="float:left;margin-left:25px;"><img src="front/images/tel_small.png" width="16px"/></div>
 			<div style="float:left;margin-left:5px;">18616878426</div>
 		</div>
@@ -363,6 +364,9 @@ a:link {color: #707070}
 				<c:if test="${sessionScope.type==null||sessionScope.type!='自媒体' }">
 					<li><a href="getPublish">媒体推广</a></li>
 				</c:if>
+				<c:if test="${sessionScope.type!=null&&sessionScope.type=='广告主' }">
+					<li><a href="persionad">投放中心</a></li>
+				</c:if>
 <!-- 				<li><a href="http://www.17sucai.com/">媒介合作</a></li> -->
 				<li><a href="abortUs">关于我们</a></li>
 			</ul>
@@ -377,9 +381,12 @@ a:link {color: #707070}
 		<c:if test="${sessionScope.type!=null }">
 			<div style="float:right;margin-right:0px;margin-top:36px;">
 				<div style="float:left;"><img src="front/images/login.png" style="width:25px;" /></div>
-				<a href="getOrderList"><div class="hoverFont" style="float:left;margin-left:10px;color:#333333;font-size:14px;line-height: 25px;">${sessionScope.user.username}</div></a>
+				<c:if test="${sessionScope.type!='自媒体' }">
+					<a href="persionad" target="_blank"><div class="hoverFont" style="float:left;margin-left:10px;color:#333333;font-size:14px;line-height: 25px;">${sessionScope.user.username}</div></a>
+				</c:if>
 				<c:if test="${sessionScope.type=='自媒体' }">
-					<a href="addCase"><div class="hoverFont" style="float:left;margin-left:15px;color:#333333;font-size:16px;line-height: 23px;">管理发布</div></a>
+					<a href="getOrderList" target="_blank"><div class="hoverFont" style="float:left;margin-left:10px;color:#333333;font-size:14px;line-height: 25px;">${sessionScope.user.username}</div></a>
+					<a href="addCase" target="_blank"><div class="hoverFont" style="float:left;margin-left:15px;color:#333333;font-size:16px;line-height: 23px;">管理发布</div></a>
 				</c:if>
 				<div onclick="exit()" class="hoverFont" style="float:left;margin-left:15px;color:#333333;font-size:14px;line-height: 25px;">退出</div>
 			</div>
@@ -458,7 +465,7 @@ a:link {color: #707070}
 				</div>
 				<span style="height:44px;margin-left:10px;line-height: 44px;width:5px;text-align:left;color:red;font-size:14px; ">*</span>
 				<div style="width:320px;margin-top:8px;font-size:12px;">
-					注册即表示同意<a href="#" style="color:#23527c;">服务协议</a>及<a href="#" style="color:#23527c;">隐私条款</a>
+					注册即表示同意<a target="_blank" href="front/fuwu.html" style="color:#23527c;">服务协议</a>及<a href="#" style="color:#23527c;">隐私条款</a>
 				</div>
 			</div>
 			<div onclick="register('自媒体')" style="width:320px;margin:0 auto;margin-top:12px;">
@@ -491,7 +498,7 @@ a:link {color: #707070}
 			<div style="width:320px;margin:0 auto;margin-top:12px;">
 				<div onclick="login('自媒体')" style="cursor:pointer;width:300px;hegiht:48px;background:#fc6769;color:white; text-align: center;line-height: 48px;">登录</div>
 				<div class="loginMsg" class="errormsg" style="display:none;color:red;font-size:12px;float:left;margin-left:5px;margin-top:10px;">用户名和密码不对</div>
-				<div style="float:right;font-size:12px;margin:10px 20px 10px 0px;"><a href="person.jsp" style="color:#23527c;">忘记密码</a></div>
+				<div style="float:right;font-size:12px;margin:10px 20px 10px 0px;"><a href="front/person.jsp" style="color:#23527c;">忘记密码</a></div>
 			</div>
 		</div>
 	</div>
@@ -544,7 +551,7 @@ a:link {color: #707070}
 				</div>
 				<span style="height:44px;margin-left:10px;line-height: 44px;width:5px;text-align:left;color:red;font-size:14px; ">*</span>
 				<div style="width:320px;margin-top:8px;font-size:12px;">
-					注册即表示同意<a href="#" style="color:#23527c;">服务协议</a>及<a href="#" style="color:#23527c;">隐私条款</a>
+					注册即表示同意<a target="_blank" href="front/fuwu.html" style="color:#23527c;">服务协议</a>及<a href="#" style="color:#23527c;">隐私条款</a>
 				</div>
 			</div>
 			<div onclick="register('广告主')" style="width:320px;margin:0 auto;margin-top:12px;">
@@ -582,3 +589,26 @@ a:link {color: #707070}
 		</div>
 	</div>
 </div>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?e8e9bd8552554338ed8bf193c027c620";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https'){
+   bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+  }
+  else{
+  bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+  }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>

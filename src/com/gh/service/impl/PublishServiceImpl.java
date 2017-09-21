@@ -177,7 +177,7 @@ public class PublishServiceImpl implements IPublishService{
 				}
 			}
 		}
-		hql = hql +" order by gp.publishTime desc ";
+		hql = hql +" order by gp.powerScore desc,gp.publishTime";
 		PageList<Publish> resultPage = basePublishDao.findPageList(hql, publishForm.getPageSize(), publishForm.getPageCount());
 		String medias = "";
 		for(Publish publish:resultPage.getList()){

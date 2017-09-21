@@ -14,7 +14,6 @@
 }
 </style>
 </head>
-
 <body style="padding:0px;margin:0px;">
 <input type="hidden" value="0" id="headType" />
 	<%@include file="header.jsp" %>
@@ -22,20 +21,34 @@
 			<div id="demo01" class="flexslider">
 				<ul class="slides">
 					<c:forEach var="banner" items="${bannerlist.list }">
-						<li><div class="img" style="width:100%;height:360px;background: url(/ghplat/attachment/banner/${banner.image });background-position:center;"></div></li>
+						<li>
+							<div class="img" style="width:100%;height:360px;">
+								<c:if test="${banner.type=='内链' }"><a href="../getBannerDetails?bannerId=${banner.indexBannerId }" target="_bank">
+									<div style="width:100%;height:360px;background: url('/ghplat/attachment/banner/${banner.image}');background-position:center;"></div>
+									</a>
+								</c:if>
+								<c:if test="${banner.type=='外链' }"><a href="${banner.url }" target="_bank">
+									<div style="width:100%;height:360px;background: url('/ghplat/attachment/banner/${banner.image}');background-position:center;"></div>
+									</a>
+								</c:if>
+								<c:if test="${banner.type!='外链'&&banner.type!='内链' }">
+									<div style="width:100%;height:360px;background: url('/ghplat/attachment/banner/${banner.image}');background-position:center;"></div>
+								</c:if>
+							</div>
+						</li>
 					</c:forEach>
 				</ul>
 			</div>
 		</div>
-		<div style="width:100%;background:rgb(242,242,242);height:380px;">
+		<div style="width:100%;background:rgb(242,242,242);height:auto;overflow: hidden;">
 			<div style="font-size:24px;color:#333333;width:1200px;text-align: left;margin:0 auto;padding-top:30px;padding-bottom: 8px;">自媒体展示</div>
 			<div style="width:1200px;height:1px;background:#707070;margin:0 auto;"></div>
-			<div style="width:1200px;margin:0 auto;margin-top:20px;">
+			<div style="width:1200px;margin:0 auto;margin-top:20px;height:auto;overflow: hidden;">
 				<c:forEach var="publish" items="${zimeitilist }" varStatus="stt">
-					<div style="float:left;width:210px;height:280px;position: relative;background: white;margin-left:4px;<c:if test="${stt.index!=0 }">margin-left:36px;</c:if>margin-top:4px;">
+					<div style="height:auto;overflow: hidden;float:left;width:210px;height:280px;position: relative;background: white;margin-left:4px;<c:if test="${stt.index%5!=0 }">margin-left:36px;</c:if>margin-top:4px;<c:if test="${stt.index>4 }">margin-top:20px;</c:if>">
 						<div style="z-index:3;position: absolute;top:-4px;left:-4px;width:76px;text-align: center;height:22px;line-height: 22px;font-size:12px;color:#ffffff;background: rgb(37,202,154);">${publish.publishTypeObj.publishFieldName }</div>
 						<div style="margin:0 auto;width:100%;height:210px;overflow: hidden;">
-							<a class="publishAClass" style="background: black;width:100%;height:210px;display:block;" href="../getPublishDetails?pghid=${publish.ghid }"><img src="/ghplat/attachment${publish.image }" style="width:100%;height: 210px;" /></a>
+							<a target="_bank" class="publishAClass" style="background: black;width:100%;height:210px;display:block;" href="../getPublishDetails?pghid=${publish.ghid }"><img src="/ghplat/attachment${publish.image }" style="width:100%;height: 210px;" /></a>
 						</div>
 						<div style="width:160px;margin:0 auto;font-size:14px;color:#333333;margin-top:10px;">${publish.publishName }</div>
 						<div style="width:160px;margin:0 auto;margin-top:10px;color:#333333;">

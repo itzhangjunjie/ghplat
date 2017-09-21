@@ -5,11 +5,11 @@ var cnavs = [{
 	"children": [{
 		"title": "Banner列表",
 		"icon": "&#62221;",
-		"href": "/ghplat/admin/bannerlist"
+		"href": "../../admin/bannerlist"
 	},{
 		"title": "新增Banner",
 		"icon": "&#19221;",
-		"href": "/ghplat/admin/bannerAdd"
+		"href": "../../admin/bannerAdd"
 	}]
 },{
 	"title": "媒体推广管理",
@@ -18,7 +18,7 @@ var cnavs = [{
 	"children": [{
 		"title": "媒体列表",
 		"icon": "&#62221;",
-		"href": "/ghplat/admin/meitiList"
+		"href": "../../admin/meitiList"
 	}]
 },{
 	"title": "订单管理",
@@ -27,7 +27,16 @@ var cnavs = [{
 	"children": [{
 		"title": "订单列表",
 		"icon": "&#65621;",
-		"href": "/ghplat/admin/orderList"
+		"href": "../../admin/orderList"
+	}]
+},{
+	"title": "投放管理",
+	"icon": "fa-cdces",
+	"spread": true,
+	"children": [{
+		"title": "投放列表",
+		"icon": "&#65621;",
+		"href": "../../admin/deliverylist"
 	}]
 },{
 	"title": "用户管理",
@@ -36,11 +45,11 @@ var cnavs = [{
 	"children": [{
 		"title": "媒体列表",
 		"icon": "&#65621;",
-		"href": "/ghplat/admin/usermedialist"
+		"href": "../../admin/usermedialist"
 	},{
 		"title": "广告主列表",
 		"icon": "&#65621;",
-		"href": "/ghplat/admin/useradlist"
+		"href": "../../admin/useradlist"
 	}]
 },{
 	"title": "配置管理",
@@ -49,11 +58,11 @@ var cnavs = [{
 	"children": [{
 		"title": "平台列表",
 		"icon": "&#65621;",
-		"href": "/ghplat/admin/platformlist"
+		"href": "../../admin/platformlist"
 	},{
 		"title": "新增平台",
 		"icon": "&#65621;",
-		"href": "/ghplat/admin/platformadd"
+		"href": "../../admin/platformadd"
 	}]
 }];
 

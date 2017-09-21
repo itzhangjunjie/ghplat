@@ -65,6 +65,16 @@ public class AdminUserController extends BaseControllerSupport{
 		return "/admin/adlist";
 	}
 	
+	@RequestMapping(value="/login")
+	public String login(HttpServletRequest request){
+		System.out.println("testse");
+		return "/admin/logino";
+	}
+	
+	@RequestMapping(value="/index")
+	public String index(HttpServletRequest request){
+		return "/admin/indexo";
+	}
 	
 	@RequestMapping(value="/adminLogin",method=RequestMethod.POST)
 	public @ResponseBody String adminLogin(HttpServletRequest request){
@@ -76,9 +86,11 @@ public class AdminUserController extends BaseControllerSupport{
 			AdminUser adminUser = baseService.findObjByProperty(AdminUser.class, map);
 			if(adminUser!=null){
 				if(password.equals(adminUser.getPassword())){
+					//BaseControllerSupport.logger.error(request.getSession().getId()+"......save");
 					request.getSession().setAttribute("adminUser", adminUser);
 					jsonObject.put("reason", "1");//用户名和密码正确
-					String url = (request.getSession().getAttribute("beforeAdminUrl")==null)?"/admin/index.html":(String)request.getSession().getAttribute("beforeAdminUrl");
+					//System.out.println(request.getSession().getAttribute("beforeAdminUrl"));
+					String url = (request.getSession().getAttribute("beforeAdminUrl")==null)?"/admin/index":(String)request.getSession().getAttribute("beforeAdminUrl");
 					jsonObject.put("beforeUrl", url);
 				}else{
 					jsonObject.put("reason", "-1002");//密码错误

@@ -113,7 +113,7 @@ public class OrderController extends BaseControllerSupport{
 					Advertiser adver = (Advertiser)request.getSession().getAttribute("user");
 					typeint = 2;//广告主
 					userid = adver.getId();
-					EmailSend.sendMail("新订单生成-广告主", "手机号："+adver.getMobile());
+					EmailSend.sendMail("新订单生成-广告主", "手机号："+adver.getMobile()+"||公司名称："+adver.getCorporation_name());
 				}
 				String totalPrice = request.getParameter("totalPrice");
 				String flag = request.getParameter("wtdlfalge");

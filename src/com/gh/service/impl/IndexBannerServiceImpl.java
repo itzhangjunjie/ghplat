@@ -51,7 +51,7 @@ public class IndexBannerServiceImpl implements IIndexBannerService{
 		}
 		if(!"".equals(ids)){
 			ids = ids.substring(0,ids.lastIndexOf(","));
-			String phql ="from Publish gp where 1=1 and gp.id in ("+ids+")";
+			String phql ="from Publish gp where 1=1 and gp.id in ("+ids+") order by instr('"+ids+"',gp.id)";
 			return this.basePublishDao.findList(phql);
 		}
 		return null;

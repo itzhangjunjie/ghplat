@@ -56,14 +56,16 @@ function updateUserFlag(mediaid,tt){
 				<div class="layui-field-box">
 					<div style="width:100%;margin-top:20px;" class="orderDiv divsh">
 					<table cellspacing="0px" class="plisDiv" style="width:100%;font-size:14px;border:1px #dfdfdf solid;">
-					<tbody><tr valign="middle" height="40px" style="background: #f8f8f8;"><td width="150px" align="center">用户名</td><td width="170px" align="center">手机号</td><td width="150px" align="center">qq</td>
+					<tbody><tr valign="middle" height="40px" style="background: #f8f8f8;"><td width="150px" align="center">用户名</td><td width="170px" align="center">手机号</td><td width="170px" align="center">企业名称</td><td width="150px" align="center">qq</td>
 					<td width="150px" align="center">注册时间</td><td width="150px" align="center">登陆时间</td><td width="150px" align="center">权限</td></tr>
 		<!-- 			<div style="float:left;"><img src="images/weixin.png" /></div> -->
 				</tbody></table>
 				<div style="width:100%;overflow: hidden;padding-bottom: 30px;">
 						<table cellspacing="0px" class="plisDiv" style="font-size:14px;border:1px #dfdfdf solid;float:left;width:100%;padding-bottom: 20px;">
 							<c:forEach items="${adlist.list }" var="media">
-								<tr valign="middle" height="40px" style="background: #f8f8f8;"><td width="150px" align="center">${media.username }</td><td width="170px" align="center">${media.mobile }</td><td width="150px" align="center">${media.qq }</td>
+								<tr valign="middle" height="40px" style="background: #f8f8f8;"><td width="150px" align="center">${media.username }</td><td width="170px" align="center">${media.mobile }</td>
+								<td width="170px" align="center">${media.corporation_name }</td>
+								<td width="150px" align="center">${media.qq }</td>
 									<td width="150px" align="center"><fmt:formatDate value="${media.signUpTime }" pattern="yyyy-MM-dd HH:mm" /></td><td width="150px" align="center"><fmt:formatDate value="${media.lastLoginTime }" pattern="yyyy-MM-dd HH:mm" /></td>
 									<td width="150px" align="center"><input value="${media.userFlag }" class="userflagInput"/><button onclick="updateUserFlag(${media.id},this)">更改</button></td>
 								</tr>						

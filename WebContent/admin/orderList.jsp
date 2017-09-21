@@ -73,7 +73,7 @@ function selectChange(orderid,tt){
 			</blockquote>
 		</form>
 		
-		<fieldset class="layui-elem-field">
+		<fieldset class="layui-elem-field" style="margin-bottom: 40px;">
 				<legend>数据列表</legend>
 				<div class="layui-field-box">
 					<div style="width:100%;margin-top:20px;" class="orderDiv divsh">
@@ -83,10 +83,11 @@ function selectChange(orderid,tt){
 		<!-- 			<div style="float:left;"><img src="images/weixin.png" /></div> -->
 				</tbody></table>
 					<c:forEach items="${orderListPage.list }" var="order">
-				<div style="width:100%;overflow: hidden;">
+				<div style="width:100%;overflow: hidden;<c:if test="${order.orderDetailsList.size() == 0 }">display:none;</c:if>">
 						<div style="width:100%;height:40px;background: #f8f8f8;margin-top:20px;line-height: 40px;border:1px #dfdfdf solid;border-bottom: 0px;font-size:14px;">
 							<span style="margin-left:20px;float:left;">${order.order_createtime }</span><span style="float:left;margin-left:20px;">订单编号：${order.ghid }</span>
 							<span style="float:left;margin-left:40px;">用户名：${order.advertiser.username }</span><span style="float:left;margin-left:40px;">手机号：${order.advertiser.mobile }</span>
+							<span style="float:left;margin-left:40px;">企业名称：${order.advertiser.corporation_name }</span>
 							<span onclick="removeOrder(this,${order.order_id})" class="hoverFont" style="float:right;margin-right:10px;cursor:pointer;">删除订单</span>
 							<div class="imprtDataDiv" onclick="dataExport(this)" style="display:none;width:70px;height:22px;border:1px #333333 solid;text-align: center;line-height: 22px;float: right;font-size:14px;cursor:pointer;margin-top:8px;margin-right:10px;">导出方案</div>
 						</div>
@@ -102,8 +103,8 @@ function selectChange(orderid,tt){
 							    	 <c:if test="${stt.index==0 }">
 								    	 <td width="250px" style="border-left:1px #dfdfdf solid;" align="center" rowspan="${order.orderDetailsList.size()}">
 								    	 	<select onchange="selectChange(${order.order_id },this)">
-												<option value="0" <c:if test="${order.order_status=='0 ' }">selected="selected"</c:if>>待付款</option>
-												<option value="1" <c:if test="${order.order_status=='1 ' }">selected="selected"</c:if>>已完成</option>
+												<option value="0" <c:if test="${order.order_status=='0' }">selected="selected"</c:if>>待付款</option>
+												<option value="1" <c:if test="${order.order_status=='1' }">selected="selected"</c:if>>已完成</option>
 												<option value="2" <c:if test="${order.order_status=='2' }">selected="selected"</c:if>>已取消</option>
 												<option value="3" <c:if test="${order.order_status=='3' }">selected="selected"</c:if>>已删除</option>
 											</select>
@@ -147,7 +148,8 @@ function selectChange(orderid,tt){
 						//得到了当前页，用于向服务端请求对应数据
 						var curr = obj.curr;
 						if(!first) {
-							location.href='/ghplat/admin/orderList?pageSize='+curr;
+							var status = $('[name="publishStatus"]').val();
+							location.href='/ghplat/admin/orderList?pageSize='+curr+'&publishStatus='+status;
 							//layer.msg('第 '+ obj.curr +' 页');
 						}
 					}

@@ -4,7 +4,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>案例</title>
+<title>自媒体植入_最低价格_直接沟通自媒体人_优质大v</title>
 <script src="front/js/jquery-1.8.2.min.js" type="text/javascript"></script>
 <script src="front/js/main.js" type="text/javascript"></script>
 <style type="text/css">
@@ -436,7 +436,7 @@ function closeOption(){
 					{{ var uesFlag = $('#uesFlag').val(); var flag1 = uesFlag.substring(0,1); for(var i=0;i<it.length;i++){ }} 
 						<div style="float:left;{{? (i+6)%5!=0}} margin-right:37px;{{?}}width:210px;height:330px;position: relative;background: white;margin-top:4px;{{? i>4}} margin-top:25px; {{?}}">
 							<div style="margin:0 auto;width:100%;height:210px;overflow: hidden;">
-								<a class="publishAClass" style="background: black;width:100%;height:210px;display:block;" href="../getPublishDetails?pghid={{=it[i].ghid}}"><img src="/ghplat/attachment{{=it[i].image}}" style="width:100%;height: 210px;" /></a>
+								<a target="_bank" class="publishAClass" style="background: black;width:100%;height:210px;display:block;" href="../getPublishDetails?pghid={{=it[i].ghid}}"><img src="/ghplat/attachment{{=it[i].image}}" style="width:100%;height: 210px;" /></a>
 							</div>
 							<div style="width:160px;margin:0 auto;font-size:14px;color:#333333;margin-top:10px;position: relative; overflow: hidden;height:22px;">{{=it[i].publishName}}
 							{{? flag1=='1'}}

@@ -79,6 +79,9 @@ public class BannerController extends BaseControllerSupport{
 			cbanner.setTitle(banner.getTitle());
 			cbanner.setPosition(banner.getPosition());
 			cbanner.setUrl(banner.getUrl());
+			cbanner.setType(banner.getType());
+			cbanner.setModule(banner.getModule());
+			cbanner.setCreateTime(new Date());
 			baseService.update(cbanner);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -108,10 +111,17 @@ public class BannerController extends BaseControllerSupport{
 			Map<String,Object> map = new HashMap<String,Object>();
 			map.put("status", status);
 			map.put("module", module);
+			String pstr = request.getParameter("pageSize");
+			if(pstr==null){
+				page.setPage(1);
+			}else{
+				page.setPage(Integer.parseInt(pstr));
+			}
 			PageList<IndexBanner> banners = bannerService.getBannerList(map,page);
 			request.setAttribute("bannerlist", banners);
 			request.setAttribute("module", module);
 			request.setAttribute("status", status);
+			request.setAttribute("pageSize", page.getPage());
 		} catch (Exception e) {
 			e.printStackTrace();
 			logger.error("获取banner列表失败!");

@@ -100,7 +100,7 @@
 					cont: 'page',
 					pages: total ,//总页数
 					groups: 5 ,//连续显示分页数
-					 curr: '${bannerlist.page}',
+					 curr: '${pageSize}',
 					jump: function(obj, first) {
 						//得到了当前页，用于向服务端请求对应数据
 						var curr = obj.curr;

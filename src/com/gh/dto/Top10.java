@@ -6,6 +6,9 @@ public class Top10 {
 	private String url;
 	private String createTime;
 	private String name;
+	private String viewCount;
+	
+
 	public String getTitle() {
 		return title;
 	}
@@ -29,6 +32,12 @@ public class Top10 {
 	}
 	public void setName(String name) {
 		this.name = name;
+	}
+	public String getViewCount() {
+		return viewCount;
+	}
+	public void setViewCount(String viewCount) {
+		this.viewCount = viewCount;
 	}
 	
 	

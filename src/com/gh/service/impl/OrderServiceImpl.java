@@ -98,7 +98,7 @@ public class OrderServiceImpl implements IOrderService{
 
 	@Override
 	public void deleteOrder(long orderId) throws Exception {
-		String sql="update gh_order god set god.order_status = -2 where god.order_id = "+orderId;
+		String sql="update gh_order god set god.order_status = 3 where god.order_id = "+orderId;
 		this.baseOrderDao.executeSql(sql);
 	}
 
@@ -107,13 +107,14 @@ public class OrderServiceImpl implements IOrderService{
 	@Override
 	public PageList<Order> getOrderList(PublishForm publishForm) throws Exception {
 		String hql ="from Order order where 1=1 ";
-				
 		if(publishForm!=null){
 			if(publishForm.getSearchStr()!=null&&!"".equals(publishForm.getSearchStr())){//订单号
 				hql = hql +" and order.ghid = '"+publishForm.getSearchStr()+"'";
 			}
 			if(publishForm.getPublishStatus()!=null&&!"".equals(publishForm.getPublishStatus())&&!"all".equals(publishForm.getPublishStatus())){//订单状态
 				hql = hql +" and order.order_status = '"+publishForm.getPublishStatus()+"'";
+			}else{
+				hql = hql +" and order.order_status != 3 ";
 			}
 			if(publishForm.getMediaId()!=0){//用户名  用户的订单
 				hql = hql +" and order.order_advertiser_id = "+publishForm.getMediaId();

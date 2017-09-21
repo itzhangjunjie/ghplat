@@ -220,6 +220,8 @@ public class PublishController extends BaseControllerSupport{
 				publish.setPublishStatus("1");
 				StringUtil.setPublishInfo(publish, infoArray);
 				StringUtil.setPublishPrice(publish, priceArray);
+				String picon = publishService.getPlatformDetailsByName(publish.getPlatformName()).getPlatformIcon();
+				publish.setPlatformIcon(picon);
 				baseService.update(publish);
 				jsonObject.put("result", "yes");
 			}
@@ -367,10 +369,16 @@ public class PublishController extends BaseControllerSupport{
 		String[] titles = wxdetails.getCol8().split(";");
 		String[] urls = wxdetails.getCol9().split(";");
 		String[] createTime = wxdetails.getCol10().split(";");
+		String[] viewCounts = wxdetails.getCol11().split(";");
 		List<Top10> top10List = new ArrayList<Top10>();
-		for(int i=0;i<titles.length;i++){
+		int ll = 10;
+		if(titles.length<10){
+			ll = titles.length;
+		}
+		for(int i=0;i<ll;i++){
 			Top10 top = new Top10();
 			top.setTitle(titles[i]);
+			top.setViewCount(viewCounts[i]);
 			top.setName(name);
 			top.setUrl(urls[i].replace("\\", ""));
 			top.setCreateTime(DateUtil.getShowDate(new Date(Long.parseLong(createTime[i])*1000L)));

@@ -60,8 +60,6 @@ public class Order {
 	private String column_1;
 	@Column(name="column_2")
 	private String column_2;
-	@Column(name="column_3")
-	private long column_3;
 	@Column(name="column_4")
 	private Date column_4;
 	
@@ -179,12 +177,6 @@ public class Order {
 	}
 	public void setColumn_2(String column_2) {
 		this.column_2 = column_2;
-	}
-	public long getColumn_3() {
-		return column_3;
-	}
-	public void setColumn_3(long column_3) {
-		this.column_3 = column_3;
 	}
 	public Date getColumn_4() {
 		return column_4;

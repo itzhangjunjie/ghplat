@@ -315,9 +315,10 @@ function showText(id,value,fontSize){
 			</div>
 			<c:forEach items="${wxdetails.top10list }" var="wxdetailsObj">
 				<div style="width:98%;margin-left:2%;margin-top:8px;height:20px;">
-					<div style="max-width:930px;min-width:900px;overflow: hidden;float:left;font-size:14px;"><a target="_blank" href="${wxdetailsObj.url }">${wxdetailsObj.title }</a></div>
-					<div style="width:100px;height:17px;overflow: hidden;float:left;color:#707070;font-size:12px;"><a target="_blank" href="${wxdetails.col12 }">${wxdetailsObj.name }</a></div>
-					<div style="width:80px;overflow: hidden;float:left;margin-left:10px;color:#707070;font-size:12px;">${wxdetailsObj.createTime }</div>
+					<div style="overflow: hidden;float:left;font-size:14px;"><a target="_blank" href="${wxdetailsObj.url }">${wxdetailsObj.title }</a></div>
+					<div style="width:40px;overflow: hidden;float:right;margin-right:10px;color:#707070;font-size:12px;">${wxdetailsObj.createTime }</div>
+					<div style="width:90px;overflow: hidden;float:right;margin-right:10px;color:#707070;font-size:12px;">阅读数：${wxdetailsObj.viewCount }</div>
+					<div style="width:100px;height:17px;overflow: hidden;margin-right:5px;float:right;color:#707070;font-size:12px;"><a target="_blank" href="${wxdetails.col12 }">${wxdetailsObj.name }</a></div>
 				</div>
 			</c:forEach>
 	</div>

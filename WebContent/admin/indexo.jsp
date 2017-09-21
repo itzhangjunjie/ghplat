@@ -1,5 +1,7 @@
-<!DOCTYPE html>
-
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %> 
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %> 
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
 <html>
 	<head>
 		<meta charset="utf-8">
@@ -39,7 +41,7 @@
 						<li class="layui-nav-item">
 							<a href="javascript:;" class="admin-header-user">
 								<img src="images/0.jpg" />
-								<span>beginner</span>
+								<span>${sessionScop.adminUser.username }</span>
 							</a>
 							<dl class="layui-nav-child">
 								<dd id="lock">
@@ -48,7 +50,7 @@
 									</a>
 								</dd>
 								<dd>
-									<a href="../outLogin"><i class="fa fa-sign-out" aria-hidden="true"></i> 注销</a>
+									<a href="../../admin/outLogin"><i class="fa fa-sign-out" aria-hidden="true"></i>注销</a>
 								</dd>
 							</dl>
 						</li>
@@ -71,9 +73,9 @@
 							<cite>控制面板</cite>
 						</li>
 					</ul>
-					<div class="layui-tab-content" style="min-height: 150px; padding: 5px 0 0 0;">
+					<div class="layui-tab-content" style="height:500px;overflow :hidden; padding: 5px 0 0 0;">
 						<div class="layui-tab-item layui-show">
-							<iframe src="main.html"></iframe>
+							<iframe src="main.html" style="height:500px;overflow: hidden;"></iframe>
 						</div>
 					</div>
 				</div>

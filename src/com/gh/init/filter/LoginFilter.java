@@ -38,15 +38,18 @@ public class LoginFilter implements Filter {
 			chain.doFilter(req, res);
 		}else{
 			String requestURI = req.getRequestURI();
-//			BaseControllerSupport.logger.error(req.getRequestURI()+"----");
+			//BaseControllerSupport.logger.error(req.getRequestURI()+"----");
 			if ((requestURI.indexOf("/admin")>=0 && !canNoLogin(requestURI))
-					&&(!requestURI.contains(".")|| requestURI.indexOf("/admin/index.html")>=0)) {
+					&&(!requestURI.contains(".")|| requestURI.indexOf("/admin/index")>=0)) {
 				HttpSession session = req.getSession();
+				BaseControllerSupport.logger.error(session.getId());
 				AdminUser adminuser = (AdminUser) session.getAttribute("adminUser");
+				//BaseControllerSupport.logger.error(adminuser+"----...");
 				if (adminuser != null) {
 					chain.doFilter(req, res);
 				} else {
 					String beforeAdminUrl = requestURI;
+					System.out.println(requestURI);
 					Map<String, String[]> params = request.getParameterMap();
 					String queryString = "";
 					for (String key : params.keySet()) {
@@ -63,7 +66,7 @@ public class LoginFilter implements Filter {
 					}else{
 						session.setAttribute("beforeAdminUrl", beforeAdminUrl);
 					}
-					res.sendRedirect(req.getContextPath() + "/admin/login.html");
+					res.sendRedirect(req.getContextPath() + "/admin/login");
 				}
 			} else {
 				chain.doFilter(req, res);
@@ -78,7 +81,7 @@ public class LoginFilter implements Filter {
 	}
 
 	public boolean canNoLogin(String url) {
-		if (url.contains("adminLogin")||url.contains("uploadImage")) {
+		if (url.contains("adminLogin")||url.contains("uploadImage")||url.contains("admin/login")) {
 			return true;
 		}
 		return false;
