@@ -164,13 +164,14 @@ public class PublishServiceImpl implements IPublishService{
 				}else{
 					columnname = columnname+publishForm.getPricePosition();
 				}
+				System.out.println(columnname+".........||");
 				if(publishForm.getPrice()!=null){
 					if("1".equals(publishForm.getPrice())){
-						hql = hql +" and gp."+columnname+" <5000";
+						hql = hql +" and gp."+columnname+"  < '5000'";
 					}else if("2".equals(publishForm.getPrice())){
-						hql = hql +" and gp."+columnname+" <=5000 and gp."+columnname+" <=10000";
+						hql = hql +" and gp."+columnname+"  >= '5000' and gp."+columnname+"  <= '10000'";
 					}else{
-						hql = hql +" and gp."+columnname+" >10000";
+						hql = hql +" and gp."+columnname+"  > '10000'";
 					}
 				}else{
 					hql = hql +" and gp."+columnname+" is not null ";
@@ -178,6 +179,7 @@ public class PublishServiceImpl implements IPublishService{
 			}
 		}
 		hql = hql +" order by gp.powerScore desc,gp.publishTime";
+		System.out.println(hql+"....");
 		PageList<Publish> resultPage = basePublishDao.findPageList(hql, publishForm.getPageSize(), publishForm.getPageCount());
 		String medias = "";
 		for(Publish publish:resultPage.getList()){

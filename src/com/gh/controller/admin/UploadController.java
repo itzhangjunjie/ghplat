@@ -1,9 +1,19 @@
 package com.gh.controller.admin;
 
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
+import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -70,4 +80,42 @@ public class UploadController extends BaseControllerSupport {
 		return jsonObject.toString();
 	}
 
+	@RequestMapping(value = "/upImg", method = RequestMethod.POST)
+	public @ResponseBody String upImg(HttpServletRequest request, @RequestParam("file") MultipartFile file) throws Exception {
+		try {
+			jsonObject.put("err", "");
+			if (null != file) {
+				String saveName = uploadImage(file, file.getOriginalFilename(),
+						request.getSession().getServletContext().getRealPath("/attachment") + "/" + "uploadFile");
+				jsonObject.put("msg", "!/ghplat/attachment/uploadFile/" + saveName);
+			}
+		} catch (Exception ex) {
+			logger.error("上传文件异常，ex=", ex);
+			jsonObject.put("err", "yes");
+			ex.printStackTrace();
+		}
+		return jsonObject.toString();
+	}
+	
+	@RequestMapping(value = "/upploadImg", method = RequestMethod.POST)
+    public @ResponseBody String upploadImg(HttpServletRequest request, HttpServletResponse response) throws Exception{
+			int i = request.getContentLength();
+	        byte buffer[] = new byte[i];
+	        int j = 0;
+	        while (j < i) { //获取表单的上传文件
+	            int k = request.getInputStream().read(buffer, j, i - j);
+	            j += k;
+	        }
+	        String url = null;
+        	if (buffer.length >= 0) { //文件是否为空
+		       String timeTamp = new Date().getTime() + "";
+		       url = "../../attachment/uploadFile/"+timeTamp+".jpg";
+		       File file = new File(request.getSession().getServletContext().getRealPath("/attachment/uploadFile") +"/"+timeTamp+".jpg");  
+		       OutputStream output = new FileOutputStream(file);  
+		       BufferedOutputStream bufferedOutput = new BufferedOutputStream(output);  
+		       bufferedOutput.write(buffer);  
+        	}
+            return "{\"err\":\"\",\"msg\":\""+url+"\"}";
+    }
+	
 }

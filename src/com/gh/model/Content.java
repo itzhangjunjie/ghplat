@@ -21,7 +21,7 @@ public class Content {
     @Column(name = "id")
     @GeneratedValue(strategy=GenerationType.SEQUENCE,generator="content_seq")
 	private long id;
-	@Column(name = "titile")
+	@Column(name = "title")
 	private String title;
 	@Column(name = "image")
 	private String image;

@@ -153,11 +153,17 @@ function getPublishList(gpagesize){
 		success: function(data, status, xhr) {
 			if(data.result=="yes"){
 				var plist = data.datas;
+				if(plist.length==0){
+					$('#publishDiv').html("");
+					 $('.M-box').hide();
+					 return;
+				}
 				$('#publishDiv').html("");
 				var htmla =  doT.template($("#publishTmp").text());
 				$('#publishDiv').html(htmla(plist));
 				var pagecount = data.pageCount;
 				var pagesize = data.pageSize;
+				$('.M-box').show();
 				 $('.M-box').pagination(pagecount,{
 					 'items_per_page'      : 15,  
 			         'num_display_entries' : 5, 

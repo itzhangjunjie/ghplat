@@ -1,4 +1,17 @@
 var cnavs = [{
+	"title": "文章管理",
+	"icon": "fa-cubes",
+	"spread": true,
+	"children": [{
+		"title": "添加文章",
+		"icon": "&#62221;",
+		"href": "../../admin/contentadd"
+	},{
+		"title": "文章列表",
+		"icon": "&#19221;",
+		"href": "../../admin/contentlist"
+	}]
+},{
 	"title": "Banner管理",
 	"icon": "fa-cubes",
 	"spread": true,

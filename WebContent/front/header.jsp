@@ -21,10 +21,11 @@
 <script src="front/js/jquery.Jcrop.js" type="text/javascript"></script>
 <link rel="stylesheet" href="front/css/jquery.Jcrop.css">
 <!-- 页面关键词 -->
-<meta name="keywords" content="勾画,自媒体,新媒体,mcn,mpn"/>
+<meta name="keywords" content="勾画,自媒体,新媒体,mcn,mpn,勾画互动"/>
 <!-- 搜索引擎抓取 -->
-<meta name="robots" content="勾画,自媒体,新媒体,mcn,mpn"/>
+<meta name="robots" content="勾画,自媒体,新媒体,mcn,mpn,勾画互动"/>
 <meta name="baidu-site-verification" content="Q70aYGh0aa" />
+<meta name="360-site-verification" content="a98d3f997b432951871689abebe30775" />
 <script type="text/javascript">
 $(function(){
 	var cartIds = getCookie("cartIds");
@@ -367,6 +368,7 @@ a:link {color: #707070}
 				<c:if test="${sessionScope.type!=null&&sessionScope.type=='广告主' }">
 					<li><a href="persionad">投放中心</a></li>
 				</c:if>
+				<li><a href="contentlist">文章中心</a></li>
 <!-- 				<li><a href="http://www.17sucai.com/">媒介合作</a></li> -->
 				<li><a href="abortUs">关于我们</a></li>
 			</ul>
