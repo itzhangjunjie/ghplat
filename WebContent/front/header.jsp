@@ -94,7 +94,7 @@ function register(type){
 	}else{
 		bname = '#qiyeregDiv';
 		companyname = $(bname+' .companyname').val();
-		if(companyname==''||companyname.length>12){
+		if(companyname==''||companyname.length>20){
 			$(bname+' .companynameMsg').html('公司名称不对');
 			$(bname+' .companynameMsg').show();
 			return;
@@ -113,7 +113,7 @@ function register(type){
 		$(bname+' .usernameMsg').show();
 		return;
 	}
-	var etest = /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/;
+	var etest = /^[A-Za-zd]+([-_.][A-Za-zd]+)*@([A-Za-zd]+[-.])+[A-Za-zd]{2,5}$/;
 	var email= $(bname+' .email').val();
 	if(type!='自媒体'){
 		if(email==''||!etest.test(email)){

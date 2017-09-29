@@ -197,7 +197,7 @@
 					<div style="float:left;">
 						<select class="ctype" style="appearance:none;-moz-appearance:none;-webkit-appearance:none; width:80px;background-color: #fff;border: 1px solid #e6e6e6;border-radius: 2px;height: 38px;line-height: 38px;padding-left: 10px;background: url('../js/timg.jpg') no-repeat scroll right center transparent;">
 							<option <c:if test="${content.type=='转载' }">selected="selected"</c:if>>转载</option>
-							<option <c:if test="${content.type=='原唱' }">selected="selected"</c:if>>原唱</option>
+							<option <c:if test="${content.type=='原创' }">selected="selected"</c:if>>原创</option>
 						</select>
 					</div>
 				</div>
