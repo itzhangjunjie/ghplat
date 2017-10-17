@@ -55,7 +55,9 @@ public class Order {
 	@Column(name="order_createtime")
 	private Date order_createtime;//订单生成时间
 	@Column(name="order_status")
-	private String order_status;//订单状态 0是新建的 待付款   1是已付款  2是取消订单  3是删除
+	private String order_status;//订单状态 0是新建的 待付款   1是已付款  2是取消订单  3是删除  4是已完成
+	@Column(name="admincontent")
+	private String admincontent;
 	@Column(name="column_1")
 	private String column_1;
 	@Column(name="column_2")
@@ -64,6 +66,12 @@ public class Order {
 	private Date column_4;
 	
 	
+	public String getAdmincontent() {
+		return admincontent;
+	}
+	public void setAdmincontent(String admincontent) {
+		this.admincontent = admincontent;
+	}
 	public Advertiser getAdvertiser() {
 		return advertiser;
 	}

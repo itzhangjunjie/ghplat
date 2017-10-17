@@ -15,6 +15,7 @@ import com.gh.model.Advertiser;
 import com.gh.model.Delivery;
 import com.gh.model.Media;
 import com.gh.model.Order;
+import com.gh.model.OrderDetails;
 import com.gh.service.IBaseService;
 import com.gh.service.IDeliveryService;
 import com.gh.service.IOrderService;
@@ -90,6 +91,19 @@ public class DeliveryController extends BaseControllerSupport{
 	}
 	
 	
+	@RequestMapping(value="/persionmd",method=RequestMethod.GET)
+	public String persionmd(HttpServletRequest request){
+		try {
+			String type = request.getParameter("type");
+			if(type!=null){
+				request.setAttribute("type", type);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return "/front/persionmd";
+	}
+	
 	@RequestMapping(value="/persionad",method=RequestMethod.GET)
 	public String persionad(HttpServletRequest request){
 		try {
@@ -114,6 +128,31 @@ public class DeliveryController extends BaseControllerSupport{
 	
 	@Resource
 	private IOrderService orderService;
+	
+	@RequestMapping(value = "/getmdOrderListNew", method = {RequestMethod.GET})
+	public String getmdOrderListNew(PublishForm publishForm,HttpServletRequest request){
+		try {
+			if(request.getSession().getAttribute("user")==null){
+				return "redirect:/";
+			}else{
+				String type = (String)request.getSession().getAttribute("type");
+				long userid = 0;
+				if("自媒体".equals(type)){
+					Media media = (Media)request.getSession().getAttribute("user");
+					userid = media.getId();
+				}else{
+					Advertiser adver = (Advertiser)request.getSession().getAttribute("user");
+					userid = adver.getId();
+				}
+				PageList<OrderDetails> orderList = orderService.getmdOrderList(publishForm,userid);
+				request.setAttribute("orderlist", orderList);
+				request.setAttribute("typeFlag", "1");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return "/front/newmdperson";
+	}
 	
 	@RequestMapping(value = "/getOrderListNew", method = {RequestMethod.GET})
 	public String getOrderListNew(PublishForm publishForm,HttpServletRequest request){

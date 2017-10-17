@@ -48,6 +48,9 @@ function selectChange(orderid,tt){
 		   }
 	});
 }
+function textSelct(pid){
+	$('#textare'+pid).toggle();
+}
 </script>
 </head>
 <body>
@@ -104,15 +107,28 @@ function selectChange(orderid,tt){
 								    	 <td width="250px" style="border-left:1px #dfdfdf solid;" align="center" rowspan="${order.orderDetailsList.size()}">
 								    	 	<select onchange="selectChange(${order.order_id },this)">
 												<option value="0" <c:if test="${order.order_status=='0' }">selected="selected"</c:if>>待付款</option>
-												<option value="1" <c:if test="${order.order_status=='1' }">selected="selected"</c:if>>已完成</option>
+												<option value="1" <c:if test="${order.order_status=='1' }">selected="selected"</c:if>>已付款</option>
 												<option value="2" <c:if test="${order.order_status=='2' }">selected="selected"</c:if>>已取消</option>
 												<option value="3" <c:if test="${order.order_status=='3' }">selected="selected"</c:if>>已删除</option>
+												<option value="4" <c:if test="${order.order_status=='4' }">selected="selected"</c:if>>已完成</option>
 											</select>
-								    	 	
+								    	 	&nbsp;&nbsp;||&nbsp;&nbsp;<a onclick="textSelct(${orderDetails.order_detail_id })" href="javascript:;" style="text-decoration: none;">查看备注</a>
 								    	 </td>
 								    	 <td width="150px" style="border-left:1px #dfdfdf solid;" align="center" rowspan="${order.orderDetailsList.size()}">${order.order_contentbudget }</td>
 							    	 </c:if>
 							     </tr> 
+							     <tr attrflag="2" class="textTr" id="textarecontent${orderDetails.order_detail_id }" style="margin-top:-5px;<c:if test="${orderDetails.order.order_status!='4' }">display:none;</c:if>"><td colspan="11" style="border-top:1px #dfdfdf solid;">
+									<div style="width:100%;overflow: hidden;">
+										<div style="width:100%;font-size:16px;padding:10px;text-align: center;">结案报告：</div>
+										<div  style="width: 100%;padding-left:30px;padding-right:30px;padding-bottom: 15px;">${orderDetails.order.admincontent }</div>
+									</div>
+								</td></tr>
+							     <tr class="textTr" id="textare${orderDetails.order_detail_id }" style="display:none;margin-top:-5px;"><td colspan="11" style="border-top:1px #dfdfdf solid;">
+									<div style="width:100%;overflow: hidden;text-align: center;">
+												<div style="width:100%;font-size:16px;padding:10px;text-align: center;">用户备注：</div>
+												<div style="width:100%;overflow: hidden;padding-left:30px;padding-right:30px;padding-bottom: 15px;">${orderDetails.content }</div>   
+									</div>
+									</td></tr>
 						</c:forEach>
 					    </table>
 				</div>

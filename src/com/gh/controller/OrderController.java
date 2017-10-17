@@ -93,8 +93,27 @@ public class OrderController extends BaseControllerSupport{
 		}
 		return "/front/person";
 	}
+	@RequestMapping(value="/updateOrder")
+	public @ResponseBody String updateOrder(HttpServletRequest request){
+		try {
+			Long orderid = Long.parseLong(request.getParameter("orderid"));
+			String status =  request.getParameter("status");
+			if(status!=null&&"4".equals(status)){
+				String admincontent = request.getParameter("admincontent");
+				orderService.updateOrder(orderid,status,admincontent);
+			}else{
+				orderService.updateOrder(orderid,status);
+			}
+			jsonObject.put("result", "yes");
+		} catch (Exception e) {
+			jsonObject.put("result", "no");
+			e.printStackTrace();
+		}
+		return jsonObject.toString();
+	}
+	
 	@RequestMapping(value = "/saveOrder", method = {RequestMethod.POST})
-	public @ResponseBody String saveOrder(HttpServletRequest request,String orderArray){
+	public @ResponseBody String saveOrder(HttpServletRequest request,String orderArray,String beizhuArray){
 		jsonObject.clear();
 		try {
 			if(request.getSession().getAttribute("user")==null){
@@ -117,7 +136,7 @@ public class OrderController extends BaseControllerSupport{
 				}
 				String totalPrice = request.getParameter("totalPrice");
 				String flag = request.getParameter("wtdlfalge");
-				orderService.saveOrder(typeint, userid, orderArray,totalPrice,flag);
+				orderService.saveOrder(typeint, userid, orderArray,beizhuArray,totalPrice,flag);
 				jsonObject.put("result", "yes");
 			}
 		} catch (Exception e) {

@@ -29,7 +29,7 @@ public class OrderServiceImpl implements IOrderService{
 	private IBaseDao<OrderDetails> baseOrderDetailsDao;
 	
 	
-	public void saveOrder(int type, long userid, String publishArray,String totalCount,String flag) throws Exception {
+	public void saveOrder(int type, long userid, String publishArray,String beizhuArray,String totalCount,String flag) throws Exception {
 		if(publishArray!=null&&!"".equals(publishArray)){
 			Order order = new Order();
 			order.setGhid(UUID.randomUUID().toString().replace("-", ""));
@@ -42,8 +42,10 @@ public class OrderServiceImpl implements IOrderService{
 			long orderId = baseOrderDao.save(order);
 			order.setOrder_id(orderId);
 			JSONArray jaobj = JSONArray.fromObject(publishArray);
+			JSONArray contentObj = JSONArray.fromObject(beizhuArray);
 			for(int i=0;i<jaobj.size();i++){
 				JSONObject obj = (JSONObject)jaobj.get(i);
+				JSONObject contentSobj = (JSONObject)contentObj.get(i);
 				long publishId = Long.parseLong(obj.getString("publishId"));
 				String priceStr = obj.getString("priceStr");
 				String price = obj.getString("price");
@@ -57,7 +59,8 @@ public class OrderServiceImpl implements IOrderService{
 				orderDetails.setPublish_pricestr(priceStr);
 				orderDetails.setPublish_type(publishType);
 				orderDetails.setGhid(UUID.randomUUID().toString().replace("-", ""));
-				System.out.println(orderDetails.toString());
+				orderDetails.setContent(contentSobj.getString("content"));
+				//System.out.println(orderDetails.toString());
 				baseOrderDetailsDao.save(orderDetails);
 			}
 		}
@@ -162,6 +165,42 @@ public class OrderServiceImpl implements IOrderService{
 	@Override
 	public void updateOrder(Long orderid, String status) throws Exception {
 		String sql="update gh_order god set god.order_status = '"+status+"' where god.order_id = "+orderid;
+		this.baseOrderDao.executeSql(sql);
+	}
+
+
+	@Override
+	public PageList<OrderDetails> getmdOrderList(PublishForm publishForm, long userid) {
+		String hql ="from OrderDetails god where 1=1 and god.publish.mediaId = ?"
+				+ " and god.order.order_status != 3 "
+				+ " order by god.order.order_createtime desc ";
+		PageList<OrderDetails> orderlist =  this.baseOrderDetailsDao.findPageList(hql, publishForm.getPageSize(),publishForm.getPageCount(),userid);
+		String orderids = "";
+		String userids = "";
+		for(OrderDetails orderDetails:orderlist.getList()){
+			orderids = orderids+orderDetails.getOrder().getOrder_id()+",";
+			userids = userids+orderDetails.getOrder().getOrder_advertiser_id()+",";
+		}
+		if(!"".equals(userids)){
+			userids = userids.substring(0,userids.lastIndexOf(","));
+			String odhql = "from Advertiser ad where ad.id in("+userids+")";
+			List<Advertiser> orderDetailslist = this.baseAdvertiserDao.findList(odhql);
+			for(OrderDetails orderDetails:orderlist.getList()){
+				for(Advertiser ad:orderDetailslist){
+					if(ad.getId()==orderDetails.getOrder().getOrder_advertiser_id()){
+						orderDetails.getOrder().setAdvertiser(ad);
+						break;
+					}
+				}
+			}
+		}
+		return orderlist;
+	}
+
+
+	@Override
+	public void updateOrder(Long orderid, String status, String admincontent) {
+		String sql="update gh_order god set god.order_status = '"+status+"' , god.admincontent = '"+admincontent+"' where god.order_id = "+orderid ;
 		this.baseOrderDao.executeSql(sql);
 	}
 

@@ -12,9 +12,14 @@
 <script type="text/javascript">
 $(document).ready(function(){
 	var total = '${contentPage.total}';
-	total = (total%10==0)?total/10:(parseInt(total/10)+1);
-	$('.M-box').pagination(21,{
-		 'items_per_page'      : 10,  
+	total = (total%8==0)?total/8:(parseInt(total/8)+1);
+	if(total==1){
+		$('#pageTotalDiv').hide();
+	}else{
+		$('#pageTotalDiv').show();
+	}
+	$('.M-box').pagination(total,{
+		 'items_per_page'      : 8,  
         'num_display_entries' : 5, 
         'ellipse_text'        : "...",
         'num_edge_entries'    : 2,  
@@ -55,9 +60,9 @@ function godetails(cid){
 <input type="hidden" value="2" id="headType" />
 	<%@include file="header.jsp" %>
 	<div style="width:100%;margin:0 auto;">
-		<div style="width:1200px;margin:0 auto;overflow: hidden;padding:35px;margin-top:5px;">
+		<div style="width:1200px;margin:0 auto;overflow: hidden;padding:35px;margin-top:5px;min-height: 420px;">
 			<c:forEach items="${contentPage.list }" var="content" varStatus="vstatus" >
-				<div style="float:left;width:550px;box-shadow:2px 3px 2px 3px #ccc;height:303px;<c:if test="${vstatus.index%2!=0 }">margin-left:100px;</c:if><c:if test="${vstatus.index>1 }">margin-top:50px;</c:if>">
+				<div style="float:left;width:550px;box-shadow:2px 3px 2px 3px #f5f5f5;height:303px;<c:if test="${vstatus.index%2!=0 }">margin-left:100px;</c:if><c:if test="${vstatus.index>1 }">margin-top:50px;</c:if>">
 					<div style="width:100%;cursor: pointer;overflow: hidden;" onclick="godetails(${content.id})"><img src="attachment/content/${content.image }" width="100%" height="240px" /></div>
 					<div style="width:100%;height:30px;line-height: 30px;overflow: hidden;margin-top:3px;">
 						<div style="overflow: hidden;float:left;font-size:18px;color:#333333;padding-left:5px;">${content.title }</div>
@@ -84,7 +89,7 @@ function godetails(cid){
 					<input type="hidden" value="${publishForm.pageSize }" id="pageSizeInput" name="pageSize"/>
 				</form>
 			</div>
-			<div style="overflow: hidden;float:right;margin-right:5px;">
+			<div id="pageTotalDiv" style="overflow: hidden;float:right;margin-right:5px;">
 					<div id="pageDiv" style="float:left;height:32px;overflow: hidden;">
 						<div class="M-box" >
 						</div>

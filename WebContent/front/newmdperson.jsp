@@ -7,6 +7,8 @@
 <title>个人主页</title>
 <base href="/ghplat/" />
 <script src="/ghplat/front/js/jquery-1.8.2.min.js" type="text/javascript"></script>
+<script type="text/javascript" src="admin/js/xheditor-1.2.2.min.js"></script>
+<script type="text/javascript" src="admin/js/zh-cn.js"></script>
 <script type="text/javascript">
 $(document).ready(function(){
 	if($('#typeFlag').val()==''&&$('#typeFlag').val()!='1'){
@@ -16,6 +18,9 @@ $(document).ready(function(){
 	if(flag2=='1'){
 		$('.imprtDataDiv').show();
 	}
+	$('.elem1').xheditor({ 
+        upImgUrl: 'upploadImg', upImgExt: 'jpg,jpeg,gif,png'
+    });  
 })
 function gostep2(){
 	var pcode = $('.pcode').val();
@@ -175,6 +180,51 @@ function changeDiv(cls,tt){
 function textSelct(pid){
 	$('#textare'+pid).toggle();
 }
+function showhide(tt,orderdetailsid){
+	var val  = $(tt).val();
+	if(val==4){
+		$('#textarecontent'+orderdetailsid).show();
+	}else{
+		$('#textarecontent'+orderdetailsid).hide();
+	}
+}
+function selectChange(orderid,orderdetailsid,tt){
+	var val  = $('#orstatus').val();
+	if(val==4){
+		var admincontent = $('#textarecontent'+orderdetailsid).find('.elem1').val();
+		$.ajax({
+			   type: "POST",
+			   url: "updateOrder",
+			   data:{
+				   'orderid'  :orderid,
+				   'admincontent':admincontent,
+				   'status':val
+			   }, 
+			   dataType:"json",
+			   success: function(msg){
+				   if(msg.result=='yes'){
+					  alert('修改成功');
+				   }
+			   }
+		});
+		return;
+	}else{
+		$.ajax({
+			   type: "POST",
+			   url: "updateOrder",
+			   data:{
+				   'orderid'  :orderid,
+				   'status':val
+			   }, 
+			   dataType:"json",
+			   success: function(msg){
+				   if(msg.result=='yes'){
+					  alert('修改成功');
+				   }
+			   }
+		});
+	}
+}
 </script>
 <style type="text/css">
 .currentCas{border-bottom: 1px #fc6769 solid;color:#fc6769 !important;}
@@ -203,55 +253,53 @@ input {
 	<div style="width:100%;height:auto;overflow: hidden;margin-top:20px; ">
 		<div style="width:92%;padding:20px 30px 40px 30px;background: white;overflow: hidden;">
 			<div style="width:100%;height:36px;border-bottom: 1px #707070 solid;">
-				<div style="cursor:pointer;height:36px;font-size: 18px;color:#333333;float:left;width:100px;text-align: center;" class="alldaodiv currentCas" onclick="changeDiv('orderDiv',this)">我的订单</div>
+				<div style="cursor:pointer;height:36px;font-size: 18px;color:#333333;float:left;width:100px;text-align: center;" class="alldaodiv currentCas" onclick="changeDiv('orderDiv',this)">订单列表</div>
 				<div style="cursor:pointer;height:36px;font-size: 18px;color:#333333;float:left;width:100px;text-align: center;margin-left:25px;" id="passwdbtn" class="alldaodiv" onclick="changeDiv('passwordDiv',this)">密码修改</div>
 			</div>
 			<div style="width:100%;margin-top:20px;" class="orderDiv divsh">
 					<table cellspacing="0px" class="plisDiv" style="width:100%;font-size:14px;border:1px #dfdfdf solid;">
 					<tbody><tr valign="middle" height="40px" style="background: #f8f8f8;"><td width="150px" align="center">广告主题</td><td width="170px" align="center">投放主体</td><td width="150px" align="center">广告类型</td>
-					<td width="150px" align="center">阅读量</td><td width="150px" align="center">位置</td><td width="150px" align="center">报价</td><td width="250px" align="center">订单状态</td><td width="200px" align="center">总金额</td></tr>
+					<td width="150px" align="center">阅读量</td><td width="150px" align="center">位置</td><td width="150px" align="center">报价</td><td width="150px" align="center">金主爸爸</td><td width="150px" align="center">订单生成日期</td><td width="250px" align="center">订单状态</td><td width="200px" align="center">总金额</td><td width="150px" align="center">备注</td></tr>
 		<!-- 			<div style="float:left;"><img src="front/images/weixin.png" /></div> -->
 				</tbody></table>
-					<c:forEach items="${orderlist.list }" var="order">
 				<div style="width:100%;overflow: hidden;">
-						<div style="width:100%-1px;height:40px;background: #f8f8f8;margin-top:20px;line-height: 40px;border:1px #dfdfdf solid;border-bottom: 0px;font-size:14px;">
-							<span style="margin-left:20px;float:left;">${order.order_createtime }</span><span style="float:left;margin-left:20px;">订单编号：${order.ghid }</span>
-							<span onclick="removeOrder(this,${order.order_id})" class="hoverFont" style="float:right;margin-right:10px;">删除订单</span>
-							<div class="imprtDataDiv" onclick="dataExport(this)" style="display:none;width:70px;height:22px;border:1px #333333 solid;text-align: center;line-height: 22px;float: right;font-size:14px;cursor:pointer;margin-top:8px;margin-right:10px;">导出方案</div>
-						</div>
 						<table cellspacing="0px" class="plisDiv" style="font-size:14px;border:1px #dfdfdf solid;float:left;width:100%-1px;">
-						<c:forEach items="${order.orderDetailsList }" var="orderDetails"  varStatus="stt">
+						<c:forEach items="${orderlist.list }" var="orderDetails"  varStatus="stt">
 								<tr valign="middle" height="60px" class="publishTr" attrPid="${orderDetails.publish.id }" attrPriceStr="${orderDetails.publish_pricestr }" attrPrice="${orderDetails.publish_price }" attrPtype="${orderDetails.publish.publishTypeObj.publishFieldName }">
-									 <td width="150px" style="border-top:1px #dfdfdf solid;<c:if test="${stt.index==0 }">border:0px;</c:if> " align="center"><img width="48px" height="48px" src="/attachment${orderDetails.publish.image }"></td>
-									 <td width="150px" style="border-top:1px #dfdfdf solid;<c:if test="${stt.index==0 }">border:0px;</c:if> " align="center"><div style="margin-top:1px;" >${orderDetails.publish.publishName }</div></td>
-									 <td width="150px" style="border-top:1px #dfdfdf solid;<c:if test="${stt.index==0 }">border:0px;</c:if> " align="center"><div style="margin-top:1px;" >${orderDetails.publish.publishTypeObj.publishFieldName }</div></td>
-									 <td class="fansTd" style="border-top:1px #dfdfdf solid;<c:if test="${stt.index==0 }">border:0px;</c:if> " width="150px" align="center">${orderDetails.publish.platformFans }</td>
-									 <td width="150px" style="border-top:1px #dfdfdf solid;<c:if test="${stt.index==0 }">border:0px;</c:if> " align="center">${orderDetails.publish_pricestr }</td>
-									 <td width="150px" style="border-top:1px #dfdfdf solid;<c:if test="${stt.index==0 }">border:0px;</c:if> " align="center"><span class="priceclass">${orderDetails.publish_price }</span></td>
-							    	 <c:if test="${stt.index==0 }">
-								    	 <td width="250px" style="border-left:1px #dfdfdf solid;" align="center" rowspan="${order.orderDetailsList.size()}">
-								    	 	<c:if test="${order.order_status==0 }">待付款</c:if><c:if test="${order.order_status==1 }">已付款</c:if><c:if test="${order.order_status==2 }">已取消</c:if><c:if test="${order.order_status==4 }">已完成</c:if>
-								    		&nbsp;&nbsp;||&nbsp;&nbsp;<a onclick="textSelct(${orderDetails.order_detail_id })" href="javascript:;" style="text-decoration: none;">查看备注</a>
-								    	 </td>
-								    	 <td width="150px" style="border-left:1px #dfdfdf solid;" align="center" rowspan="${order.orderDetailsList.size()}">${order.order_contentbudget }</td>
-							    	 </c:if>
+									 <td width="150px" style="border-left:1px #dfdfdf solid;border-top:1px #dfdfdf solid; " align="center"><img width="48px" height="48px" src="/attachment${orderDetails.publish.image }"></td>
+									 <td width="120px" style="border-left:1px #dfdfdf solid;border-top:1px #dfdfdf solid; " align="center"><div style="margin-top:1px;" >${orderDetails.publish.publishName }</div></td>
+									 <td width="140px" style="border-left:1px #dfdfdf solid;border-top:1px #dfdfdf solid; " align="center"><div style="margin-top:1px;" >${orderDetails.publish.publishTypeObj.publishFieldName }</div></td>
+									 <td class="fansTd" style="border-left:1px #dfdfdf solid;border-top:1px #dfdfdf solid; " width="150px" align="center">${orderDetails.publish.platformFans }</td>
+									 <td width="150px" style="border-left:1px #dfdfdf solid;border-top:1px #dfdfdf solid; " align="center">${orderDetails.publish_pricestr }</td>
+									 <td width="150px" style="border-left:1px #dfdfdf solid;border-top:1px #dfdfdf solid; " align="center"><span class="priceclass">${orderDetails.publish_price }</span></td>
+									 <td width="130px" style="border-left:1px #dfdfdf solid;border-top:1px #dfdfdf solid; " align="center"><span class="priceclass">${orderDetails.order.advertiser.username }</span></td>
+									 <td width="130px" style="border-left:1px #dfdfdf solid;border-top:1px #dfdfdf solid; " align="center"><span class="priceclass">${orderDetails.order.order_createtime }</span></td>
+							    	 <td width="250px" style="border-top:1px #dfdfdf solid;border-left:1px #dfdfdf solid;" align="center" rowspan="${orderDetails.order.orderDetailsList.size()}">
+							    	 	<select id="orstatus" onchange="showhide(this,${orderDetails.order_detail_id })">
+												<option value="0" <c:if test="${orderDetails.order.order_status=='0' }">selected="selected"</c:if>>待付款</option>
+												<option value="1" <c:if test="${orderDetails.order.order_status=='1' }">selected="selected"</c:if>>已付款</option>
+												<option value="2" <c:if test="${orderDetails.order.order_status=='2' }">selected="selected"</c:if>>已取消</option>
+												<option value="4" <c:if test="${orderDetails.order.order_status=='4' }">selected="selected"</c:if>>已完成</option>
+											</select><button onclick="selectChange(${orderDetails.order.order_id },${orderDetails.order_detail_id },this)">确定</button>
+							    	 </td>
+							    	 <td width="150px" style="border-top:1px #dfdfdf solid;border-left:1px #dfdfdf solid;" align="center" >${orderDetails.order.order_contentbudget }</td>
+							    	 <td width="150px" style="border-top:1px #dfdfdf solid;border-left:1px #dfdfdf solid;" align="center" ><a onclick="textSelct(${orderDetails.order_detail_id })" href="javascript:;" style="text-decoration: none;">查看备注</a></td>
 							     </tr> 
 							     <tr attrflag="2" class="textTr" id="textarecontent${orderDetails.order_detail_id }" style="margin-top:-5px;<c:if test="${orderDetails.order.order_status!='4' }">display:none;</c:if>"><td colspan="11" style="border-top:1px #dfdfdf solid;">
 									<div style="width:100%;overflow: hidden;">
 										<div style="width:100%;font-size:16px;padding:10px;text-align: center;">结案报告：</div>
-										<div  style="width: 100%;padding-left:30px;padding-right:30px;padding-bottom: 15px;">${orderDetails.order.admincontent }</div>
+										<textarea class="elem1"  style="width: 100%">${orderDetails.order.admincontent }</textarea>
 									</div>
 								</td></tr>
 							     <tr class="textTr" id="textare${orderDetails.order_detail_id }" style="display:none;margin-top:-5px;"><td colspan="11" style="border-top:1px #dfdfdf solid;">
 									<div style="width:100%;overflow: hidden;text-align: center;">
 												<div style="width:100%;font-size:16px;padding:10px;text-align: center;">用户备注：</div>
-												<div style="width:100%;overflow: hidden;padding-left:30px;padding-right:30px;padding-bottom: 15px;">${orderDetails.content }</div>   
+												<div style="width:100%;overflow: hidden;">${orderDetails.content }</div>   
 									</div>
 									</td></tr>
 						</c:forEach>
 					    </table>
 				</div>
-					</c:forEach>
 			</div>
 			<div class="passwordDiv divsh" style="display:none;">
 				<div style="width:100%;height:auto;overflow: hidden;">

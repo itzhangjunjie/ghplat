@@ -20,6 +20,8 @@
 <script src="front/js/main.js" type="text/javascript"></script>
 <script src="front/js/jquery.Jcrop.js" type="text/javascript"></script>
 <link rel="stylesheet" href="front/css/jquery.Jcrop.css">
+<script type="text/javascript" src="admin/js/xheditor-1.2.2.min.js"></script>
+<script type="text/javascript" src="admin/js/zh-cn.js"></script>
 <!-- 页面关键词 -->
 <meta name="keywords" content="勾画,自媒体,新媒体,mcn,mpn,勾画互动"/>
 <!-- 搜索引擎抓取 -->
@@ -199,7 +201,7 @@ function login(type){
 	}
 	$.ajax({
 		   type: "POST",
-		   url: "../login",
+		   url: "login",
 		   data:{
 			   'mobile'  :mobile,
 			   'password'   :password,
@@ -368,7 +370,7 @@ a:link {color: #707070}
 				<c:if test="${sessionScope.type!=null&&sessionScope.type=='广告主' }">
 					<li><a href="persionad">投放中心</a></li>
 				</c:if>
-				<li><a href="contentlist">文章中心</a></li>
+				<li><a href="contentlist">热文推荐</a></li>
 <!-- 				<li><a href="http://www.17sucai.com/">媒介合作</a></li> -->
 				<li><a href="abortUs">关于我们</a></li>
 			</ul>
@@ -387,7 +389,7 @@ a:link {color: #707070}
 					<a href="persionad" target="_blank"><div class="hoverFont" style="float:left;margin-left:10px;color:#333333;font-size:14px;line-height: 25px;">${sessionScope.user.username}</div></a>
 				</c:if>
 				<c:if test="${sessionScope.type=='自媒体' }">
-					<a href="getOrderList" target="_blank"><div class="hoverFont" style="float:left;margin-left:10px;color:#333333;font-size:14px;line-height: 25px;">${sessionScope.user.username}</div></a>
+					<a href="persionmd" target="_blank"><div class="hoverFont" style="float:left;margin-left:10px;color:#333333;font-size:14px;line-height: 25px;">${sessionScope.user.username}</div></a>
 					<a href="addCase" target="_blank"><div class="hoverFont" style="float:left;margin-left:15px;color:#333333;font-size:16px;line-height: 23px;">管理发布</div></a>
 				</c:if>
 				<div onclick="exit()" class="hoverFont" style="float:left;margin-left:15px;color:#333333;font-size:14px;line-height: 25px;">退出</div>
@@ -494,7 +496,7 @@ a:link {color: #707070}
 		 	      <div style="width:56px;line-height: 40px;float:left;font-size:14px;">验证码：</div> 
 		 	      <div style="float:left;margin-left:3px;"><input style="width:70px;margin:0px;height:38px;padding:6px;color:#333333;text-align:left;background: rgb(249,249,249);" class="authCode" name="authCode" type="text"/></div>
 		        <!--这里img标签的src属性的值为后台实现图片验证码方法的请求地址-->
-		        <div style="float:left;margin-left:6px;"><img type="image" src="../authCode" class="codeImage1" onclick="chageCode(1)" title="图片看不清？点击重新得到验证码" style="cursor:pointer;"/></div>
+		        <div style="float:left;margin-left:6px;"><img type="image" src="authCode" class="codeImage1" onclick="chageCode(1)" title="图片看不清？点击重新得到验证码" style="cursor:pointer;"/></div>
 		        <div style="width:50px;line-height: 40px;float:left;margin-left:10px;font-size:12px;"><a onclick="chageCode(1)" style="cursor: pointer;">换一张</a></div>
 		    </div>
 			<div style="width:320px;margin:0 auto;margin-top:12px;">

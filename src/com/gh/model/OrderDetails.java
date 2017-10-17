@@ -34,6 +34,8 @@ public class OrderDetails {
 	private String publish_pricestr;
 	@Column(name="publish_price")
 	private String publish_price;
+	@Column(name="content")
+	private String content;
 	@Column(name="column_1")
 	private String column_1;
 	@Column(name="column_2")
@@ -42,6 +44,12 @@ public class OrderDetails {
 	private Date column_4;
 	
 	
+	public String getContent() {
+		return content;
+	}
+	public void setContent(String content) {
+		this.content = content;
+	}
 	public String getPublish_pricestr() {
 		return publish_pricestr;
 	}

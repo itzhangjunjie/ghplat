@@ -21,6 +21,11 @@ $(document).ready(function(){
 	}else{
 		$('.moneytotal').html('**');
 	}
+	$("#beizhuA").fancybox({
+		'titlePosition': 'inside',
+		'transitionIn': 'none',
+		'transitionOut': 'none'
+	});
 })
 function getCartList(ids){
 	if(ids!=null&&ids!=''){
@@ -66,6 +71,9 @@ function selecttotal(){
 	}else{
 		$('.moneytotal').html('**');
 	}
+	$('.elem1').xheditor({ 
+        upImgUrl: 'upploadImg', upImgExt: 'jpg,jpeg,gif,png'
+    });  
 }
 function selectAddCart(tt){
 	if($(tt).find('.selectedPublish').css('display')=='none'){
@@ -104,6 +112,8 @@ function deleteAll(){
 function deleteCPublish(tt,pid){
 	if(confirm("确定要删除吗？")){
 		$(tt).parent().parent().remove();
+		var tcontet = $(tt).parent().parent().attr('attrPid');
+		$('#textare'+tcontet).remove();
 		deleteCart(pid);
 		selecttotal();
 	}
@@ -115,6 +125,7 @@ function saveOrder(){
 	}else{
 		var totalPrice = 0;
 		var orderArray = new Array();
+		var beizhuArray = new Array();
 		for(var i=0;i<$('tr[attrflag="1"]').length;i++){
 			var orderObj = {};
 			orderObj.publishId = $($('tr[attrflag="1"]')[i]).attr('attrPid');
@@ -124,15 +135,21 @@ function saveOrder(){
 			orderObj.publishType = $($('tr[attrflag="1"]')[i]).attr('attrPtype');
 			totalPrice = totalPrice+parseInt(orderObj.price);
 			orderArray.push(orderObj);
+			var contentObj = {};
+			contentObj.content = $($('tr[attrflag="2"]')[i]).find('.elem1').val();
+			beizhuArray.push(contentObj);
 		}
 		var flage = $('.wdtlSelectDiv').attr('wdtlflag');
+		//alert(JSON.stringify(beizhuArray));
+		//return;
 		$.ajax({
 			   type: "POST",
 			   url: "../saveOrder",
 			   data:{
 				   'totalPrice'  :totalPrice,
 				   'wtdlfalge':flage,
-				   'orderArray':JSON.stringify(orderArray)
+				   'orderArray':JSON.stringify(orderArray),
+				   'beizhuArray':JSON.stringify(beizhuArray)
 			   }, 
 			   dataType:"json",
 			   success: function(msg){
@@ -206,6 +223,9 @@ function selectWtdl(tt){
 		$('.moneytotal').html(totalMany);
 	}
 }
+function textSelct(pid){
+	$('#textare'+pid).toggle();
+}
 </script>
 </head>
 <body style="padding:0px;margin:0px;">
@@ -235,7 +255,7 @@ function selectWtdl(tt){
 	<div style="width:1198px;border:1px #dfdfdf solid;overflow: hidden;">
 		<table style="width:100%;font-size:14px;" cellspacing="0px" class="plisDiv">
 			<tr valign="middle" height="40px" style="background: #f8f8f8;"><td width="32px" align="center">&nbsp;</td><td width="150px" align="center">广告主题</td><td width="100px" align="center">投放主题</td><td width="250px" align="center">广告类型</td>
-			<td  width="100px" align="center">阅读量</td><td  width="300px" align="center">位置</td><td width="100px" align="center">报价</td><td width="150px" align="center">操作</td></tr>
+			<td  width="100px" align="center">阅读量</td><td  width="300px" align="center">位置</td><td width="100px" align="center">报价</td><td width="150px" align="center">备注</td><td width="150px" align="center">操作</td></tr>
 			<script id="publishlistTmpDiv" type="text/x-dot-template">
 			{{for(var i=0;i<it.publishList.length;i++){ }} 
 			<tr valign="middle" attrPtype="{{=it.publishList[i].publishTypeObj.publishFieldId}}" attrPid="{{=it.publishList[i].id}}" class="publishTr{{=it.publishList[i].id}} publishTr" attrflag="1" height="80px"><td align="center"><div onclick="selectAddCart(this)" style="cursor:pointer;width:16px;height:16px;border:1px #333333 solid;position: relative;float:right;">
@@ -256,7 +276,13 @@ function selectWtdl(tt){
 				<span attrStr="{{=prop}}-{{=it.publishList[i].id}}" style="{{? ind!=1}}display:none;{{?}}" class="priceclass">{{? flag2==1}}{{=it.publishList[i].priceMap[prop]}}{{?}}{{? flag2!=1}}**{{?}}</span>
 				{{}}}
 			</td>
+			<td><a onclick="textSelct({{=it.publishList[i].id}})" href="javascript:;" style="text-decoration: none;">添加备注</a></td>
 			<td><span onclick="deleteCPublish(this,{{=it.publishList[i].id}})" class="hoverFont">删除</span></td></tr>
+<tr attrflag="2" class="textTr" id="textare{{=it.publishList[i].id}}" style="display:none;margin-top:-5px;"><td colspan="9">
+<div style="width:100%;overflow: hidden;">
+			<textarea class="elem1"  style="width: 100%"></textarea>
+		</div>
+</td></tr>
 			{{}}}
 			</script>
 <!-- 			<div style="float:left;"><img src="front/images/weixin.png" /></div> -->
@@ -272,6 +298,9 @@ function selectWtdl(tt){
 		<div onclick="saveOrder()" style="width:139px;height:54px;color:white;font-size:18px;float:left;background: #fc6769;line-height: 54px;text-align: center;cursor: pointer;">立即推广</div>
 	</div>
 </div>
+<div style="margin-top:20px;width:100%;overflow: hidden;">
+			<textarea id="elem1"  style="width: 100%"></textarea>
+		</div>
 <%@include file="footer.jsp" %>
 </body>
 </html>
