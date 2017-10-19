@@ -101,7 +101,7 @@ public class OrderServiceImpl implements IOrderService{
 
 	@Override
 	public void deleteOrder(long orderId) throws Exception {
-		String sql="update gh_order god set god.order_status = 3 where god.order_id = "+orderId;
+		String sql="update gh_order god set god.order_status = 2 where god.order_id = "+orderId;
 		this.baseOrderDao.executeSql(sql);
 	}
 

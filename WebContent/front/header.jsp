@@ -389,6 +389,7 @@ a:link {color: #707070}
 					<a href="persionad" target="_blank"><div class="hoverFont" style="float:left;margin-left:10px;color:#333333;font-size:14px;line-height: 25px;">${sessionScope.user.username}</div></a>
 				</c:if>
 				<c:if test="${sessionScope.type=='自媒体' }">
+					<a href="persionmd" target="_blank"><div class="hoverFont" style="float:left;margin-left:10px;color:#333333;font-size:14px;line-height: 25px;">订单中心</div></a>
 					<a href="persionmd" target="_blank"><div class="hoverFont" style="float:left;margin-left:10px;color:#333333;font-size:14px;line-height: 25px;">${sessionScope.user.username}</div></a>
 					<a href="addCase" target="_blank"><div class="hoverFont" style="float:left;margin-left:15px;color:#333333;font-size:16px;line-height: 23px;">管理发布</div></a>
 				</c:if>

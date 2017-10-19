@@ -65,6 +65,7 @@ function textSelct(pid){
 									<option value="1" <c:if test="${publishForm.publishStatus=='1' }">selected="selected"</c:if>>已完成</option>
 									<option value="2" <c:if test="${publishForm.publishStatus=='2' }">selected="selected"</c:if>>已取消</option>
 									<option value="3" <c:if test="${publishForm.publishStatus=='3' }">selected="selected"</c:if>>已删除</option>
+									<option value="5" <c:if test="${publishForm.publishStatus=='5' }">selected="selected"</c:if>>媒体拒绝订单</option>
 								</select>
 							</div>
 							<label class="layui-form-label">订单号：</label>

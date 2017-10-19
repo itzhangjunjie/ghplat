@@ -216,7 +216,9 @@ input {
 				<div style="width:100%;overflow: hidden;">
 						<div style="width:100%-1px;height:40px;background: #f8f8f8;margin-top:20px;line-height: 40px;border:1px #dfdfdf solid;border-bottom: 0px;font-size:14px;">
 							<span style="margin-left:20px;float:left;">${order.order_createtime }</span><span style="float:left;margin-left:20px;">订单编号：${order.ghid }</span>
-							<span onclick="removeOrder(this,${order.order_id})" class="hoverFont" style="float:right;margin-right:10px;">删除订单</span>
+							<c:if test="${order.order_status==0 }">
+								<span onclick="removeOrder(this,${order.order_id})" class="hoverFont" style="float:right;margin-right:10px;">取消订单</span>
+							</c:if>
 							<div class="imprtDataDiv" onclick="dataExport(this)" style="display:none;width:70px;height:22px;border:1px #333333 solid;text-align: center;line-height: 22px;float: right;font-size:14px;cursor:pointer;margin-top:8px;margin-right:10px;">导出方案</div>
 						</div>
 						<table cellspacing="0px" class="plisDiv" style="font-size:14px;border:1px #dfdfdf solid;float:left;width:100%-1px;">
@@ -230,7 +232,7 @@ input {
 									 <td width="150px" style="border-top:1px #dfdfdf solid;<c:if test="${stt.index==0 }">border:0px;</c:if> " align="center"><span class="priceclass">${orderDetails.publish_price }</span></td>
 							    	 <c:if test="${stt.index==0 }">
 								    	 <td width="250px" style="border-left:1px #dfdfdf solid;" align="center" rowspan="${order.orderDetailsList.size()}">
-								    	 	<c:if test="${order.order_status==0 }">待付款</c:if><c:if test="${order.order_status==1 }">已付款</c:if><c:if test="${order.order_status==2 }">已取消</c:if><c:if test="${order.order_status==4 }">已完成</c:if>
+								    	 	<c:if test="${order.order_status==0 }">确定执行待付款</c:if><c:if test="${order.order_status==1 }">已付款</c:if><c:if test="${order.order_status==2 }">已取消</c:if><c:if test="${order.order_status==5 }">媒体拒绝</c:if><c:if test="${order.order_status==4 }">已完成</c:if>
 								    		&nbsp;&nbsp;||&nbsp;&nbsp;<a onclick="textSelct(${orderDetails.order_detail_id })" href="javascript:;" style="text-decoration: none;">查看备注</a>
 								    	 </td>
 								    	 <td width="150px" style="border-left:1px #dfdfdf solid;" align="center" rowspan="${order.orderDetailsList.size()}">${order.order_contentbudget }</td>

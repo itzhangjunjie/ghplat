@@ -118,50 +118,54 @@ function deleteCPublish(tt,pid){
 		selecttotal();
 	}
 }
+var orderflag = true;
 function saveOrder(){
-	var user= $('#userType').val();
-	if(user==null||user==''){
-		$('#qiyeloginA').click();
-	}else{
-		var totalPrice = 0;
-		var orderArray = new Array();
-		var beizhuArray = new Array();
-		for(var i=0;i<$('tr[attrflag="1"]').length;i++){
-			var orderObj = {};
-			orderObj.publishId = $($('tr[attrflag="1"]')[i]).attr('attrPid');
-			orderObj.priceStr = $($('tr[attrflag="1"]')[i]).find('.priceStrSel').val();
-			var attrStr = orderObj.priceStr+'-'+orderObj.publishId;
-			orderObj.price = $($($('tr[attrflag="1"]')[i]).find('span[attrStr="'+attrStr+'"]')).html();
-			orderObj.publishType = $($('tr[attrflag="1"]')[i]).attr('attrPtype');
-			totalPrice = totalPrice+parseInt(orderObj.price);
-			orderArray.push(orderObj);
-			var contentObj = {};
-			contentObj.content = $($('tr[attrflag="2"]')[i]).find('.elem1').val();
-			beizhuArray.push(contentObj);
-		}
-		var flage = $('.wdtlSelectDiv').attr('wdtlflag');
-		//alert(JSON.stringify(beizhuArray));
-		//return;
-		$.ajax({
-			   type: "POST",
-			   url: "../saveOrder",
-			   data:{
-				   'totalPrice'  :totalPrice,
-				   'wtdlfalge':flage,
-				   'orderArray':JSON.stringify(orderArray),
-				   'beizhuArray':JSON.stringify(beizhuArray)
-			   }, 
-			   dataType:"json",
-			   success: function(msg){
-				   if(msg.result=='yes'){
-					   //delCookie('cartIds');
-					   SetCookie("cartIds","",15);
-					   location.href="../getOrderList";
-				   }else{
-					   $('#qiyeloginA').click();
+	if(orderflag){
+		orderflag = false;
+		var user= $('#userType').val();
+		if(user==null||user==''){
+			$('#qiyeloginA').click();
+		}else{
+			var totalPrice = 0;
+			var orderArray = new Array();
+			var beizhuArray = new Array();
+			for(var i=0;i<$('tr[attrflag="1"]').length;i++){
+				var orderObj = {};
+				orderObj.publishId = $($('tr[attrflag="1"]')[i]).attr('attrPid');
+				orderObj.priceStr = $($('tr[attrflag="1"]')[i]).find('.priceStrSel').val();
+				var attrStr = orderObj.priceStr+'-'+orderObj.publishId;
+				orderObj.price = $($($('tr[attrflag="1"]')[i]).find('span[attrStr="'+attrStr+'"]')).html();
+				orderObj.publishType = $($('tr[attrflag="1"]')[i]).attr('attrPtype');
+				totalPrice = totalPrice+parseInt(orderObj.price);
+				orderArray.push(orderObj);
+				var contentObj = {};
+				contentObj.content = $($('tr[attrflag="2"]')[i]).find('.elem1').val();
+				beizhuArray.push(contentObj);
+			}
+			var flage = $('.wdtlSelectDiv').attr('wdtlflag');
+			//alert(JSON.stringify(beizhuArray));
+			//return;
+			$.ajax({
+				   type: "POST",
+				   url: "../saveOrder",
+				   data:{
+					   'totalPrice'  :totalPrice,
+					   'wtdlfalge':flage,
+					   'orderArray':JSON.stringify(orderArray),
+					   'beizhuArray':JSON.stringify(beizhuArray)
+				   }, 
+				   dataType:"json",
+				   success: function(msg){
+					   if(msg.result=='yes'){
+						   //delCookie('cartIds');
+						   SetCookie("cartIds","",15);
+						   location.href="../getOrderList";
+					   }else{
+						   $('#qiyeloginA').click();
+					   }
 				   }
-			   }
-		});
+			});
+		}
 	}
 }
 function dataExport(){
@@ -280,7 +284,7 @@ function textSelct(pid){
 			<td><span onclick="deleteCPublish(this,{{=it.publishList[i].id}})" class="hoverFont">删除</span></td></tr>
 <tr attrflag="2" class="textTr" id="textare{{=it.publishList[i].id}}" style="display:none;margin-top:-5px;"><td colspan="9">
 <div style="width:100%;overflow: hidden;">
-			<textarea class="elem1"  style="width: 100%"></textarea>
+			<textarea class="elem1"  style="width: 100%;min-height:100px;"></textarea>
 		</div>
 </td></tr>
 			{{}}}

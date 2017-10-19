@@ -188,6 +188,56 @@ function showhide(tt,orderdetailsid){
 		$('#textarecontent'+orderdetailsid).hide();
 	}
 }
+function selectChange1(orderid,orderdetailsid,tt){
+	$.ajax({
+		   type: "POST",
+		   url: "updateOrder",
+		   data:{
+			   'orderid'  :orderid,
+			   'status':'1'
+		   }, 
+		   dataType:"json",
+		   success: function(msg){
+			   if(msg.result=='yes'){
+				  alert('接受订单成功');
+			   }
+		   }
+	});
+}
+function selectChange5(orderid,orderdetailsid,tt){
+	$.ajax({
+		   type: "POST",
+		   url: "updateOrder",
+		   data:{
+			   'orderid'  :orderid,
+			   'status':'5'
+		   }, 
+		   dataType:"json",
+		   success: function(msg){
+			   if(msg.result=='yes'){
+				  alert('拒绝成功');
+			   }
+		   }
+	});
+}
+function selectChange4(orderid,orderdetailsid,tt){
+	var admincontent = $('#textarecontent'+orderdetailsid).find('.elem1').val();
+	$.ajax({
+		   type: "POST",
+		   url: "updateOrder",
+		   data:{
+			   'orderid'  :orderid,
+			   'admincontent':admincontent,
+			   'status':'4'
+		   }, 
+		   dataType:"json",
+		   success: function(msg){
+			   if(msg.result=='yes'){
+				  alert('提交成功');
+			   }
+		   }
+	});
+}
 function selectChange(orderid,orderdetailsid,tt){
 	var val  = $('#orstatus').val();
 	if(val==4){
@@ -268,27 +318,40 @@ input {
 								<tr valign="middle" height="60px" class="publishTr" attrPid="${orderDetails.publish.id }" attrPriceStr="${orderDetails.publish_pricestr }" attrPrice="${orderDetails.publish_price }" attrPtype="${orderDetails.publish.publishTypeObj.publishFieldName }">
 									 <td width="150px" style="border-left:1px #dfdfdf solid;border-top:1px #dfdfdf solid; " align="center"><img width="48px" height="48px" src="/attachment${orderDetails.publish.image }"></td>
 									 <td width="120px" style="border-left:1px #dfdfdf solid;border-top:1px #dfdfdf solid; " align="center"><div style="margin-top:1px;" >${orderDetails.publish.publishName }</div></td>
-									 <td width="140px" style="border-left:1px #dfdfdf solid;border-top:1px #dfdfdf solid; " align="center"><div style="margin-top:1px;" >${orderDetails.publish.publishTypeObj.publishFieldName }</div></td>
+									 <td width="180px" style="border-left:1px #dfdfdf solid;border-top:1px #dfdfdf solid; " align="center"><div style="margin-top:1px;" >${orderDetails.publish.publishTypeObj.publishFieldName }</div></td>
 									 <td class="fansTd" style="border-left:1px #dfdfdf solid;border-top:1px #dfdfdf solid; " width="150px" align="center">${orderDetails.publish.platformFans }</td>
 									 <td width="150px" style="border-left:1px #dfdfdf solid;border-top:1px #dfdfdf solid; " align="center">${orderDetails.publish_pricestr }</td>
 									 <td width="150px" style="border-left:1px #dfdfdf solid;border-top:1px #dfdfdf solid; " align="center"><span class="priceclass">${orderDetails.publish_price }</span></td>
-									 <td width="130px" style="border-left:1px #dfdfdf solid;border-top:1px #dfdfdf solid; " align="center"><span class="priceclass">${orderDetails.order.advertiser.username }</span></td>
+									 <td width="130px" style="border-left:1px #dfdfdf solid;border-top:1px #dfdfdf solid; " align="center"><span class="priceclass">${orderDetails.order.advertiser.corporation_name }</span></td>
 									 <td width="130px" style="border-left:1px #dfdfdf solid;border-top:1px #dfdfdf solid; " align="center"><span class="priceclass">${orderDetails.order.order_createtime }</span></td>
 							    	 <td width="250px" style="border-top:1px #dfdfdf solid;border-left:1px #dfdfdf solid;" align="center" rowspan="${orderDetails.order.orderDetailsList.size()}">
-							    	 	<select id="orstatus" onchange="showhide(this,${orderDetails.order_detail_id })">
-												<option value="0" <c:if test="${orderDetails.order.order_status=='0' }">selected="selected"</c:if>>待付款</option>
-												<option value="1" <c:if test="${orderDetails.order.order_status=='1' }">selected="selected"</c:if>>已付款</option>
-												<option value="2" <c:if test="${orderDetails.order.order_status=='2' }">selected="selected"</c:if>>已取消</option>
-												<option value="4" <c:if test="${orderDetails.order.order_status=='4' }">selected="selected"</c:if>>已完成</option>
-											</select><button onclick="selectChange(${orderDetails.order.order_id },${orderDetails.order_detail_id },this)">确定</button>
+							    	 	<c:if test="${orderDetails.order.order_status==0 }">
+							    	 		<button onclick="selectChange1(${orderDetails.order.order_id },${orderDetails.order_detail_id },this)">执行订单</button>
+							    	 		<button onclick="selectChange5(${orderDetails.order.order_id },${orderDetails.order_detail_id },this)">拒绝</button>
+							    	 	</c:if>
+							    	 	<c:if test="${orderDetails.order.order_status==1 }">已付款
+							    	 		<button onclick="selectChange4(${orderDetails.order.order_id },${orderDetails.order_detail_id },this)">提交结案报告</button>
+							    	 	</c:if>
+							    	 	<c:if test="${orderDetails.order.order_status==2 }">已取消</c:if>
+							    	 	<c:if test="${orderDetails.order.order_status==4 }">已完成
+							    	 		<button onclick="selectChange4(${orderDetails.order.order_id },${orderDetails.order_detail_id },this)">提交结案报告</button>
+							    	 	</c:if>
+<%-- 							    	 	<select id="orstatus" onchange="showhide(this,${orderDetails.order_detail_id })"> --%>
+<%-- 												<option value="0" <c:if test="${orderDetails.order.order_status=='0' }">selected="selected"</c:if>>待付款</option> --%>
+<%-- 												<option value="1" <c:if test="${orderDetails.order.order_status=='1' }">selected="selected"</c:if>>已付款</option> --%>
+<%-- 												<option value="2" <c:if test="${orderDetails.order.order_status=='2' }">selected="selected"</c:if>>已取消</option> --%>
+<%-- 												<option value="4" <c:if test="${orderDetails.order.order_status=='4' }">selected="selected"</c:if>>已完成</option> --%>
+<!-- 											</select> -->
+<%-- 											<button onclick="selectChange(${orderDetails.order.order_id },${orderDetails.order_detail_id },this)">确定</button> --%>
 							    	 </td>
 							    	 <td width="150px" style="border-top:1px #dfdfdf solid;border-left:1px #dfdfdf solid;" align="center" >${orderDetails.order.order_contentbudget }</td>
 							    	 <td width="150px" style="border-top:1px #dfdfdf solid;border-left:1px #dfdfdf solid;" align="center" ><a onclick="textSelct(${orderDetails.order_detail_id })" href="javascript:;" style="text-decoration: none;">查看备注</a></td>
 							     </tr> 
-							     <tr attrflag="2" class="textTr" id="textarecontent${orderDetails.order_detail_id }" style="margin-top:-5px;<c:if test="${orderDetails.order.order_status!='4' }">display:none;</c:if>"><td colspan="11" style="border-top:1px #dfdfdf solid;">
+							     <tr attrflag="2" class="textTr" id="textarecontent${orderDetails.order_detail_id }" style="margin-top:-5px;<c:if test="${orderDetails.order.order_status!='4'&&orderDetails.order.order_status!='1' }">display:none;</c:if>">
+							     <td colspan="11" style="border-top:1px #dfdfdf solid;">
 									<div style="width:100%;overflow: hidden;">
 										<div style="width:100%;font-size:16px;padding:10px;text-align: center;">结案报告：</div>
-										<textarea class="elem1"  style="width: 100%">${orderDetails.order.admincontent }</textarea>
+										<textarea class="elem1"  style="width: 100%;min-height:100px;">${orderDetails.order.admincontent }</textarea>
 									</div>
 								</td></tr>
 							     <tr class="textTr" id="textare${orderDetails.order_detail_id }" style="display:none;margin-top:-5px;"><td colspan="11" style="border-top:1px #dfdfdf solid;">

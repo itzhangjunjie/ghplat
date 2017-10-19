@@ -195,7 +195,7 @@ function changeDiv(cls,tt){
 				<div style="width:100%;overflow: hidden;">
 						<div style="width:1138px;height:40px;background: #f8f8f8;margin-top:20px;line-height: 40px;border:1px #dfdfdf solid;border-bottom: 0px;font-size:14px;">
 							<span style="margin-left:20px;float:left;">${order.order_createtime }</span><span style="float:left;margin-left:20px;">订单编号：${order.ghid }</span>
-							<span onclick="removeOrder(this,${order.order_id})" class="hoverFont" style="float:right;margin-right:10px;">删除订单</span>
+							<span onclick="removeOrder(this,${order.order_id})" class="hoverFont" style="float:right;margin-right:10px;">取消订单</span>
 							<div class="imprtDataDiv" onclick="dataExport(this)" style="display:none;width:70px;height:22px;border:1px #333333 solid;text-align: center;line-height: 22px;float: right;font-size:14px;cursor:pointer;margin-top:8px;margin-right:10px;">导出方案</div>
 						</div>
 						<table cellspacing="0px" class="plisDiv" style="font-size:14px;border:1px #dfdfdf solid;float:left;width:1140px;">
